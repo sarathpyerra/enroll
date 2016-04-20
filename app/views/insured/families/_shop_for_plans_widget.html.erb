@@ -64,7 +64,7 @@ Shop for Plans
               <div class="row">
                 <div class="col-xs-7">
                  <% if !is_under_open_enrollment? && !@employee_role.try(:is_under_open_enrollment?)  %>
-                Open enrollment for 2016 has closed. 
+                Open enrollment for <%= TimeKeeper.date_of_record.year %> has closed. 
               <% else %>
                 If you enroll today, coverage will begin <%= format_date ivl_enrollment_effective_date %>. You can
                   <%= link_to 'click here', new_insured_group_selection_path(options) %>
