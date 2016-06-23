@@ -1,0 +1,22 @@
+<table class="table table-striped" id="<%= table_id %>">
+</table>
+
+<script type="text/javascript" charset="utf-8" defer="defer">
+  $(document).ready(function() {
+  $('#<%= table_id %>').DataTable( {
+      "processing": true,
+      "serverSide": true,
+      "ordering" : false,
+      "ajax": {
+        url: "<%= data_url %>",
+        type: "GET"
+      },
+      "columns" : [
+        <% column_count = columns.length %>
+	<% columns.each_with_index do |col, idx| %>
+	  {title: "<%= j col.first %>", data: "<%= col.last %>" }<%= (idx < (column_count - 1)) ? "," : ""  %>
+	<% end %>
+      ]
+    } );
+  });
+</script>

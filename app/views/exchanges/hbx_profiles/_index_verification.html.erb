@@ -1,32 +1,16 @@
 <div class="module">
-  <table class="table table-striped" id="verification-dataTable">
-    <thead>
-    <tr>
-      <th>HBX ID</th>
-      <th>First name</th>
-      <th>Last name</th>
-      <th>Documents</th>
-      <th>Due date</th>
-      <th>Status</th>
-      <th>Review</th>
-      <th>FedHub</th>
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
+<%= render :partial => "shared/data_table", :locals => {
+	:table_id => verification-dataTable,
+	:data_url => verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json)
+	:columns => [
+          ["HBX ID", "hbx_id"],
+          ["First name", "first_name"],
+          ["Last name", "last_name"],
+          ["Documents", "documents"],
+          ["Due date", "due_date"],
+	  ["Status", "review_status"],
+	  ["Review", "review"],
+	  ["FedHub", "fed_hub"]
+	]
+} %>
 </div>
-
-<script type="text/javascript" charset="utf-8">
-  $(document).ready(function() {
-    $('#verification-dataTable').DataTable( {
-      "processing": true,
-      "serverSide": true,
-      "ordering" : false,
-      "ajax": {
-        url: "<%= verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json) %>",
-        type: "GET"
-      }
-    } );
-  });
-</script>
