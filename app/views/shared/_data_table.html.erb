@@ -1,22 +1,104 @@
-<table class="table table-striped" id="<%= table_id %>">
-</table>
+<% if nav_tabs.present? %>
+<ul class="nav nav-tabs">
+  <% nav_tabs.each do |nav_tab, url, request_type| %>
+  <li if  role="presentation"><%= link_to "#{nav_tab}", "#{url}", remote: request_type %></li>
+  <% end %>
+</ul>
+<% end %>
+<% if bulk_actions.present? %>
+<div class="dropdown hidden">
+  <button aria-expanded="true" aria-haspopup="true" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="<%= table_id %>-bulk-actions" type="button">
+    Bulk Actions
+    <span class="caret"></span>
+  </button>
+  <ul aria-labelledby="<%= table_id %>-bulk-actions" class="dropdown-menu">
+    <% bulk_actions.each do |bulk_action, url, request_type | %>
+    <li><%= link_to "#{bulk_action}", "#{url}", remote: request_type %></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
+<table class="table table-striped" id="<%= table_id %>"></table>
 
-<script type="text/javascript" charset="utf-8" defer="defer">
-  $(document).ready(function() {
-  $('#<%= table_id %>').EnrollDataTable( {
+<script charset="utf-8" defer="defer" type="text/javascript">
+  $(document).ready(function () {
+    $('#<%= table_id %>').EnrollDataTable({
       "processing": true,
       "serverSide": true,
-      "ordering" : false,
+      "ordering": <%= ordering || false %>,
+      "paging": <%= pagination || false %>,
+      "info": <%= info || false %>,
       "ajax": {
         url: "<%= data_url %>",
-        type: "GET"
+        type: "POST"
       },
-      "columns" : [
+      'order': [
+        [1, 'asc']
+      ],
+      "columns": [
+        <% if checkboxes == true %>
+          <% columns.unshift(["","checkbox_column"])%>
+        <% end %>
+        <% if row_functions == true %>
+          <% columns << (["","row_functions"])%>
+        <% end %>
         <% column_count = columns.length %>
-	<% columns.each_with_index do |col, idx| %>
-	  {title: "<%= j col.first %>", data: "<%= col.last %>" }<%= (idx < (column_count - 1)) ? "," : ""  %>
-	<% end %>
+        <% columns.each_with_index do |col, idx| %> {
+          title: "<%= j col.first %>",
+          data: "<%= col.last %>"
+        }
+        <%= (idx < (column_count - 1)) ? "," : ""  %>
+        <% end %>
       ]
-    } );
-  });
+      <% if checkboxes == true && row_functions == true %>,
+      'columnDefs': [
+        {
+          'targets': 0,
+          'searchable': false,
+          'orderable': false,
+          'className': 'dt-body-center',
+          'render': function (data, type, full, meta) {
+            return '<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '"><label><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>';
+          }
+        }, {
+          'targets': <%= columns.length - 1 %>,
+          'searchable': false,
+          'orderable': false,
+          'className': 'dt-body-center',
+          'render': function (data, type, full, meta) {
+            return '<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '"><label><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>';
+          }
+        }
+      ]
+      <% elsif checkboxes == true %>, 'columnDefs': [
+        {
+          'targets': 0,
+          'searchable': false,
+          'orderable': false,
+          'className': 'dt-body-center',
+          'render': function (data, type, full, meta) {
+            return '<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '"><label><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>';
+          }
+        }
+      ]
+        <% elsif row_functions == true %>, 'columnDefs': [
+          {
+          'targets': <%= columns.length - 1 %>,
+          'searchable': false,
+          'orderable': false,
+          'className': 'dt-body-center',
+          'render': function (data, type, full, meta) {
+            return '<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '"><label><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>';
+          }
+        }
+      ]
+        <% end %>
+      });
+    });
+    <% if checkboxes == true %>
+      EnrollDataTableInitializer.addSelectAll('<%= table_id %>');
+    <% end %>
+    <% if bulk_actions.present? %>
+      EnrollDataTableInitializer.addBulkActions('<%= table_id %>');
+    <% end %>
 </script>

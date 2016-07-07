@@ -1,0 +1,24 @@
+var EnrollDataTableInitializer = ( function( window, undefined ) {
+
+  function addSelectAll(table_id) {
+    var $table = $('#'+table_id);
+    var $select_all = $table.closest('.module').find('.select-all');
+    $select_all.html('<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" name="id[]" value=""><label><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span><span>Select All</span>')
+  }
+
+  function addBulkActions(table_id) {
+    var $table = $('#'+table_id);
+    var $select_all = $table.closest('.module').find('.select-all');
+    $select_all.on('click', function() {
+      var $dropdown = $('#'+table_id+'-bulk-actions').closest('.dropdown').detach();
+      $select_all.after($dropdown);
+      $dropdown.removeClass('hidden');
+    });
+  }
+
+  return {
+    addSelectAll : addSelectAll,
+    addBulkActions : addBulkActions
+  };
+
+} )( window );
