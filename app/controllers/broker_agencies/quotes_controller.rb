@@ -43,7 +43,8 @@ class BrokerAgencies::QuotesController < ApplicationController
         :quote_name => q.quote_name,
         :family_count => q.quote_households.count,
         :benefit_group_count => q.quote_benefit_groups.count,
-        :quote_state => q.aasm_state
+        :quote_state => q.aasm_state,
+        :quote_roster => (view_context.link_to "View/Edit", edit_broker_agencies_quote_path(q.id))
 
       }
     }
@@ -139,17 +140,30 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     # Create place holder for a new household and new member for the roster
     qhh = QuoteHousehold.new
+
+    # Increment family id
+    qhh.family_id = @quote.quote_households.max(:family_id).to_i + 1
+
     qm = QuoteMember.new
     qhh.quote_members << qm
     @quote.quote_households << qhh
+
+    binding.pry
   end
 
   def new
-    @quote = Quote.new
-    qhh = QuoteHousehold.new
-    qm = QuoteMember.new
-    qhh.quote_members << qm
-    @quote.quote_households << qhh
+    quote = Quote.new
+
+    # Build Default Quote Benefit Group
+    qbg = QuoteBenefitGroup.new
+    qbg.build_relationship_benefits
+    quote.quote_benefit_groups << qbg
+
+    # Assign new quote to current broker
+    quote.broker_role_id= current_user.person(:try).broker_role.id
+
+    quote.save(validate: false)
+    redirect_to edit_broker_agencies_quote_path(quote.id)
   end
 
   def update
