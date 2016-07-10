@@ -148,7 +148,6 @@ class BrokerAgencies::QuotesController < ApplicationController
     qhh.quote_members << qm
     @quote.quote_households << qhh
 
-    binding.pry
   end
 
   def new
@@ -169,8 +168,10 @@ class BrokerAgencies::QuotesController < ApplicationController
   def update
     @quote = Quote.find(params[:id])
 
+
     sanitize_quote_roster_params
 
+    # update current attributs then insert new ones. Both can't be done at the same time.
     update_params = quote_params
     insert_params = quote_params
 
@@ -426,11 +427,26 @@ private
 
 
 
- def sanitize_quote_roster_params
-   params[:quote][:quote_households_attributes].each do |key, fid|
-     params[:quote][:quote_households_attributes].delete(key) if fid['family_id'].blank?
-   end
- end
+  def sanitize_quote_roster_params
+
+    params[:quote][:quote_households_attributes].each do |key, fid|
+      delete_family_key = 1
+      #if params[:quote][:quote_households_attributes][key][:id].nil?
+      #  params[:quote][:quote_households_attributes].delete(key)
+      unless params[:quote][:quote_households_attributes][key][:quote_members_attributes].nil?
+          params[:quote][:quote_households_attributes][key][:quote_members_attributes].each do |k, mid|
+            if mid['dob'].blank?
+                params[:quote][:quote_households_attributes][key][:quote_members_attributes].delete(k)
+            else
+              delete_family_key = 0
+            end
+          end
+          params[:quote][:quote_households_attributes].delete(key) if delete_family_key == 1
+      else
+        params[:quote][:quote_households_attributes].delete(key)
+      end
+    end
+  end
 
   def employee_roster_group_by_family_id
     params[:employee_roster].inject({}) do  |new_hash,e|
