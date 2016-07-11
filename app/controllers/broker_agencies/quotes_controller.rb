@@ -134,19 +134,48 @@ class BrokerAgencies::QuotesController < ApplicationController
     render partial: 'dental_cost_comparison', layout: false
   end
 
+  def add_family
+    @qhh = Quote.all.first.quote_households.first
+    @quote = Quote.find(@qhh.quote)
+    respond_to do |format|
+      format.js
+    end
+  end
+
   def edit
     #find quote to edit
     @quote = Quote.find(params[:id])
 
+    max_family_id = @quote.quote_households.max(:family_id).to_i
+
+    unless params[:duplicate_household].blank? && params[:num_of_dup].blank?
+      dup_household = @quote.quote_households.find(params[:duplicate_household]).dup
+      dup_household.quote_members.each do |qhm|
+        qhm.dob = nil
+        qhm.first_name = ""
+        qhm.last_name = ""
+      end
+      for i in 0..params[:num_of_dup].to_i
+        temp_household = dup_household.dup
+        max_family_id = max_family_id + 1
+        temp_household.family_id = max_family_id
+
+        @quote.quote_households << temp_household
+      end
+    end
+
     # Create place holder for a new household and new member for the roster
     qhh = QuoteHousehold.new
 
-    # Increment family id
-    qhh.family_id = @quote.quote_households.max(:family_id).to_i + 1
+    # Increment family id so the new place holder contains max + 1
+    qhh.family_id = max_family_id + 1
 
+    # Create place holder for new member of household
     qm = QuoteMember.new
     qhh.quote_members << qm
     @quote.quote_households << qhh
+
+    #redirect_to edit_broker_agencies_quote_path(@quote.id)
 
   end
 
@@ -168,7 +197,6 @@ class BrokerAgencies::QuotesController < ApplicationController
   def update
     @quote = Quote.find(params[:id])
 
-
     sanitize_quote_roster_params
 
     # update current attributs then insert new ones. Both can't be done at the same time.
@@ -181,7 +209,8 @@ class BrokerAgencies::QuotesController < ApplicationController
     if (@quote.update_attributes(update_params) && @quote.update_attributes(insert_params))
       redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :notice => "Successfully updated the employee roster" }
     else
-      render "edit" , :flash => {:error => "Unable to update the employee roster" }
+      #render "edit" , :flash => {:error => "Unable to update the employee roster" }
+      redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :error => "Unable to update the employee roster" }
     end
   end
 
@@ -431,8 +460,6 @@ private
 
     params[:quote][:quote_households_attributes].each do |key, fid|
       delete_family_key = 1
-      #if params[:quote][:quote_households_attributes][key][:id].nil?
-      #  params[:quote][:quote_households_attributes].delete(key)
       unless params[:quote][:quote_households_attributes][key][:quote_members_attributes].nil?
           params[:quote][:quote_households_attributes][key][:quote_members_attributes].each do |k, mid|
             if mid['dob'].blank?
