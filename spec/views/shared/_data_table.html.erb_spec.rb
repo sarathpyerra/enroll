@@ -38,7 +38,7 @@ describe "shared/_data_table.html.erb" do
       		['Export CSV', 'url', 'request_type'],
       		['Print', 'url', 'request_type']
       	],
-        child_rows: true,
+        child_rows: [true, "datatables/child_row"],
         responsive: true,
       	checkboxes: true,
       	pagination: true,
@@ -149,7 +149,7 @@ describe "shared/_data_table.html.erb" do
       		['Export CSV', 'url', 'request_type'],
       		['Print', 'url', 'request_type']
       	],
-        child_rows: false,
+        child_rows: [false, "datatables/child_row"],
         responsive: false,
       	checkboxes: false,
       	pagination: false,
