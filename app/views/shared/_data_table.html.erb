@@ -159,9 +159,9 @@
         ]
       <% end %>
       });
-      <% if child_rows == true %>
+      <% if child_rows[0] == true %>
         function format ( d ) {
-          return '<%= j render("datatables/child_row", columns_count: column_count) %>';
+          return '<%= j render("#{child_rows[1]}", columns_count: column_count) %>';
         }
         $('#<%= table_id %>').on('click', 'tr', function () {
           var tr = $(this).closest('tr');

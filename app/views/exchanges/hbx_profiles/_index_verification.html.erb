@@ -2,27 +2,28 @@
   <%= render partial: "shared/data_table", locals:  {
     page_header:  ["Verifications", "url", ""],
     directions:  "",
-  	new_button:  ["Add Verification", "url", "request_type"],
+    # new_button:  ["Add Verification", "url", "request_type"],
+  	new_button:  [],
 	  filters:  [
-  		["all", "", true, []],
-  		["some", "", true, [
-  			["COBRA", "url", "request_type"],
-  			["Termed", "url", "request_type"],
-  			["Corn", "url", "request_type"]
-  		]],
-  		["the best ones", "", false, []],
-      ["Dad", "", true, [
-        ["ZZZ", "url", "request_type"],
-  			["Apples", "url", "request_type"],
-  			["Corn", "url", "request_type"]
-        ]
-      ]
+  		# ["all", "", true, []],
+  		# ["some", "", true, [
+  		# 	["COBRA", "url", "request_type"],
+  		# 	["Termed", "url", "request_type"],
+  		# 	["Corn", "url", "request_type"]
+  		# ]],
+  		# ["the best ones", "", false, []],
+      # ["Dad", "", true, [
+      #   ["ZZZ", "url", "request_type"],
+  		# 	["Apples", "url", "request_type"],
+  		# 	["Corn", "url", "request_type"]
+      #   ]
+      # ]
   	],
   	bulk_actions:  [
   		["Send Secure Message", "", true],
   		["Delete", "", false]
   	],
-  	row_functions:  true,
+  	row_functions:  false,
   	row_actions:  [
   		["asterisk", "url", "request_type", "tooltip"],
   		["bomb", "url", "request_type", "tooltip"],
@@ -31,12 +32,12 @@
       ["caret-down", "url", "request_type", "View Details"]
   	],
   	buttons_below_table:  [
-  		['Export CSV', 'url', 'request_type'],
-  		['Print', 'url', 'request_type']
+  		# ['Export CSV', 'url', 'request_type'],
+  		# ['Print', 'url', 'request_type']
   	],
-    child_rows:  true,
+    child_rows:  [false, "datatables/child_row"],
     responsive:  true,
-  	checkboxes:  true,
+  	checkboxes:  false,
   	pagination:  true,
   	ordering:  false,
   	info:  true,
