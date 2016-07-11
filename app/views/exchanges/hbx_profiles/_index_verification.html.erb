@@ -1,55 +1,56 @@
 <div class="module">
-  <%= render :partial => "shared/data_table", :locals => {
-	:page_header => ["Verifications", "url", ""],
-  :directions => "Use this table to review verification documents.",
-	:new_button => ["Add Verification", "url", "request_type"],
-	:filters => [
-		["all", "", true, []],
-		["some", "", true, [
-			["COBRA", "url", "request_type"],
-			["Termed", "url", "request_type"],
-			["Corn", "url", "request_type"]
-		]],
-		["the best ones", "", false, []],
-    ["Dad", "", true, [
-      ["ZZZ", "url", "request_type"],
-			["Apples", "url", "request_type"],
-			["Corn", "url", "request_type"]
+  <%= render partial: "shared/data_table", locals:  {
+    page_header:  ["Verifications", "url", ""],
+    directions:  "",
+  	new_button:  ["Add Verification", "url", "request_type"],
+	  filters:  [
+  		["all", "", true, []],
+  		["some", "", true, [
+  			["COBRA", "url", "request_type"],
+  			["Termed", "url", "request_type"],
+  			["Corn", "url", "request_type"]
+  		]],
+  		["the best ones", "", false, []],
+      ["Dad", "", true, [
+        ["ZZZ", "url", "request_type"],
+  			["Apples", "url", "request_type"],
+  			["Corn", "url", "request_type"]
+        ]
       ]
-    ]
-	],
-	:bulk_actions => [
-		["Send Secure Message", "", true],
-		["Delete", "", false]
-	],
-	:row_functions => true,
-	:row_actions => [
-		["asterisk", "url", "request_type", "tooltip"],
-		["bomb", "url", "request_type", "tooltip"],
-		["asterisk", "url", "request_type", "tooltip"],
-		["bomb", "url", "request_type", "tooltip"]
-	],
-	:buttons_below_table => [
-		['Export CSV', 'url', 'request_type'],
-		['Print', 'url', 'request_type']
-	],
-  :child_rows => true,
-  :responsive => true,
-	:checkboxes => true,
-	:pagination => true,
-	:ordering => false,
-	:info => true,
-	:table_id => "verification-dataTable",
-	:data_url => verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json),
-	:columns => [
-    ["HBX ID", "hbx_id"],
-    ["First name", "first_name"],
-    ["Last name", "last_name"],
-    ["Documents", "documents"],
-    ["Due date", "due_date"],
-	  ["Status", "review_status"],
-	  ["Review", "review"],
-	  ["FedHub", "fed_hub"]
-	]
-} %>
+  	],
+  	bulk_actions:  [
+  		["Send Secure Message", "", true],
+  		["Delete", "", false]
+  	],
+  	row_functions:  true,
+  	row_actions:  [
+  		["asterisk", "url", "request_type", "tooltip"],
+  		["bomb", "url", "request_type", "tooltip"],
+  		["asterisk", "url", "request_type", "tooltip"],
+  		["bomb", "url", "request_type", "tooltip"],
+      ["caret-down", "url", "request_type", "View Details"]
+  	],
+  	buttons_below_table:  [
+  		['Export CSV', 'url', 'request_type'],
+  		['Print', 'url', 'request_type']
+  	],
+    child_rows:  true,
+    responsive:  true,
+  	checkboxes:  true,
+  	pagination:  true,
+  	ordering:  false,
+  	info:  true,
+  	table_id:  "verification-dataTable",
+  	data_url:  verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json),
+  	columns:  [
+      ["HBX ID", "hbx_id"],
+      ["First name", "first_name"],
+      ["Last name", "last_name"],
+      ["Documents", "documents"],
+      ["Due date", "due_date"],
+  	  ["Status", "review_status"],
+  	  ["Review", "review"],
+  	  ["FedHub", "fed_hub"]
+  	]
+  } %>
 </div>
