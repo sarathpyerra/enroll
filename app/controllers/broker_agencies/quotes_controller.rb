@@ -40,9 +40,10 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     @payload = quotes.map { |q|
       {
-        :quote_name => q.quote_name,
+        :quote_name => (view_context.link_to q.quote_name, broker_agencies_quote_path(q.id)),
         :family_count => q.quote_households.count,
         :benefit_group_count => q.quote_benefit_groups.count,
+        :claim_code => q.claim_code,
         :quote_state => q.aasm_state,
         :quote_roster => (view_context.link_to "View/Edit", edit_broker_agencies_quote_path(q.id))
 

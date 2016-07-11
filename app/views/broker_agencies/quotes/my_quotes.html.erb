@@ -34,6 +34,7 @@
         <th>Quote Name</th>
         <th>Family Count</th>
         <th>Benefit Group Count</th>
+        <th>Claim Code</th>
         <th>State</th>
         <th>Roster</th>
       </tr>
@@ -43,7 +44,7 @@
     </table>
 
 
-      <table class="table">
+      <!--<table class="table">
         <thead
         <tr>
           <th>Quote Action!!</th>
@@ -74,7 +75,7 @@
         </tr>
         <% end %>
       </tbody>
-    </table>
+    </table>-->
 
 
     <%=link_to "New Quote" , new_broker_agencies_quote_path , method: :get, class: "btn btn-default", id: "new_quote"%>
@@ -102,6 +103,7 @@
         { data: 'quote_name' },
         { data: 'family_count'},
         { data: 'benefit_group_count'},
+        { data: 'claim_code'},
         { data: 'quote_state'},
         { data: 'quote_roster'}
     ]
