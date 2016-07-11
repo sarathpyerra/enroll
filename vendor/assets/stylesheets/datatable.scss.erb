@@ -65,18 +65,33 @@
   display: inline;
   font-size: 14px;
   > label {
+    margin-bottom: 0;
     width: 8.75%;
-    min-width: 55px;
+    min-width: 60px;
+    padding-left: 5%;
     .selectric {
       background-color: transparent !important;
+      height: auto;
+      p.label {
+        padding: 0;
+        margin-bottom: 0;
+      }
+      b.button {
+        top: 4px;
+      }
+      p.label, b.button {
+        line-height: 1;
+        height: auto;
+      }
     }
   }
 }
 .dataTables_length {
   background-color: $primary-white;
-  margin: 0 1.25%;
+  margin: 0 2.5%;
   padding: 0.675%;
   border-radius: 4px;
+  width: 100%;
 }
 .dataTables_filter {
   input {
