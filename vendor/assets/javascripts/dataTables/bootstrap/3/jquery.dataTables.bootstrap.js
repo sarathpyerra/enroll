@@ -46,9 +46,9 @@ var DataTable = $.fn.dataTable;
 /* Set the defaults for DataTables initialisation */
 $.extend( true, DataTable.defaults, {
 	dom:
-		"<'vertically-aligned-row'<'select-all'><'table-length'l><'search text-right'f>>"+
+		"<'vertically-aligned-row header'<'select-all vertically-aligned-row'><'table-length hidden'l><'search text-right'f>>"+
 		"t"+
-		"<'row'<'col-xs-12'i><'col-xs-12'p>>",
+		"<'footer'<'select-all vertically-aligned-row'><'vertically-aligned-row'i><'col-xs-12'p>>",
 	renderer: 'bootstrap'
 } );
 

@@ -1,13 +1,49 @@
-<% if nav_tabs.present? %>
-<ul class="nav nav-tabs">
-  <% nav_tabs.each do |nav_tab, url, request_type| %>
-  <li if  role="presentation"><%= link_to "#{nav_tab}", "#{url}", remote: request_type %></li>
+<% if page_header.present? %>
+<div class="datatable datatable-header vertically-aligned-row">
+  <div>
+    <div>
+    <% if page_header[2] == 'admin' %>
+        <h3><%=page_header[0]%></h3>
+      <% else %>
+          <h1 class="darkblue no-buffer">
+            <%=page_header[0]%>
+          </h1>
+      <% end %>
+    <% end %>
+    </div>
+  </div>
+  <div class="col-xs-3">
+    <div class="row">
+      <%= link_to new_button[0], new_button[1], remote: new_button[2], class: 'btn btn-primary btn-block' %>
+    </div>
+  </div>
+</div>
+<% if directions.present? %>
+  <h4><%= directions %></h4>
+  <br/>
+<% end %>
+<% if filters.present? %>
+<div>
+<div class="btn-group first-level" role="group" aria-label="...">
+  <% filters.each do |filter, url, request_type, second_level| %>
+    <% if second_level.present? %>
+        <div class="btn-group btn-group-second <%=filter%>-second-level hidden">
+      <% second_level.each do |filter, url, request_type| %>
+        <%= link_to "#{filter}", "#{url}", remote: request_type, class: 'second-level btn btn-default', name: "#{filter}" %>
+      <% end %>
+    </div>
+    <%= link_to "#{filter}", "javascript:;", class: 'second-level btn btn-default', onclick: 'EnrollDataTableInitializer.showSecondLevel($(this))', name: "#{filter}" %>
+
+    <% else %>
+      <%= link_to "#{filter}", "#{url}", remote: request_type, class: 'btn btn-default' %>
+    <% end %>
   <% end %>
-</ul>
+</div>
+</div>
 <% end %>
 <% if bulk_actions.present? %>
 <div class="dropdown hidden">
-  <button aria-expanded="true" aria-haspopup="true" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="<%= table_id %>-bulk-actions" type="button">
+  <button aria-expanded="true" aria-haspopup="true" class="btn btn-default dropdown-toggle disabled" data-toggle="dropdown" id="<%= table_id %>-bulk-actions" type="button">
     Bulk Actions
     <span class="caret"></span>
   </button>
@@ -18,11 +54,17 @@
   </ul>
 </div>
 <% end %>
-<table class="table table-striped" id="<%= table_id %>"></table>
-
+<table class="table table-striped table-condensed panel panel-default" id="<%= table_id %>"></table>
+<% if buttons_below_table.present? %>
+  <span class="buttons-below-table hidden">
+    <% buttons_below_table.each do |button, url, request_type | %>
+        <%= link_to button, url, remote: request_type, class: 'btn btn-default' %>
+    <% end %>
+  </span>
+<% end %>
 <script charset="utf-8" defer="defer" type="text/javascript">
   $(document).ready(function () {
-    $('#<%= table_id %>').EnrollDataTable({
+    var enroll_datatable = $('#<%= table_id %>').EnrollDataTable({
       "processing": true,
       "serverSide": true,
       "ordering": <%= ordering || false %>,
@@ -35,6 +77,31 @@
       'order': [
         [1, 'asc']
       ],
+      "initComplete": function() {
+        <% if responsive == true %>
+          EnrollDataTableInitializer.makeResponsiveTable('<%= table_id %>');
+        <% end %>
+        <% if filters.present? %>
+          EnrollDataTableInitializer.initializeFilters('<%= table_id %>');
+        <% end %>
+        <% if checkboxes == true %>
+          EnrollDataTableInitializer.addSelectAll('<%= table_id %>');
+        <% end %>
+        <% if bulk_actions.present? %>
+          EnrollDataTableInitializer.addBulkActions('<%= table_id %>');
+        <% end %>
+        <% if buttons_below_table.present? %>
+          EnrollDataTableInitializer.addButtonsBelowTable('<%= table_id %>');
+        <% end %>
+        <% if info == true %>
+          EnrollDataTableInitializer.moveInfo('<%= table_id %>');
+        <% end %>
+        <% if pagination == true %>
+          EnrollDataTableInitializer.showPagination('<%= table_id %>');
+        <% end %>
+        EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
+
+      },
       "columns": [
         <% if checkboxes == true %>
           <% columns.unshift(["","checkbox_column"])%>
@@ -64,9 +131,9 @@
           'targets': <%= columns.length - 1 %>,
           'searchable': false,
           'orderable': false,
-          'className': 'dt-body-center',
+          'className': 'row-actions',
           'render': function (data, type, full, meta) {
-            return '<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '"><label><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>';
+            return '<% row_actions.each do |fa_icon, url, request_type, tooltip| %><span><%= link_to j("<i class='fa fa-#{fa_icon}' aria-hidden='true'></i>".html_safe), "#{url}", remote: request_type, title: "#{tooltip}", data: {'toggle': 'tooltip'} %></span>&#10;<% end %>';
           }
         }
       ]
@@ -86,19 +153,36 @@
           'targets': <%= columns.length - 1 %>,
           'searchable': false,
           'orderable': false,
-          'className': 'dt-body-center',
+          'className': 'row-actions',
           'render': function (data, type, full, meta) {
-            return '<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '"><label><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>';
+            return '<% row_actions.each do |fa_icon, url, request_type, tooltip| %><span><%= link_to j("<i class='fa fa-#{fa_icon}' aria-hidden='true'></i>".html_safe), "#{url}", remote: request_type, title: "#{tooltip}", data: {'toggle': 'tooltip'} %></span>&#10;<% end %>';
           }
         }
       ]
         <% end %>
+
+
       });
-    });
-    <% if checkboxes == true %>
-      EnrollDataTableInitializer.addSelectAll('<%= table_id %>');
-    <% end %>
-    <% if bulk_actions.present? %>
-      EnrollDataTableInitializer.addBulkActions('<%= table_id %>');
-    <% end %>
+
+        <% if child_rows == true %>
+          function format ( d ) {
+            return '<%= j render("datatables/child_row", columns_count: column_count) %>';
+          }
+          $('#<%= table_id %>').on('click', 'tr', function () {
+            var tr = $(this).closest('tr');
+            var row = enroll_datatable.row( tr );
+
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child( format(row.data()) ).show();
+                tr.addClass('shown');
+            }
+          });
+      <% end %>
+  });
 </script>

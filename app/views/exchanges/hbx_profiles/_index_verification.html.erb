@@ -1,18 +1,43 @@
 <div class="module">
-<%= render :partial => "shared/data_table", :locals => {
-	:nav_tabs => [
-		["all", "", true],
-		["some", "", true],
-		["the best ones", "", false]
+  <%= render :partial => "shared/data_table", :locals => {
+	:page_header => ["Verifications", "url", ""],
+  :directions => "Use this table to review verification documents.",
+	:new_button => ["Add Verification", "url", "request_type"],
+	:filters => [
+		["all", "", true, []],
+		["some", "", true, [
+			["COBRA", "url", "request_type"],
+			["Termed", "url", "request_type"],
+			["Corn", "url", "request_type"]
+		]],
+		["the best ones", "", false, []],
+    ["Dad", "", true, [
+      ["ZZZ", "url", "request_type"],
+			["Apples", "url", "request_type"],
+			["Corn", "url", "request_type"]
+      ]
+    ]
 	],
 	:bulk_actions => [
 		["Send Secure Message", "", true],
 		["Delete", "", false]
 	],
 	:row_functions => true,
+	:row_actions => [
+		["asterisk", "url", "request_type", "tooltip"],
+		["bomb", "url", "request_type", "tooltip"],
+		["asterisk", "url", "request_type", "tooltip"],
+		["bomb", "url", "request_type", "tooltip"]
+	],
+	:buttons_below_table => [
+		['Export CSV', 'url', 'request_type'],
+		['Print', 'url', 'request_type']
+	],
+  :child_rows => true,
+  :responsive => true,
 	:checkboxes => true,
 	:pagination => true,
-	:ordering => true,
+	:ordering => false,
 	:info => true,
 	:table_id => "verification-dataTable",
 	:data_url => verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json),
