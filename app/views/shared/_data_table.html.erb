@@ -98,6 +98,9 @@
         <% if pagination == true %>
           EnrollDataTableInitializer.showPagination('<%= table_id %>');
         <% end %>
+        <% if row_actions.present? %>
+          Freebies.popover();
+        <% end %>
         EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
       },
       "columns": [
@@ -131,7 +134,7 @@
             'orderable': false,
             'className': 'row-actions',
             'render': function (data, type, full, meta) {
-              return '<% row_actions.each do |fa_icon, url, request_type, tooltip| %><span><%= link_to j("<i class='fa fa-#{fa_icon}' aria-hidden='true'></i>".html_safe), "#{url}", remote: request_type, title: "#{tooltip}", data: {'toggle': 'tooltip'} %></span>&#10;<% end %>';
+              return '<% row_actions.each do |fa_icon, url, request_type, tooltip, popover_title, popover,| %><% if popover.present? %><span title="<%= popover_title %>" data-toggle="popover" data-placement="top" data-html="true" data-content=\'<% popover.each do |popover_link| %><%= link_to "#{popover_link[0]}", "#{popover_link[1]}", remote: "#{popover_link[2]}" %><br/><% end %>\'><%="<i class=\"fa fa-#{fa_icon}\" data-toggle=\"tooltip\" title=\"#{popover_title}\" aria-hidden=\"true\"></i>".html_safe %></span><% else %><span><%= link_to j("<i class='fa fa-#{fa_icon}' aria-hidden='true'></i>".html_safe), "#{url}", remote: request_type, title: "#{tooltip}", data: {'toggle': 'tooltip'} %></span>&#10;<% end %><% end %>';
             }
           }
         ]
