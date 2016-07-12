@@ -33,8 +33,8 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       $table.closest('.module').find('.header').find('.dropdown').after($table_length);
     } else {
       $table.closest('.module').find('.header').find('.select-all').prepend($table_length);
-      $table.closest('.module').find('.table-length').css({'white-space': 'nowrap'});
     }
+    $table.closest('.module').find('.table-length').css({'white-space': 'nowrap'});
     $table_length.wrap('<div class="title-parenthesis"></div>')
     $table_length.closest('.title-parenthesis').parent().addClass('vertically-aligned-row');
     $table_length.closest('div').prepend("( Showing");
