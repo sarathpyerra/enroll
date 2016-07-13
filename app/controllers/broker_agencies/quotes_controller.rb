@@ -46,6 +46,8 @@ class BrokerAgencies::QuotesController < ApplicationController
       @records_filtered = quotes.count
     end
 
+    quotes = quotes.skip(dt_query.skip).limit(dt_query.take)
+
     @payload = quotes.map { |q|
       {
         :quote_name => (view_context.link_to q.quote_name, broker_agencies_quote_path(q.id)),
@@ -54,7 +56,7 @@ class BrokerAgencies::QuotesController < ApplicationController
         :claim_code => q.claim_code,
         :quote_state => q.aasm_state,
         :quote_roster => (view_context.link_to "View/Edit", edit_broker_agencies_quote_path(q.id)),
-        :quote_delete => '<button type="button" onclick="delete_quote_handler" id="close_button" data-quote-id="' + q.id + '" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+        :quote_delete => ('<button type="button" onclick="delete_quote_handler" id="close_button" data-quote-id="' + q.id + '" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>').html_safe
 
       }
     }
