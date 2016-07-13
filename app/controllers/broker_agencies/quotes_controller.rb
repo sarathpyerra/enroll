@@ -340,8 +340,9 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def update_benefits
-    q = Quote.find(params['id'])
-    benefits = params['benefits']
+    #q = Quote.find(params[:quote_id]) OLD - To be Removed
+    q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
+    benefits = params[:benefits]
     q.quote_relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
     render json: {}
   end

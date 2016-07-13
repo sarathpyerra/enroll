@@ -25,7 +25,8 @@ function set_relationship_pct(relationship, val) {
   $("[name~='" + relationship + "']").val(val)
   $.ajax({
     type: 'POST',
-    data: {benefits: window.relationship_benefits, id: $('#quote option:selected').val() },
+    //data: {benefits: window.relationship_benefits, id: $('#quote option:selected').val() }, OLD - To be removed
+    data: {benefits: window.relationship_benefits, quote_id: $('#quote_id').val(), benefit_id: $('#benefit_group_select option:selected').val() },
     url: '/broker_agencies/quotes/update_benefits.js',
   })
   set_plan_costs()
@@ -148,8 +149,8 @@ function slider_listeners () {
         return 'Contribution Percentage: ' + value + '%';
       }
     });
-    
-    
+
+
     $('#ex1').on('slideStop', function(){deductible_value = this.value;
       toggle_plans([]);
       reset_selected_plans();
