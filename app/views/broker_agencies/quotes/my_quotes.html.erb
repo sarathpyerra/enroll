@@ -63,7 +63,7 @@
   $("#Quote-index-dataTable").dataTable().fnDestroy();
   // datatables setup
   $(document).ready(function() {
-    $('#Quote-index-dataTable').DataTable( {
+    var dt = $('#Quote-index-dataTable').DataTable( {
       "processing": true,
       "serverSide": true,
       "ordering" : false,
@@ -77,8 +77,11 @@
           console.log('Quote Index Datatable');
         }
       },
+      /*"columnDefs": [
+        { className: "dt-right", "targets": [ 0 ] }
+      ],*/
       "columns": [
-        { data: 'quote_name' },
+        { data: 'quote_name', className: "dt-right" },
         { data: 'family_count'},
         { data: 'benefit_group_count'},
         { data: 'claim_code'},
@@ -88,12 +91,27 @@
     ]
     });
 
+    $('#Quote-index-dataTable').on('click', 'tr', function () {
+      var tr = $(this).closest('tr');
+      var row = dt.row( tr );
+      if ( row.child.isShown() ) {
+        row.child.hide();
+        tr.removeClass('shown');
+      }
+      else {
+        row.child( "<div>Benefit Group 1</div><div>Benefit Group 2</div>" ).show();
+        tr.addClass('shown');
+      }
+    });
+
   });
 
   $('#Quote-index-dataTable').on( 'draw.dt', function () {
     console.log( 'Redraw occurred at: '+new Date().getTime() );
     $("button#close_button").click(delete_quote_handler);
   } );
+
+
 
 
   var delete_quote_handler = function(){
@@ -111,7 +129,6 @@
     $(this).parent().parent().remove();
     event.preventDefault();
   };
-
 
 
 </script>
