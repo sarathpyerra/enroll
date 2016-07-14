@@ -39,7 +39,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table_length.closest('.title-parenthesis').parent().addClass('vertically-aligned-row');
     $table_length.closest('div').prepend("( Showing");
     $table_length.removeClass('hidden');
-    $table_length.closest('div').append($('h1.darkblue').text()+" )");
+    $table_length.closest('div').append("per page )");
   }
 
   function initializeFilters(table_id) {
@@ -122,6 +122,21 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $buttons_below_table.removeClass('hidden');
   }
 
+  function swapSearchAndNewButton(table_id) {
+    findTable(table_id);
+    var $search = $table.closest('.module').find('.search input').detach();
+    var $new_button = $table.closest('.module').find('.datatable-header').find('.btn').closest('.col-xs-3').detach();
+    $table.closest('.module').find('.header').append($new_button);
+    $search.removeClass('form-control');
+    $table.closest('.module').find('.datatable-header').append($search);
+    $search.wrap('<div class="search text-right"></div>');
+    $table.closest('.module').find('.datatable-header .search').prepend('<label>Search&nbsp;</label>')
+    $new_button.removeClass('hidden');
+    $search.removeClass('hidden');
+
+
+  }
+
   return {
     moveInfo : moveInfo,
     moveTableLength : moveTableLength,
@@ -131,7 +146,8 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     addBulkActions : addBulkActions,
     addButtonsBelowTable : addButtonsBelowTable,
     showPagination : showPagination,
-    makeResponsiveTable : makeResponsiveTable
+    makeResponsiveTable : makeResponsiveTable,
+    swapSearchAndNewButton : swapSearchAndNewButton
   };
 
 } )( window );

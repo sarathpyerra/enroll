@@ -11,7 +11,7 @@
     </div>
   <% end %>
   <% if new_button.present? %>
-    <div class="col-xs-3">
+    <div class="col-xs-3 hidden">
       <div class="row">
         <%= link_to new_button[0], new_button[1], remote: new_button[2], class: 'btn btn-primary btn-block' %>
       </div>
@@ -101,6 +101,7 @@
         <% if row_actions.present? %>
           Freebies.popover();
         <% end %>
+        EnrollDataTableInitializer.swapSearchAndNewButton('<%= table_id %>');
         EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
       },
       "columns": [
