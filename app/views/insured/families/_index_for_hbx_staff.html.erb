@@ -24,7 +24,8 @@
       # ['Export CSV', 'url', 'request_type'],
       # ['Print', 'url', 'request_type']
     ],
-    child_rows:  [false, "datatables/child_row"],
+    child_rows:  [true, "datatables/child_row"],
+    destroy: false,
     responsive:  true,
     checkboxes:  true,
     pagination:  true,
@@ -33,14 +34,14 @@
     table_id: "family-dataTable",
     data_url:families_index_datatable_exchanges_hbx_profiles_path(:format => :json),
     columns:  [
-      ["Name", "name"],
-      ["SSN", "ssn"],
-      ["DOB", "dob"],
-      ["HBX ID", "hbx_id"],
-      ["Family Count", "family_ct"],
-      ["Registered?", "registered"],
-      ["Consumer?", "consumer"],
-      ["Employee?", "employee"]
-    ]
+      ["Name", "name", "", [false, ""]],
+      ["SSN", "ssn", "", [false, ""]],
+      ["DOB", "dob", "", [false, ""]],
+      ["HBX ID", "hbx_id", "", [false, ""]],
+      ["Family Count", "family_ct", "", [false, ""]],
+  	  ["Registered?", "registered", "", [false, ""]],
+  	  ["Consumer?", "consumer", "", [false, ""]],
+  	  ["Employee?", "employee", "", [false, ""]]
+  	]
   } %>
 </div>
