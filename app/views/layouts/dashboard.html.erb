@@ -39,7 +39,19 @@
           <ul class="nav nav-sidebar">
             <li><%= link_to 'Home', '#' %></li>
             <li class="<%= 'active' if params[:action] == 'key_indicators' %>"><%= link_to 'Key Indicators', key_indicators_dashboards_path %></li>
-            <li class="<%= 'active' if params[:action] == 'weekly_reports' %>"><%= link_to 'Weekly Reports', weekly_reports_dashboards_path %></li>
+            <li class="<%= 'active' if params[:action] == 'weekly_reports' %>"><%= link_to 'Weekly Reports', weekly_reports_dashboards_path %>
+              <ul class="nav">
+                <li class="<%= 'active' if params[:action] == 'covered_lives' %>">
+                  <%= link_to 'Covered Lives',  %>
+                </li>
+                <li class="<%= 'active' if params[:action] == 'policies' %>">
+                  <%= link_to 'Policies',  %>
+                </li>
+                <li class="<%= 'active' if params[:action] == 'eligibility' %>">
+                  <%= link_to 'Eligibility',  %>
+                </li>
+              </ul>
+            </li>
             <li>
               <%= link_to 'Plan Management', "#" %>
               <ul class="nav">
