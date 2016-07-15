@@ -29,8 +29,12 @@ class QuoteBenefitGroup
   field :highest_cost_plan_id, type: BSON::ObjectId
 
   field :published_reference_plan, type: BSON::ObjectId
+  field :published_lowest_cost_plan, type: BSON::ObjectId
+  field :published_highest_cost_plan, type: BSON::ObjectId
 
   associated_with_one :plan, :published_reference_plan, "Plan"
+  associated_with_one :plan, :published_lowest_cost_plan, "Plan"
+  associated_with_one :plan, :published_highest_cost_plan, "Plan"
 
   embeds_many :quote_relationship_benefits, cascade_callbacks: true
 
