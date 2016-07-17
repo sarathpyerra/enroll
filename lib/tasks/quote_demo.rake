@@ -19,11 +19,12 @@ namespace :quote_demo do
 
     puts "::: Clear Existing Demo Data :::"
 
-
+    broker_role_id = BrokerRole.find_by_npn("1234567").id
     BrokerRole.find_by_npn("1234567").try(:destroy)
     Person.where("first_name" => "Quote", "last_name" => "Demo").first.try(:destroy)
     User.by_email("quote.demo@dc.gov").try(:destroy)
     Organization.where("fein" => "000777000").try(:destroy)
+    Quote.where("broker_role_id"=> broker_role_id).try(:destroy)
 
     puts "Broker for Demo Deleted"
   end
@@ -71,6 +72,7 @@ namespace :quote_demo do
     def gen_quote (broker_id)
 
       q = Quote.new
+      q.claim_code = q.employer_claim_code
 
       q.broker_role_id = broker_id
       q.quote_name = "Demo Quote"
@@ -82,6 +84,9 @@ namespace :quote_demo do
       qbg.plan_option_kind = "single_carrier"
       qbg.title = "Office Workers"
       qbg.build_relationship_benefits
+      qbg.published_reference_plan = BSON::ObjectId('5707c6dc3ec0ba4f4f00c7e3')
+      qbg.published_lowest_cost_plan = BSON::ObjectId('5707c6dc3ec0ba4f4f00c7e3')
+      qbg.published_highest_cost_plan = BSON::ObjectId('5707c6dc3ec0ba4f4f00c7e3')
 
       qbg.relationship_benefit_for("employee").premium_pct=(70)
       qbg.relationship_benefit_for("spouse").premium_pct=(50)
@@ -91,6 +96,10 @@ namespace :quote_demo do
       qbg1.plan_option_kind = "single_carrier"
       qbg1.title = "Outside Workers"
       qbg1.build_relationship_benefits
+      qbg1.published_reference_plan = BSON::ObjectId('5707c6e03ec0ba4f4f00e2a5')
+      qbg1.published_lowest_cost_plan = BSON::ObjectId('5707c6e03ec0ba4f4f00e2a5')
+      qbg1.published_highest_cost_plan = BSON::ObjectId('5707c6e03ec0ba4f4f00e2a5')
+
 
       qbg1.relationship_benefit_for("employee").premium_pct=(80)
       qbg1.relationship_benefit_for("spouse").premium_pct=(65)
@@ -165,6 +174,7 @@ namespace :quote_demo do
 
 
       q = Quote.new
+      q.claim_code = q.employer_claim_code
 
       q.broker_role_id = broker_id
       q.quote_name = "Yet another quote"

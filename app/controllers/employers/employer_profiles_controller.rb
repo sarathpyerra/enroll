@@ -29,30 +29,35 @@ class Employers::EmployerProfilesController < Employers::EmployersController
       py.open_enrollment_start_on = TimeKeeper.date_of_record
       py.open_enrollment_end_on = (TimeKeeper.date_of_record + 1.month).beginning_of_month + 9.days
       py.fte_count = quote.quote_households.map(&:quote_members).inject(:+).count # get count of quote_members
-      bg = py.benefit_groups.build
-      bg.plan_option_kind =  quote.plan_option_kind
-      bg.title = "Imported from Quote: " + quote.quote_name
-      bg.description = "Linked from claim code " + claim_code
 
-      bg.lowest_cost_plan_id = quote.published_lowest_cost_plan
-      bg.reference_plan_id = quote.published_reference_plan
-      bg.highest_cost_plan_id = quote.published_highest_cost_plan
-      bg.elected_plan_ids.push(quote.published_reference_plan)
+      quote.quote_benefit_groups.each do |qbg|
+        bg = py.benefit_groups.build
+        bg.plan_option_kind =  qbg.plan_option_kind
+        bg.title = qbg.title
+        bg.description = "Linked from claim code " + claim_code
 
-      bg.relationship_benefits = quote.quote_relationship_benefits.map{|x| x.attributes.slice(:offered,:relationship, :premium_pct)} #<< {"offered"=>false, "relationship"=>"child_offered_26", "premium_pct"=>0.0}
+        bg.lowest_cost_plan_id = qbg.published_lowest_cost_plan
+        bg.reference_plan_id = qbg.published_reference_plan
+        bg.highest_cost_plan_id = qbg.published_highest_cost_plan
+        bg.elected_plan_ids.push(qbg.published_reference_plan)
 
+        bg.relationship_benefits = qbg.quote_relationship_benefits.map{|x| x.attributes.slice(:offered,:relationship, :premium_pct)}
+        binding.pry
+      end
+
+      binding.pry
 
       if py.save
-        quote.quote_households.each do |qhh|
-          if qhh.employee?
-              quote_employee = qhh.employee
-              ce = CensusEmployee.new("employer_profile_id" => @employer_profile.id, "first_name" => quote_employee.first_name, "last_name" => quote_employee.last_name, "dob" => quote_employee.dob, "hired_on" => TimeKeeper.date_of_record)
-
-              ce.find_or_create_benefit_group_assignment(bg)
-
-              ce.save(:validate => false)
-          end
-        end
+        # quote.quote_households.each do |qhh|
+        #   if qhh.employee?
+        #       quote_employee = qhh.employee
+        #       ce = CensusEmployee.new("employer_profile_id" => @employer_profile.id, "first_name" => quote_employee.first_name, "last_name" => quote_employee.last_name, "dob" => quote_employee.dob)
+        #
+        #       ce.find_or_create_benefit_group_assignment(bg)
+        #
+        #       ce.save(:validate => false)
+        #   end
+        # end
         flash[:notice] = 'Code claimed with success. Your Plan Year has been created.'
       else
         flash[:error] = 'An issue occured while processing your request.'
