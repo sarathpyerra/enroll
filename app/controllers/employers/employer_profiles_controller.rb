@@ -42,10 +42,7 @@ class Employers::EmployerProfilesController < Employers::EmployersController
         bg.elected_plan_ids.push(qbg.published_reference_plan)
 
         bg.relationship_benefits = qbg.quote_relationship_benefits.map{|x| x.attributes.slice(:offered,:relationship, :premium_pct)}
-        binding.pry
       end
-
-      binding.pry
 
       if py.save
         # quote.quote_households.each do |qhh|
