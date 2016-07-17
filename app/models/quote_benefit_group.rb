@@ -40,10 +40,17 @@ class QuoteBenefitGroup
 
   field :criteria_for_ui, type: String, default: []
 
+  delegate :start_on, to: :quote
+  delegate :quote_name, to: :quote
+  delegate :aasm_state, to: :quote
   #embeds_many :quote_dental_relationship_benefits, cascade_callbacks: true
 
   def dental_relationship_benefit_for(relationship)
     quote_relationship_benefits.where(relationship: relationship).first
+  end
+
+  def quote_households
+    quote.quote_households.select{|hh| hh.quote_benefit_group_id == self.id}
   end
 
   def relationship_benefit_for(relationship)
@@ -121,7 +128,7 @@ class QuoteBenefitGroup
   def flat_roster_for_premiums
     p = $quote_shop_health_plans[0]  #any plan
     combined_family = Hash.new{|h,k| h[k] = 0}
-    quote.quote_households.each do |hh|
+    self.quote_households.each do |hh|
       pcd = PlanCostDecoratorQuote.new(p, hh, self, p)
       pcd.add_members(combined_family)
     end
@@ -132,7 +139,7 @@ class QuoteBenefitGroup
     p = Plan.find(plan_id)
     reference_plan = Plan.find(reference_plan_id)
     cost = 0
-    quote.quote_households.each do |hh|
+    self.quote_households.each do |hh|
       pcd = PlanCostDecorator.new(p, hh, self, reference_plan)
       cost = cost + pcd.total_employer_contribution.round(2)
     end
@@ -174,5 +181,8 @@ class QuoteBenefitGroup
       end
   end
 
+  def published_employer_cost
+    plan && roster_employer_contribution(plan.id, plan.id)
+  end
 
 end

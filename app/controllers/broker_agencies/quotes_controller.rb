@@ -66,38 +66,34 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def show #index (old index)
-
     @q = Quote.find(params[:id])
-    @quotes = @q.quote_benefit_groups#Quote.where("broker_role_id" => current_user.person.broker_role.id, "aasm_state" => "draft")
-    @all_quotes = @q.quote_benefit_groups
-    #TODO fix this antipattern, make mongo field default, look at hbx_slug pattern?
-    #@all_quotes.each{|q|q.update_attributes(claim_code: q.employer_claim_code) if q.claim_code==''}
+    @benefit_groups = @q.quote_benefit_groups
+    @quote_on_page = (params[:benefit_group_id] && @q.quote_benefit_groups.find(params[:benefit_group_id])) || @benefit_groups.first
+
     active_year = Date.today.year
     @coverage_kind = "health"
+
     @health_plans = $quote_shop_health_plans
-
-    @dental_plans = $quote_shop_dental_plans
-    @dental_plans_count = @dental_plans.count
-
     @health_selectors = $quote_shop_health_selectors
     @health_plan_quote_criteria  = $quote_shop_health_plan_features.to_json
 
     @dental_selectors = $quote_shop_dental_selectors
+    @dental_plans = $quote_shop_dental_plans
+    @dental_plans_count = @dental_plans.count
+
     dental_plan_quote_criteria  = $quote_shop_dental_plan_features.to_json
+
     @bp_hash = {'employee':50, 'spouse': 0, 'domestic_partner': 0, 'child_under_26': 0, 'child_26_and_over': 0}
-    @q =  Quote.find(params[:quote]).quote_relationship_benefits.first if !params[:quote].nil?
-    @quote_on_page = @q.quote_benefit_groups.first || @all_quotes.first
-    @quote_criteria = []
-    unless @quote_on_page.nil?
-      @quote_on_page.quote_relationship_benefits.each{|bp| @bp_hash[bp.relationship] = bp.premium_pct}
-      roster_premiums = @quote_on_page.roster_cost_all_plans
-      @roster_premiums_json = roster_premiums.to_json
-      dental_roster_premiums =  @quote_on_page.roster_cost_all_plans('dental')
-      @dental_roster_premiums = dental_roster_premiums.to_json
-      #TODOJF
-      @quote_criteria = @quote_on_page.criteria_for_ui
-    end
     @benefit_pcts_json = @bp_hash.to_json
+    @quote_criteria = []
+
+    @quote_on_page.quote_relationship_benefits.each{|bp| @bp_hash[bp.relationship] = bp.premium_pct}
+    roster_premiums = @quote_on_page.roster_cost_all_plans
+    @roster_premiums_json = roster_premiums.to_json
+    dental_roster_premiums =  @quote_on_page.roster_cost_all_plans('dental')
+    @dental_roster_premiums = dental_roster_premiums.to_json
+    @quote_criteria = @quote_on_page.criteria_for_ui
+
     #temp stuff until publish is fixed
     @quote = @quote_on_page
     @plan = @quote && @quote.plan
@@ -111,7 +107,8 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def health_cost_comparison
-      @q =  Quote.find(params[:quote])
+      #@q =  Quote.find(params[:quote])
+      @q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id]) # NEW
       @quote_results = Hash.new
       @quote_results_summary = Hash.new
       @health_plans = $quote_shop_health_plans
@@ -348,22 +345,32 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def get_quote_info
+
     bp_hash = {}
-    q =  Quote.find(params[:quote])
+    #q =  Quote.find(params[:quote
+    q = Quote.find(params[:quote_id])
+    benefit_groups = q.quote_benefit_groups
+    bg = (params[:benefit_group_id] && q.quote_benefit_groups.find(params[:benefit_group_id])) || benefit_groups.first
+
     summary = {name: q.quote_name,
      status: q.aasm_state.capitalize,
-     plan_name: q.plan && q.plan.name || 'None',
-     dental_plan_name: q.dental_plan && q.dental_plan.name || 'None',
+     plan_name: bg.plan && bg.plan.name || 'None',
+     dental_plan_name: "bg.dental_plan && bg.dental_plan.name" || 'None',
    }
-    q.quote_relationship_benefits.each{|bp| bp_hash[bp.relationship] = bp.premium_pct}
-    render json: {'relationship_benefits' => bp_hash, 'roster_premiums' => q.roster_cost_all_plans, 'criteria' => JSON.parse(q.criteria_for_ui), summary: summary}
+    bg.quote_relationship_benefits.each{|bp| bp_hash[bp.relationship] = bp.premium_pct}
+    render json: {'relationship_benefits' => bp_hash, 'roster_premiums' => bg.roster_cost_all_plans, 'criteria' => JSON.parse(bg.criteria_for_ui), summary: summary}
   end
 
   def publish
-    @quote = Quote.find(params[:quote_id])
+    @q = Quote.find(params[:quote_id])
+    @benefit_groups = @q.quote_benefit_groups
+    @quote = (params[:benefit_group_id] && @q.quote_benefit_groups.find(params[:benefit_group_id])) || @benefit_groups.first
+    #@quote = Quote.find(params[:quote_id])
+
     if params[:plan_id]
       @plan = Plan.find(params[:plan_id][8,100])
       @elected_plan_choice = ['na', 'Single Plan', 'Single Carrier', 'Metal Level'][params[:elected].to_i]
+
       @quote.plan = @plan
       @quote.plan_option_kind = @elected_plan_choice
       @roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds($quote_shop_health_plans,

@@ -74,7 +74,8 @@ class BrokerAgencies::QuoteBenefitGroupsController < ApplicationController
   end
 
   def health_cost_comparison
-      @q =  Quote.find(params[:quote])
+      #@q =  Quote.find(params[:quote])
+      @q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id]) # NEW
       @quote_results = Hash.new
       @quote_results_summary = Hash.new
       @health_plans = $quote_shop_health_plans

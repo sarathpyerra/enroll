@@ -1,24 +1,32 @@
-function inject_quote(quote_id, plan_id, elected, cost) {
+function inject_quote(quote_id, benefit_group_id, plan_id, elected, cost) {
+    console.log('jinect', quote_id, benefit_group_id)
     $.ajax({
       type: "GET",
       url: "/broker_agencies/quotes/publish",
-      data: {quote_id: quote_id, plan_id: plan_id, elected: elected, cost: cost},
+      data: {quote_id: quote_id,
+             benefit_group_id: benefit_group_id,
+             plan_id: plan_id,
+             elected: elected,
+             cost: cost},
       success: function(response){
         $('#publish-quote').html(response);
       }
     })    
 }
 function load_quote_listeners() {
+    console.log('looad')
     $('.publish td').on('click', function(){
         td = $(this)
-        quote_id=$('#quote').val()
+        quote_id=$('#quote_id').val()
         plan_id=td.parent().attr('id')
+        benefit_group_id = $('#benefit_group_select').val()
         elected=td.index()
         cost = td.html()
-        inject_quote(quote_id, plan_id, elected, cost)
+        console.log(cost, cost.text)
+        inject_quote(quote_id, benefit_group_id, plan_id, elected, cost)
         $.ajax({
           type: 'GET',
-          data: {quote: quote_id},
+          data: {quote_id: quote_id},
           url: '/broker_agencies/quotes/get_quote_info.js'
         }).done(function(response){
           set_quote_toolbar(response['summary'])
@@ -32,11 +40,13 @@ function set_quote_toolbar(summary) {
   $('#quote-plan-name').html(summary['plan_name'])
   $('#quote-dental-plan-name').html(summary['dental_plan_name'])
 }
-function quote_change(quote_id){
+function quote_change(quote_id, benefit_group_id){
+       console.log('also', quote_id, benefit_group_id )
+       console.log('change',$("#quote_id").val())
        if(quote_id == 'No quote'){return}
         $.ajax({
           type: 'GET',
-          data: {quote: quote_id},
+          data: {quote_id: quote_id, benefit_group_id: benefit_group_id},
           url: '/broker_agencies/quotes/get_quote_info.js'
         }).done(function(response){
             window.relationship_benefits = response['relationship_benefits']
@@ -44,7 +54,7 @@ function quote_change(quote_id){
             turn_off_criteria()
             toggle_plans(response['criteria'])
             set_plan_costs()
-            inject_quote(quote_id)
+            inject_quote(quote_id, benefit_group_id)
             page_load_listeners()
             set_quote_toolbar(response['summary'])
             slider_listeners()

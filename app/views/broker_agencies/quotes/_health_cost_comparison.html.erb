@@ -2,7 +2,7 @@
   <h2>Quote Employer Cost Comparison Results</h2>
 
   <p>Your results are based on your quote <strong><%= @q.quote_name %></strong> effective on <strong><%= @q.start_on %></strong></p>
-
+  <p> Here are the costs for Benefit Group <strong><%= @q.title %></strong> </p>
   <p>The following employer percentage contributions were used for calculation of cost:</p>
   <ul>
     <% @q.quote_relationship_benefits.each do |qrb|
