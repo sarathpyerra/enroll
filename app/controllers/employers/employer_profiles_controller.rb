@@ -14,11 +14,9 @@ class Employers::EmployerProfilesController < Employers::EmployersController
 
   def link_from_quote
 
-    #sample code gp33-ewcn
-
     claim_code = params[:claim_code].upcase
 
-    quote = Quote.where("claim_code" => /#{claim_code}/i).first
+    quote = Quote.where("claim_code" => claim_code).first
 
     # Perform quote link if claim_code is valid
     if quote.present?
@@ -50,22 +48,24 @@ class Employers::EmployerProfilesController < Employers::EmployersController
       end
 
       if py.save
-        quote.quote_households.each do |qhh|
-          qhh_employee = qhh.employee
-          if qhh_employee.present?
-              quote_employee = qhh.employee
-              ce = CensusEmployee.new("employer_profile_id" => @employer_profile.id, "first_name" => quote_employee.first_name, "last_name" => quote_employee.last_name, "dob" => quote_employee.dob, "hired_on" => py.start_on)
-              ce.find_or_create_benefit_group_assignment(py.benefit_groups.find(benefit_group_mapping[qhh.quote_benefit_group_id.to_s].to_s))
+        if params[:import_roster] == "yes"
+          quote.quote_households.each do |qhh|
+            qhh_employee = qhh.employee
+            if qhh_employee.present?
+                quote_employee = qhh.employee
+                ce = CensusEmployee.new("employer_profile_id" => @employer_profile.id, "first_name" => quote_employee.first_name, "last_name" => quote_employee.last_name, "dob" => quote_employee.dob, "hired_on" => py.start_on)
+                ce.find_or_create_benefit_group_assignment(py.benefit_groups.find(benefit_group_mapping[qhh.quote_benefit_group_id.to_s].to_s))
 
-              qhh.dependents.each do |qhh_dependent|
-                ce.census_dependents << CensusDependent.new(
-                  last_name: qhh_dependent.last_name, first_name: qhh_dependent.first_name, dob: qhh_dependent.dob, employee_relationship: qhh_dependent.employee_relationship
-                  )
-              end
-              ce.save(:validate => false)
+                qhh.dependents.each do |qhh_dependent|
+                  ce.census_dependents << CensusDependent.new(
+                    last_name: qhh_dependent.last_name, first_name: qhh_dependent.first_name, dob: qhh_dependent.dob, employee_relationship: qhh_dependent.employee_relationship
+                    )
+                end
+                ce.save(:validate => false)
+            end
           end
+          flash[:notice] = 'Code claimed with success. Your Plan Year has been created.'
         end
-        flash[:notice] = 'Code claimed with success. Your Plan Year has been created.'
       else
         flash[:error] = 'An issue occured while processing your request.'
       end
