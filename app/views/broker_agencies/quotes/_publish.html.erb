@@ -169,10 +169,10 @@
       </div>
       <br>
       <p>**Actual costs may vary.</p>
-        <%= render :partial => "quote_publish_button" , :locals => { :quote => @quote, :plan => @plan, :elected_plan_choice => @elected_plan_choice } %>
+        <%= render :partial => "quote_publish_button" , :locals => { :quote => @q, :plan => @plan, :elected_plan_choice => @elected_plan_choice } %>
       <h4> Employer Claim Code: &nbsp;<b><%=@quote.quote.claim_code%></b></h4>
       <br>
-      <%= link_to 'Download PDF' , publish_broker_agencies_quotes_path(:format => :pdf,:quote_id => @quote.id) , class: "btn btn-default" , :target => "_blank " %> <br>
+      <%= link_to 'Download PDF' , publish_broker_agencies_quotes_path(:format => :pdf,:quote_id => @q.id) , class: "btn btn-default" , :target => "_blank " %> <br>
     </div>
   </div>
 </div>
