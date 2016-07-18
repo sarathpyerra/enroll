@@ -1,0 +1,51 @@
+
+
+<div id="report" style: "height:400px"> </div>
+
+
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('#report').highcharts({
+      chart: {
+        type: 'bar'
+      },
+      title: {
+        text: ""
+      },
+      subtitle: {
+        text: ''
+      },
+      xAxis: [{
+        categories: ['2014','2015','2016'],
+        labels: {
+          step: 1
+        }
+      }],
+      yAxis: {
+        title: {
+          text: null
+        },
+        labels: {
+           overflow: 'justify'
+        }
+      },
+      tooltip: {
+        formatter: function () {
+          return '<b>' + this.series.name + ', plan: ' + this.point.category + '</b><br/>' +
+            "<%= '$' if @unit == '$' %>" + this.point.y + "<%= '%' if @unit == '%' %>";
+        }
+      },
+      series: [{
+            name: 'Year 2014',
+            data: [107, 31, 635]
+        }, {
+            name: 'Year 2015',
+            data: [133, 156, 947]
+        }, {
+            name: 'Year 2016',
+            data: [1052, 954, 4250]
+        }]
+    });
+  });
+</script>
