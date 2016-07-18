@@ -1,22 +1,22 @@
 <div class="module">
   <%= render partial: "shared/data_table", locals:  {
     page_header:  ["Verifications", ""],
-    directions:  "",
-    new_button:  [],
+    directions:  "Use this table to review verifications.",
+    new_button:  ["New Verification", "", ""],
 	  filters:  [
-  		# ["all", "", true, []],
-  		# ["some", "", true, [
-  		# 	["COBRA", "url", "request_type"],
-  		# 	["Termed", "url", "request_type"],
-  		# 	["Corn", "url", "request_type"]
-  		# ]],
-  		# ["the best ones", "", false, []],
-      # ["Dad", "", true, [
-      #   ["ZZZ", "url", "request_type"],
-  		# 	["Apples", "url", "request_type"],
-  		# 	["Corn", "url", "request_type"]
-      #   ]
-      # ]
+  		["all", "", true, []],
+  		["some", "", true, [
+  			["COBRA", "url", "request_type"],
+  			["Termed", "url", "request_type"],
+  			["Corn", "url", "request_type"]
+  		]],
+  		["the best ones", "", false, []],
+      ["Dad", "", true, [
+        ["ZZZ", "url", "request_type"],
+  			["Apples", "url", "request_type"],
+  			["Corn", "url", "request_type"]
+        ]
+      ]
   	],
   	bulk_actions:  [
   		["Send Secure Message", "", true],
@@ -39,8 +39,9 @@
   		['Print', 'url', 'request_type']
   	],
     child_rows:  [false, "datatables/child_row"],
+    destroy: false,
     responsive:  true,
-  	checkboxes:  false,
+  	checkboxes:  true,
   	pagination:  true,
   	ordering:  false,
   	info:  true,
