@@ -14,7 +14,16 @@ module ReportSources
     field :market_coverage, type: String
     field :market, type: String
     field :is_standard_plan, type: Boolean, default: false
-    field :carrier_profile_id, type: BSON::ObjectId
-    field :policy_purchased_at, type: DateTime
+    field :policy_purchased_on, type: DateTime
+    field :members_count, type: Integer
+
+
+    def self.lives_count_by_market(market="individual")
+      collection.aggregate([ 
+        {'$match': {market: 'individual'}},
+        {'$match': {plan_active_year: {"$ne" => nil}}},
+        {'$group': {_id:{year: '$plan_active_year'}, count: {'$sum':1}}} 
+        ]).entries
+    end
   end
 end

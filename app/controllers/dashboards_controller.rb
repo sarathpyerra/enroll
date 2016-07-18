@@ -156,6 +156,10 @@ class DashboardsController < ApplicationController
     end
   end
 
+  def covered_lives
+    @reports = ReportSources::PolicyStatistic.lives_count_by_market
+  end
+
   private
   def init_plan_data
     @plan_hash = {

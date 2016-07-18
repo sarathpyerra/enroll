@@ -1,3 +1,4 @@
+# NOT using at the moment -- SY jul/15/2016
 module ReportSources
   class PolicyMemberStatistic
   	include Mongoid::Document
@@ -11,3 +12,7 @@ module ReportSources
   	field :last_name , type: String
   end
 end
+
+
+    
+

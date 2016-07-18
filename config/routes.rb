@@ -1,11 +1,15 @@
 Rails.application.routes.draw do
 
   resources :dashboards do
-    get :plan_comparison, on: :collection
-    get :key_indicators, on: :collection
-    get :plan_visit_type, on: :collection
-    get :weekly_reports, on: :collection
-    get :comparison_over_multiple_years, on: :collection
+    collection do 
+      get :plan_comparison
+      get :plan_visit_type
+      get :key_indicators
+      get :plan_visit_type
+      get :weekly_reports
+      get :comparison_over_multiple_years
+      get :covered_lives
+    end
   end
 
   devise_for :users, :controllers => { :registrations => "users/registrations", :sessions => 'users/sessions' }
