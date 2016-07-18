@@ -2,6 +2,10 @@
   <div class="row" class="col-md-12">
     <h1>Quote/Roster Management</h1>
 
+    <div class="text-right">
+      <%=link_to "New Quote" , new_broker_agencies_quote_path , method: :get, class: "btn btn-primary", id: "new_quote"%>
+    </div>
+    
     <table class="table table-striped" id="Quote-index-dataTable">
       <thead>
       <tr>
@@ -52,8 +56,6 @@
       </tbody>
     </table>-->
 
-
-    <%=link_to "New Quote" , new_broker_agencies_quote_path , method: :get, class: "btn btn-default", id: "new_quote"%>
 
   </div>
 </div>
