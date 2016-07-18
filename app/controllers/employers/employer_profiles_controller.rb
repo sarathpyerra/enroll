@@ -16,9 +16,9 @@ class Employers::EmployerProfilesController < Employers::EmployersController
 
     #sample code gp33-ewcn
 
-    claim_code = params[:claim_code]
+    claim_code = params[:claim_code].upcase
 
-    quote = Quote.where("claim_code" => claim_code).first
+    quote = Quote.where("claim_code" => /#{claim_code}/i).first
 
     # Perform quote link if claim_code is valid
     if quote.present?
@@ -30,31 +30,41 @@ class Employers::EmployerProfilesController < Employers::EmployersController
       py.open_enrollment_end_on = (TimeKeeper.date_of_record + 1.month).beginning_of_month + 9.days
       py.fte_count = quote.quote_households.map(&:quote_members).inject(:+).count # get count of quote_members
 
+      benefit_group_mapping = Hash.new
+
       quote.quote_benefit_groups.each do |qbg|
         bg = py.benefit_groups.build
         bg.plan_option_kind =  qbg.plan_option_kind
         bg.title = qbg.title
         bg.description = "Linked from claim code " + claim_code
 
+        benefit_group_mapping[qbg.id.to_s] = bg.id
+
         bg.lowest_cost_plan_id = qbg.published_lowest_cost_plan
         bg.reference_plan_id = qbg.published_reference_plan
         bg.highest_cost_plan_id = qbg.published_highest_cost_plan
         bg.elected_plan_ids.push(qbg.published_reference_plan)
 
+
         bg.relationship_benefits = qbg.quote_relationship_benefits.map{|x| x.attributes.slice(:offered,:relationship, :premium_pct)}
       end
 
       if py.save
-        # quote.quote_households.each do |qhh|
-        #   if qhh.employee?
-        #       quote_employee = qhh.employee
-        #       ce = CensusEmployee.new("employer_profile_id" => @employer_profile.id, "first_name" => quote_employee.first_name, "last_name" => quote_employee.last_name, "dob" => quote_employee.dob)
-        #
-        #       ce.find_or_create_benefit_group_assignment(bg)
-        #
-        #       ce.save(:validate => false)
-        #   end
-        # end
+        quote.quote_households.each do |qhh|
+          qhh_employee = qhh.employee
+          if qhh_employee.present?
+              quote_employee = qhh.employee
+              ce = CensusEmployee.new("employer_profile_id" => @employer_profile.id, "first_name" => quote_employee.first_name, "last_name" => quote_employee.last_name, "dob" => quote_employee.dob, "hired_on" => py.start_on)
+              ce.find_or_create_benefit_group_assignment(py.benefit_groups.find(benefit_group_mapping[qhh.quote_benefit_group_id.to_s].to_s))
+
+              qhh.dependents.each do |qhh_dependent|
+                ce.census_dependents << CensusDependent.new(
+                  last_name: qhh_dependent.last_name, first_name: qhh_dependent.first_name, dob: qhh_dependent.dob, employee_relationship: qhh_dependent.employee_relationship
+                  )
+              end
+              ce.save(:validate => false)
+          end
+        end
         flash[:notice] = 'Code claimed with success. Your Plan Year has been created.'
       else
         flash[:error] = 'An issue occured while processing your request.'

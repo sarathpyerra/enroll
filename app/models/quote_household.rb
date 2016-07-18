@@ -33,6 +33,10 @@ class QuoteHousehold
     quote_members.where("employee_relationship" => "employee").first
   end
 
+  def dependents
+    quote_members.ne("employee_relationship" => "employee")
+  end
+
   def assign_benefit_group_id
     puts "Assigining Benefit Group IDs"
     if quote_benefit_group_id.nil?

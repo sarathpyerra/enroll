@@ -45,6 +45,8 @@ class Quote
   # accepts_nested_attributes_for :quote_households
   accepts_nested_attributes_for :quote_households, reject_if: :all_blank
 
+  validates_uniqueness_of :claim_code, :case_sensitive => false
+
   # fields for state machine
   field :aasm_state, type: String
   field :aasm_state_date, type: Date
@@ -199,7 +201,7 @@ class Quote
   def generate_character
     ascii = rand(36) + 48
     ascii += 39 if ascii >= 58
-    ascii.chr
+    ascii.chr.upcase
   end
 
   def employer_claim_code

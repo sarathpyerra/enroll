@@ -84,9 +84,9 @@ namespace :quote_demo do
       qbg.plan_option_kind = "single_carrier"
       qbg.title = "Office Workers"
       qbg.build_relationship_benefits
-      qbg.published_reference_plan = BSON::ObjectId('5707c6dc3ec0ba4f4f00c7e3')
-      qbg.published_lowest_cost_plan = BSON::ObjectId('5707c6dc3ec0ba4f4f00c7e3')
-      qbg.published_highest_cost_plan = BSON::ObjectId('5707c6dc3ec0ba4f4f00c7e3')
+      qbg.published_reference_plan = BSON::ObjectId('5707c6d13ec0ba4f4f008f6d')
+      qbg.published_lowest_cost_plan = BSON::ObjectId('5707c6d13ec0ba4f4f008f6d')
+      qbg.published_highest_cost_plan = BSON::ObjectId('5707c6d13ec0ba4f4f008f6d')
 
       qbg.relationship_benefit_for("employee").premium_pct=(70)
       qbg.relationship_benefit_for("spouse").premium_pct=(50)
