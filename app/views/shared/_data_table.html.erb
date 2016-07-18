@@ -113,8 +113,9 @@
         <% end %>
         <% column_count = columns.length %>
         <% columns.each_with_index do |col, idx| %> {
-          title: "<%= j col.first %>",
-          data: "<%= j col.last %>"
+          title: "<%= j col[0] %>",
+          data: "<%= j col[1] %>",
+          className: "<%= j col[2] %>"
         }
         <%= (idx < (column_count - 1)) ? "," : ""  %>
         <% end %>
