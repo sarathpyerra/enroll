@@ -53,6 +53,8 @@ class Quote
 
   field :criteria_for_ui, type: String, default: []
 
+  index({ broker_role_id: 1 })
+
 
   def self.default_search_order
     [[:quote_name, 1]]

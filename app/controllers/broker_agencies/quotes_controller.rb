@@ -12,8 +12,8 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def publish_quote
-    @params = params.inspect
 
+    # TODO VARUN => Add more checks to publish and save
 
     if @quote.may_publish?
       @benefit_group = @quote.quote_benefit_groups.first
@@ -505,6 +505,7 @@ private
     @quote = Quote.find(params[:id])
   end
 
+  # TODO JIM Is this used anywhere?
   def find_benefit_group
     @benefit_group = QuoteBenefitGroup.find(params[:id])
   end

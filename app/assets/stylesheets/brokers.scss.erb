@@ -65,7 +65,7 @@ input[type=number]::-webkit-outer-spin-button {
       }
     }
 
-    /*.selectric {
+    .custom_selectric {
       background-color: #f5f5f5;
       background-image: -webkit-linear-gradient(#fff, #e6e6e6);
       background-image: -o-linear-gradient(#fff, #e6e6e6);
@@ -81,7 +81,25 @@ input[type=number]::-webkit-outer-spin-button {
       border-bottom-color: #b3b3b3;
       border-radius: 3px;
       position: relative;
-    }*/
+    }
+
+    .selectric {
+      background-color: #f5f5f5;
+      background-image: -webkit-linear-gradient(#fff, #e6e6e6);
+      background-image: -o-linear-gradient(#fff, #e6e6e6);
+      background-image: linear-gradient(#fff, #e6e6e6);
+      background-repeat: repeat-x;
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe6e6e6', GradientType=0);
+      border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+      border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+      *background-color: #e6e6e6;
+      filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+      border: 1px solid #cccccc;
+      *border: 0;
+      border-bottom-color: #b3b3b3;
+      border-radius: 3px;
+      position: relative;
+    }
 
     .mygrid-wrapper-div {
        overflow-x: scroll;
@@ -180,9 +198,10 @@ input[type=number]::-webkit-outer-spin-button {
           border-bottom: none;
         }
       }
+    }
 
     }
-    }
+
     .quote-benefit-group {
       .benefit-package {
         margin-bottom: 15px;

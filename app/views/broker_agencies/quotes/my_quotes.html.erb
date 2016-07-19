@@ -5,7 +5,7 @@
     <div class="text-right">
       <%=link_to "New Quote" , new_broker_agencies_quote_path , method: :get, class: "btn btn-primary", id: "new_quote"%>
     </div>
-    
+
     <table class="table table-striped" id="Quote-index-dataTable">
       <thead>
       <tr>
@@ -132,5 +132,6 @@
     event.preventDefault();
   };
 
+  disableSelectric = true;
 
 </script>
