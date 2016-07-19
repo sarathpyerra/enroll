@@ -16,10 +16,10 @@ class BrokerAgencies::QuotesController < ApplicationController
 
 
     if @quote.may_publish?
-
-      @quote.plan_option_kind = params[:plan_option_kind].gsub(' ','_').downcase
-      @quote.published_reference_plan = Plan.find(params[:reference_plan_id]).id
-      @quote.publish
+      @benefit_group = @quote.quote_benefit_groups.first
+      @benefit_group.plan_option_kind = params[:plan_option_kind].gsub(' ','_').downcase
+      @benefit_group.published_reference_plan = Plan.find(params[:reference_plan_id]).id
+      @quote.publish!
       @quote.save!
     end
 
@@ -364,39 +364,39 @@ class BrokerAgencies::QuotesController < ApplicationController
   def publish
     @q = Quote.find(params[:quote_id])
     @benefit_groups = @q.quote_benefit_groups
-    @quote = (params[:benefit_group_id] && @q.quote_benefit_groups.find(params[:benefit_group_id])) || @benefit_groups.first
+    @benefit_group = (params[:benefit_group_id] && @benefit_groups.find(params[:benefit_group_id])) || @benefit_groups.first
     #@quote = Quote.find(params[:quote_id])
 
     if params[:plan_id]
       @plan = Plan.find(params[:plan_id][8,100])
       @elected_plan_choice = ['na', 'Single Plan', 'Single Carrier', 'Metal Level'][params[:elected].to_i]
 
-      @quote.plan = @plan
-      @quote.plan_option_kind = @elected_plan_choice
+      @benefit_group.plan = @plan
+      @benefit_group.plan_option_kind = @elected_plan_choice
       @roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds($quote_shop_health_plans,
-        @quote.quote_relationship_benefits, @quote.roster_cost_all_plans)
+        @benefit_group.quote_relationship_benefits, @benefit_group.roster_cost_all_plans)
       case @elected_plan_choice
         when 'Single Carrier'
           @offering_param  = @plan.name
-          @quote.published_lowest_cost_plan = @roster_elected_plan_bounds[:carrier_low_plan][@plan.carrier_profile.abbrev]
-          @quote.published_highest_cost_plan = @roster_elected_plan_bounds[:carrier_high_plan][@plan.carrier_profile.abbrev]
+          @benefit_group.published_lowest_cost_plan = @roster_elected_plan_bounds[:carrier_low_plan][@plan.carrier_profile.abbrev]
+          @benefit_group.published_highest_cost_plan = @roster_elected_plan_bounds[:carrier_high_plan][@plan.carrier_profile.abbrev]
         when 'Metal Level'
           @offering_param  = @plan.metal_level.capitalize
-          @quote.published_lowest_cost_plan = @roster_elected_plan_bounds[:metal_low_plan][@plan.metal_level]
-          @quote.published_highest_cost_plan = @roster_elected_plan_bounds[:metal_high_plan][@plan.metal_level]
+          @benefit_group.published_lowest_cost_plan = @roster_elected_plan_bounds[:metal_low_plan][@plan.metal_level]
+          @benefit_group.published_highest_cost_plan = @roster_elected_plan_bounds[:metal_high_plan][@plan.metal_level]
         else
           @offering_param = ""
-          @quote.published_lowest_cost_plan = @plan
-          @quote.published_highest_cost_plan = @plan
+          @benefit_group.published_lowest_cost_plan = @plan
+          @benefit_group.published_highest_cost_plan = @plan
       end
-      @quote.save
+      @benefit_group.save
     else
-      @plan = @quote.plan
-      @elected_plan_choice = @quote.plan_option_kind
+      @plan = @benefit_group.plan
+      @elected_plan_choice = @benefit_group.plan_option_kind
     end
 
     if @plan
-      @plans_offered = @quote.cost_for_plans([@plan], @plan).sort_by { |k| [k["employer_cost"], k["employee_cost"]] }
+      @plans_offered = @benefit_group.cost_for_plans([@plan], @plan).sort_by { |k| [k["employer_cost"], k["employee_cost"]] }
     else
       @plans_offered = []
     end
@@ -426,7 +426,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def download_pdf
     @standard_plans = []
-    params[:plan_keys].each { |plan_key| @standard_plans << Plan.find(plan_key).hios_id }
+    params[:plans].each { |plan_key| @standard_plans << Plan.find(plan_key).hios_id }
     @qhps = []
     @standard_plans.each { |plan_id| @qhps << Products::QhpCostShareVariance
                                                             .find_qhp_cost_share_variances([plan_id], Date.today.year, "Health") }
@@ -503,6 +503,10 @@ private
 
   def find_quote
     @quote = Quote.find(params[:id])
+  end
+
+  def find_benefit_group
+    @benefit_group = QuoteBenefitGroup.find(params[:id])
   end
 
   # def parse_employee_roster_file

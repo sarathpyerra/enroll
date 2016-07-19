@@ -65,6 +65,7 @@
         <tr>
           <th></th>
           <% qhps.each do |qhp|%>
+           <% if qhp.plan.sbc_document.present? %>
             <th colspan="2">
               <div class="plan_comparison">
                 <% key, bucket = get_key_and_bucket(qhp.plan.sbc_document.identifier) %>
@@ -74,6 +75,7 @@
                                                   pdf&disposition=inline" %>
               </div>
             </th>
+            <%end%>
           <% end %>
         </tr>
     </table>

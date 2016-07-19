@@ -1,13 +1,13 @@
 <div class="module container broker_quote_tool published">
   <div class="row">
     <div class="col-md-12">
-      <%= draft_quote_header(@quote.aasm_state)%><br/>
+      <%= draft_quote_header(@q.aasm_state)%><br/>
 
-      <p>Quote: "<%=@quote.quote_name %>" effective <b><%=@quote.start_on %></b></p>
+      <p>Quote: "<%=@q.quote_name %>" effective <b><%=@q.start_on %></b></p>
 
       <p>Below is your Employer's Plan offering Spectrum. Your offerings are based on <%= @offering_param %> <%= @elected_plan_choice.titleize %>.</p>
 
-      <p>Costs are based on the roster associated with this quote of <b><%= @quote.quote_households.count %></b> families:</p>
+      <p>Costs are based on the roster associated with this quote of <b><%= @q.quote_households.count %></b> families:</p>
       <br>
       <div class="col-xs-12 table-responsive">
         <table class="table table-striped table-hover table-sm panel panel-default">
@@ -19,7 +19,7 @@
               <th>DOB</th>
             </tr>
           </thead>
-          <% @quote.quote_households.each do |house_hold| %>
+          <% @q.quote_households.each do |house_hold| %>
             <% house_hold.quote_members.each do |member|  %>
             <tr>
               <td><%=member.first_name%></td>
@@ -39,7 +39,7 @@
                 <section class="col-xs-10">
                   <header class="row">
                     <h3 class="title no-buffer">
-                      <%= @quote.quote_name %>
+                      <%= @q.quote_name %>
                     </h3>
                   </header>
                 </section>
@@ -56,7 +56,7 @@
               </div>
               <div class="col-md-offset-2">
                 <p>
-                 <%= @quote.start_on.strftime("%m/%d/%Y") %> - <%= (@quote.start_on.next_year - 1.day).strftime("%m/%d/%Y") %>
+                 <%= @q.start_on.strftime("%m/%d/%Y") %> - <%= (@q.start_on.next_year - 1.day).strftime("%m/%d/%Y") %>
                 </p>
               </div>
             </div>
@@ -121,7 +121,7 @@
                     <th>Offered</th>
                     <th>Employer Contribution</th>
                   </tr>
-                  <% @quote.quote_relationship_benefits.each do|rb| %>
+                  <% @benefit_group.quote_relationship_benefits.each do|rb| %>
                     <tr>
                       <td><%=raw("<i class='fa fa-check-square-o fa-lg'></i>")%><%=rb.relationship.humanize %></td>
                       <td>
@@ -140,7 +140,7 @@
                       <div class="col-xs-4">
                         <div class="row">
                           <span>Employer Estimated Maximum Monthly Cost</span>
-                          <h2><%= number_to_currency(@quote.published_employer_cost)%></h2>
+                          <h2><%= number_to_currency(@benefit_group.published_employer_cost)%></h2>
                         </div>
                       </div>
                       <div class="col-xs-8">
@@ -170,7 +170,7 @@
       <br>
       <p>**Actual costs may vary.</p>
         <%= render :partial => "quote_publish_button" , :locals => { :quote => @q, :plan => @plan, :elected_plan_choice => @elected_plan_choice } %>
-      <h4> Employer Claim Code: &nbsp;<b><%=@quote.quote.claim_code%></b></h4>
+      <h4> Employer Claim Code: &nbsp;<b><%=@benefit_group.quote.claim_code%></b></h4>
       <br>
       <%= link_to 'Download PDF' , publish_broker_agencies_quotes_path(:format => :pdf,:quote_id => @q.id) , class: "btn btn-default" , :target => "_blank " %> <br>
     </div>
