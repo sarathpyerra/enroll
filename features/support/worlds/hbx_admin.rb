@@ -16,5 +16,5 @@ end
 
 
 Given(/^I have logged in as an HBX\-Admin$/) do
-  login_as hbx_admin, scope: :user
+  login_as hbx_admin :with_family, :hbx_staff
 end
