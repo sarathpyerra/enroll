@@ -20,9 +20,13 @@ namespace :seed do
     		:policy_purchased_on => "data[:plan][:created_at][:$date]",
         :members_count => "data[:hbx_enrollment_members].count"
     	}
-      if load_data
+      if true
         cleanup
-        @json_data.each do |data|
+        File.readlines("db/seedfiles/sample_data1.json").each do |line|
+          line.chomp!
+          line.chomp!(",")
+          data = JSON.parse(line) rescue next
+        # @json_data.each do |data|
         	data.deep_symbolize_keys!
           # binding.pry
           params={}
@@ -38,8 +42,12 @@ namespace :seed do
 
     def load_data
       begin
-        json_file= File.read("db/seedfiles/sample_data1.json")
-        @json_data = JSON.parse(json_file)
+        # puts "reading file now **************"
+        # File.readlines("db/seedfiles/sample_data1.json").each do |line|
+        # puts "parsing file now **************"
+        # @json_data = JSON.parse(json_file)
+        # puts "parsed done **************"
+        # binding.pry
         return true  
       rescue Exception => e
         puts "Unable to load json file #{e}"

@@ -157,7 +157,7 @@ class DashboardsController < ApplicationController
   end
 
   def covered_lives
-    @reports = ReportSources::PolicyStatistic.lives_count_by_market
+    @reports = ReportSources::PolicyStatistic.report_lives_count_by_market
   end
 
   private

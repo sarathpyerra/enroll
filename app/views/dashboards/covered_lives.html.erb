@@ -17,7 +17,7 @@
         text: ''
       },
       xAxis: [{
-        categories: ['2014','2015','2016'],
+        categories: <%= raw @reports[0].to_json %>,
         labels: {
           step: 1
         }
@@ -32,20 +32,11 @@
       },
       tooltip: {
         formatter: function () {
-          return '<b>' + this.series.name + ', plan: ' + this.point.category + '</b><br/>' +
+          return '<b>' + this.series.name + '</b><br/>' +
             "<%= '$' if @unit == '$' %>" + this.point.y + "<%= '%' if @unit == '%' %>";
         }
       },
-      series: [{
-            name: 'Year 2014',
-            data: [107, 31, 635]
-        }, {
-            name: 'Year 2015',
-            data: [133, 156, 947]
-        }, {
-            name: 'Year 2016',
-            data: [1052, 954, 4250]
-        }]
+      series: <%=raw @reports[1].to_json %>
     });
   });
 </script>
