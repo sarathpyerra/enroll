@@ -56,6 +56,7 @@ class BrokerAgencies::QuotesController < ApplicationController
         :claim_code => q.claim_code,
         :quote_state => q.aasm_state,
         :quote_roster => (view_context.link_to "View/Edit", edit_broker_agencies_quote_path(q.id)),
+        :quote_download => quote_download_link(q),
         :quote_delete => ('<button type="button" onclick="delete_quote_handler" id="close_button" data-quote-id="' + q.id + '" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>').html_safe
 
       }
@@ -444,15 +445,19 @@ class BrokerAgencies::QuotesController < ApplicationController
 
 private
 
+  def quote_download_link(quote)
+    return quote.published? ? view_context.link_to("Download PDF" , publish_broker_agencies_quotes_path(:format => :pdf,:quote_id => quote.id)) : ""
+  end
+
   def employee_relationship_map
     @employee_relationship_map = {"employee" => "Employee", "spouse" => "Spouse", "domestic_partner" => "Domestic Partner", "child_under_26" => "Child"}
   end
 
- def get_standard_component_ids
-  Plan.where(:_id => { '$in': params[:plans] } ).map(&:hios_id)
- end
+  def get_standard_component_ids
+    Plan.where(:_id => { '$in': params[:plans] } ).map(&:hios_id)
+  end
 
- def quote_params
+  def quote_params
     params.require(:quote).permit(
                     :quote_name,
                     :start_on,
@@ -460,18 +465,18 @@ private
                     :quote_households_attributes => [ :id, :family_id , :quote_benefit_group_id,
                                        :quote_members_attributes => [ :id, :first_name, :last_name ,:dob,
                                                                       :employee_relationship,:_delete ] ] )
- end
+  end
 
- def format_date_params
-  params[:quote][:start_on] =  Date.strptime(params[:quote][:start_on],"%m/%d/%Y") if params[:quote][:start_on]
-  if params[:quote][:quote_households_attributes]
-    params[:quote][:quote_households_attributes].values.each do |household_attribute|
-      if household_attribute[:quote_members_attributes].present?
-        household_attribute[:quote_members_attributes].values.map { |m| m[:dob] = Date.strptime(m[:dob],"%m/%d/%Y") unless m[:dob] && m[:dob].blank?}
+  def format_date_params
+    params[:quote][:start_on] =  Date.strptime(params[:quote][:start_on],"%m/%d/%Y") if params[:quote][:start_on]
+    if params[:quote][:quote_households_attributes]
+      params[:quote][:quote_households_attributes].values.each do |household_attribute|
+        if household_attribute[:quote_members_attributes].present?
+          household_attribute[:quote_members_attributes].values.map { |m| m[:dob] = Date.strptime(m[:dob],"%m/%d/%Y") unless m[:dob] && m[:dob].blank?}
+        end
       end
     end
   end
- end
 
 
 

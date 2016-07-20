@@ -200,6 +200,10 @@ class Quote
       self.save
   end
 
+  def published?
+    aasm_state == "published"
+  end
+
   def generate_character
     ascii = rand(36) + 48
     ascii += 39 if ascii >= 58
