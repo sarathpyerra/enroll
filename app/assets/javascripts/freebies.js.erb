@@ -43,8 +43,9 @@ var Freebies = ( function( window, undefined ) {
 
 	function selectric() {
 		// apply selectric if disableSelectrict is false
-		if (!disableSelectric)
+		if (!disableSelectric) {
 			$("select[multiple!='multiple']").selectric();
+		}
 	}
 
 	// disabled enter key submitting disabeld forms in firefox -- add this to any element in the page onKeyPress="return disableEnterKey(event)"
