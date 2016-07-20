@@ -224,18 +224,22 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def create
-    quote = Quote.new(quote_params)
+    @quote = Quote.new(quote_params)
 
     # Build Default Quote Benefit Group
-    qbg = QuoteBenefitGroup.new
-    qbg.build_relationship_benefits
-    quote.quote_benefit_groups << qbg
+    @qbg = QuoteBenefitGroup.new
+    @qbg.build_relationship_benefits
+    @quote.quote_benefit_groups << qbg
 
-    quote.broker_role_id= current_user.person(:try).broker_role.id
-    if quote.save
+    @quote.broker_role_id= current_user.person(:try).broker_role.id
+    if @format_errors.present?
+      flash[:error]= "#{@format_errors.join(', ')}"
+      render "new"  and return
+    end
+    if @quote.save
       redirect_to  broker_agencies_quotes_root_path ,  :flash => { :notice => "Successfully saved the employee roster" }
     else
-      flash[:error]="Unable to save the employee roster"
+      flash[:error]="Unable to save the employee roster : #{@quote.errors.full_messages.join(", ")}"
       render "new"
     end
   end
@@ -469,11 +473,18 @@ private
   end
 
   def format_date_params
+    @format_errors=[]
     params[:quote][:start_on] =  Date.strptime(params[:quote][:start_on],"%m/%d/%Y") if params[:quote][:start_on]
     if params[:quote][:quote_households_attributes]
       params[:quote][:quote_households_attributes].values.each do |household_attribute|
         if household_attribute[:quote_members_attributes].present?
-          household_attribute[:quote_members_attributes].values.map { |m| m[:dob] = Date.strptime(m[:dob],"%m/%d/%Y") unless m[:dob] && m[:dob].blank?}
+          household_attribute[:quote_members_attributes].values.map do |m|
+            begin
+              m[:dob] = Date.strptime(m[:dob],"%m/%d/%Y") unless m[:dob] && m[:dob].blank?
+            rescue Exception => e
+              @format_errors << "Error parsing date #{m[:dob]}"
+            end
+          end
         end
       end
     end
