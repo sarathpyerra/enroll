@@ -12,6 +12,7 @@ class QuoteHousehold
   field :quote_benefit_group_id, type: BSON::ObjectId
 
   validates_uniqueness_of :family_id
+  validate :uniqueness_of_employee, :uniqueness_of_spouse_or_domestic_partner
 
   before_save :assign_benefit_group_id
 
@@ -43,6 +44,20 @@ class QuoteHousehold
       puts "quote.quote_benefit_groups.first.id: " + quote.quote_benefit_groups.first.id.to_s
       self.quote_benefit_group_id = quote.quote_benefit_groups.first.id
       puts "quote_benefit_group_id " + quote_benefit_group_id.to_s
+    end
+  end
+
+  private
+
+  def uniqueness_of_spouse_or_domestic_partner
+    if quote_members.where(:employee_relationship => { "$in" => ["spouse" , "domestic_partner"]}).count > 1
+      errors.add(:"quote_members.employee_relationship","Should be unique")
+    end
+  end
+
+  def uniqueness_of_employee
+    if quote_members.where("employee_relationship" => "employee").count > 1
+      errors.add(:"quote_members.employee_relationship","There should be only one employee per family.")
     end
   end
 
