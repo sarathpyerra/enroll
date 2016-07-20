@@ -323,8 +323,6 @@ class Exchanges::HbxProfilesController < ApplicationController
     @total_records = all_families.count
     @records_filtered = families.count
     @families = families.skip(dt_query.skip).limit(dt_query.take)
-    @checkboxes = params[:checkboxes]
-    @row_functions = params[:row_functions]
     render "datatables/verifications_index_datatable"
   end
 
