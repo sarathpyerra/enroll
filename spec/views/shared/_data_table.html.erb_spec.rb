@@ -43,18 +43,19 @@ describe "shared/_data_table.html.erb" do
       	checkboxes: true,
       	pagination: true,
       	ordering: true,
+        destroy: true,
       	info: true,
       	table_id: "verification-dataTable",
       	data_url: verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json),
-      	columns: [
-          ["HBX ID", "hbx_id"],
-          ["First name", "first_name"],
-          ["Last name", "last_name"],
-          ["Documents", "documents"],
-          ["Due date", "due_date"],
-      	  ["Status", "review_status"],
-      	  ["Review", "review"],
-      	  ["FedHub", "fed_hub"]
+        columns:  [
+          ["HBX ID", "hbx_id", "", [false, ""]],
+          ["First name", "first_name", "", [false, ""]],
+          ["Last name", "last_name", "", [false, ""]],
+          ["Documents", "documents", "", [false, ""]],
+          ["Due date", "due_date", "", [false, ""]],
+      	  ["Status", "review_status", "", [false, ""]],
+      	  ["Review", "review", "", [false, ""]],
+      	  ["FedHub", "fed_hub", "", [false, ""]]
       	]
       }
     end
@@ -154,18 +155,19 @@ describe "shared/_data_table.html.erb" do
       	checkboxes: false,
       	pagination: false,
       	ordering: false,
+        destroy: true,
       	info: false,
       	table_id: "verification-dataTable",
       	data_url: verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json),
-      	columns: [
-          ["HBX ID", "hbx_id"],
-          ["First name", "first_name"],
-          ["Last name", "last_name"],
-          ["Documents", "documents"],
-          ["Due date", "due_date"],
-      	  ["Status", "review_status"],
-      	  ["Review", "review"],
-      	  ["FedHub", "fed_hub"]
+        columns:  [
+          ["HBX ID", "hbx_id", "", [false, ""]],
+          ["First name", "first_name", "", [false, ""]],
+          ["Last name", "last_name", "", [false, ""]],
+          ["Documents", "documents", "", [false, ""]],
+          ["Due date", "due_date", "", [false, ""]],
+      	  ["Status", "review_status", "", [false, ""]],
+      	  ["Review", "review", "", [false, ""]],
+      	  ["FedHub", "fed_hub", "", [false, ""]]
       	]
       }
     end

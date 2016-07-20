@@ -16,9 +16,6 @@
     .select-all {
       padding-left: 6px;
     }
-    .table-responsive .table {
-      margin-bottom: 0;
-    }
     .even {
       background-color: $primary-white;
     }
@@ -28,33 +25,98 @@
     }
     .table {
       margin-top: 0.675%;
-      > tbody {
-        > tr > td {
-          vertical-align: middle;
-          &.dt-right {
-            text-align: right;
+      margin-bottom: 0.5%;
+    }
+    .table-responsive + .footer {
+      margin-top: .75%;
+    }
+    .table > tbody > tr {
+      &.odd {
+        &.shown {
+          + tr {
+            background-color: $primary-white;
+            table,
+            table tr {
+              background-color: $primary-white;
+            }
           }
-          &.dt-left {
-            text-align: left;
-          }
-          &.dt-center {
-            text-align: center;
-          }
-        }
-        > tr > th {
-          vertical-align: middle;
-          text-transform: uppercase;
-          text-align: center;
-          &.dt-right {
-            text-align: right;
-          }
-          &.dt-left {
-            text-align: left;
-          }
-          &.dt-center {
-            text-align: center;
+          + tr:hover {
+            table,
+            table tr {
+              background-color: $primary-white;
+            }
           }
         }
+      }
+      &.even {
+        &.shown {
+          + tr {
+            background-color: #f9f9f9;
+            table,
+            table tr {
+              background-color: #f9f9f9;
+            }
+          }
+          + tr:hover {
+            table,
+            table tr {
+              background-color: #f9f9f9;
+            }
+          }
+        }
+      }
+    }
+    .table > tbody > tr > td {
+      vertical-align: middle;
+      &.dt-right {
+        text-align: right;
+      }
+      &.dt-left {
+        text-align: left;
+      }
+      &.dt-center {
+        text-align: center;
+      }
+    }
+    .table > thead > tr > th {
+      vertical-align: middle;
+      text-transform: uppercase;
+      text-align: center;
+      &:focus {
+        outline-color: transparent;
+      }
+      .fa {
+        color: $primary-gray;
+        display: block;
+      }
+      &.sorting {
+        cursor: pointer;
+        &:hover {
+          .fa {
+            color: $primary-blue;
+          }
+        }
+      }
+      &.sorting_asc {
+        .fa-caret-up {
+          color: $primary-blue;
+        }
+        cursor: pointer;
+      }
+      &.sorting_desc {
+        .fa-caret-down {
+          color: $primary-blue;
+        }
+        cursor: pointer;
+      }
+      &.dt-right {
+        text-align: right;
+      }
+      &.dt-left {
+        text-align: left;
+      }
+      &.dt-center {
+        text-align: center;
       }
     }
     .vertically-aligned-row > .vertically-aligned-row {
@@ -115,6 +177,16 @@
         width: 100%;
         font-size: 14px;
         font-weight: normal;
+      }
+    }
+    .row-actions {
+      display: table-cell;
+      vertical-align: middle;
+      .fa {
+        color: $primary-blue;
+      }
+      & > * {
+        display: table-cell;
       }
     }
     .footer {

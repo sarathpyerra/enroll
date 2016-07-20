@@ -109,14 +109,18 @@
       },
       "columns": [
         <% if checkboxes == true %>
-          <% columns.unshift(["","checkbox_column"])%>
+          <% columns.unshift(["","checkbox_column", "", "false"])%>
         <% end %>
         <% if row_functions == true %>
-          <% columns << (["","row_functions"])%>
+          <% columns << (["","row_functions", "", "false"])%>
         <% end %>
         <% column_count = columns.length %>
         <% columns.each_with_index do |col, idx| %> {
-          title: "<%= j col[0] %>",
+          <% if col[3].first == true %>
+            title: "<div class='vertically-aligned-row'><div><%= j col[0] %></div><div><i class='fa fa-caret-up' aria-hidden='true'></i><i class='fa fa-caret-down' aria-hidden='true'></i></div></div>",
+          <% else %>
+            title: "<%= j col[0] %>",
+          <% end %>
           data: "<%= j col[1] %>",
           className: "<%= j col[2] %>"
         }
@@ -125,6 +129,12 @@
       ]
       <% if checkboxes == true && row_functions == true %>,
         'columnDefs': [
+          <% columns[1..(columns.length-2)].each_with_index do |col, idx| %>
+            {
+              'targets': <%= idx + 1 %>,
+              'orderable': <%= col[3].first %>,
+            },
+          <% end %>
           {
             'targets': 0,
             'searchable': false,
@@ -144,6 +154,12 @@
           }
         ]
       <% elsif checkboxes == true %>, 'columnDefs': [
+        <% columns[1..columns.length-2].each_with_index do |col, idx| %>
+          {
+            'targets': <%= idx + 1 %>,
+            'orderable': <%= col[3].first %>,
+          },
+        <% end %>
           {
             'targets': 0,
             'searchable': false,
@@ -155,6 +171,12 @@
           }
         ]
       <% elsif row_functions == true %>, 'columnDefs': [
+        <% columns[0..columns.length-2].each_with_index do |col, idx| %>
+          {
+            'targets': <%= idx %>,
+            'orderable': <%= col[3].first %>,
+          },
+        <% end %>
           {
             'targets': <%= columns.length - 1 %>,
             'searchable': false,
@@ -164,7 +186,15 @@
               return '<% row_actions.each do |fa_icon, url, request_type, tooltip| %><span><%= link_to j("<i class='fa fa-#{fa_icon}' aria-hidden='true'></i>".html_safe), "#{url}", remote: request_type, title: "#{tooltip}", data: {'toggle': 'tooltip'} %></span>&#10;<% end %>';
             }
           }
-        ]
+        ],
+      <% else %>, 'columnDefs': [
+        <% columns.each_with_index do |col, idx| %>
+          {
+            'targets': <%= idx %>,
+            'orderable': <%= col[3].first %>,
+          },
+        <% end %>
+      ]
       <% end %>
       });
       <% if child_rows[0] == true %>

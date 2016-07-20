@@ -1,6 +1,5 @@
 <% person = outstanding_verification_family.primary_applicant.person %>
 {
-"checkbox_column": "",
 "hbx_id": "<%= json_escape person.hbx_id %>",
 "first_name": "<%= json_escape person.first_name%>",
 "last_name": "<%= json_escape person.last_name %>",
@@ -23,7 +22,5 @@
 <% end %>
 "review_status" : <%= raw review_status_info.to_json %>,
 "review" : <%= raw (link_to "Review", show_docs_documents_path(:person_id => person.id, :status => "in review"), class:"btn btn-#{review_button_class(outstanding_verification_family)} btn-xs").to_json %>,
-"fed_hub" : <%= raw (link_to "Federal Hub Detail", "#", class:"btn btn-default btn-xs").to_json %>,
-"row_functions": ""
-
+"fed_hub" : <%= raw (link_to "Federal Hub Detail", "#", class:"btn btn-default btn-xs").to_json %>
 }
