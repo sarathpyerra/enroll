@@ -16,7 +16,8 @@ module ReportSources
     field :is_standard_plan, type: Boolean, default: false
     field :policy_purchased_on, type: DateTime
     field :members_count, type: Integer
-    
+
+    has_many :policy_members , :class_name => "ReportSources::PolicyMember"
    # MARKETS = ["individual","shop","congress","dental"]
 
     def self.report_lives_count_by_market
@@ -76,6 +77,5 @@ module ReportSources
         ],
       :allow_disk_use => true).entries
     end
-
   end 
 end

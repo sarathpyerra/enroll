@@ -5,7 +5,7 @@ namespace :seed do
     desc "Load the plans data"
     task :hbx_enrollment_data => :environment do
 
-    	hbx_enrollment_and_data_mapping = {
+    	hbx_enrollment_data_mapping = {
     		:plan_active_year => "data[:plan][:active_year]",
     		:hbx_id => "data[:hbx_id]",    		
     		:plan_name => "data[:plan][:name]",
@@ -20,37 +20,64 @@ namespace :seed do
     		:policy_purchased_on => "data[:plan][:created_at][:$date]",
         :members_count => "data[:hbx_enrollment_members].count"
     	}
-      if true
-        cleanup
-        File.readlines("db/seedfiles/sample_data1.json").each do |line|
-          line.chomp!
-          line.chomp!(",")
-          data = JSON.parse(line) rescue next
-        # @json_data.each do |data|
-        	data.deep_symbolize_keys!
-          # binding.pry
-          params={}
-          hbx_enrollment_and_data_mapping.each do |key,value|
-            params[key] = eval value rescue nil
-          end
-          if ReportSources::PolicyStatistic.create(params)
-            puts "added one record"
+      person_data_mapping  = {
+        :is_tobacco_user => "person_data[:is_tobacco_user]",
+        :first_name => "person_data[:first_name]",
+        :last_name => "person_data[:last_name]",
+        :middle_name => "person_data[:middle_name]",
+        :gender =>"person_data[:gender]",
+        :dob => "person_data[:dob][:$date]",
+        :is_active => "person_data[:is_active]",
+        :hbx_id => "person_data[:hbx_id]"
+      }
+
+      address_data_mapping = {
+        :address_1 => "address_data[:address_1]",
+        :address_2 => "address_data[:address_2]",
+        :address_3 => "address_data[:address_3]",
+        :zip => "address_data[:zip]",
+        :state => "address_data[:state]",
+        :city => "address_data[:city]",
+        :kind => "address_data[:kind]"
+      }
+
+      cleanup
+      File.readlines("db/seedfiles/sample_data1.json").each do |line|
+        line.chomp!
+        line.chomp!(",")
+        data = JSON.parse(line) rescue next
+      	data.deep_symbolize_keys!
+        params={}
+        hbx_enrollment_data_mapping.each do |key,value|
+          params[key] = eval value rescue nil
+        end
+        policy = ReportSources::PolicyStatistic.create(params)
+        puts "policy created #{policy.id}"
+        # Check of memeners present
+        if data[:hbx_enrollment_members].present?
+          data[:hbx_enrollment_members].each do |enrollment| 
+            person_data = enrollment[:person]
+            memeber_params = {}
+            person_data_mapping.each do |key,value|
+              memeber_params[key] = eval value rescue nil
+            end
+            policy_member= ReportSources::PolicyMember.create(memeber_params)
+            policy.policy_members << policy_member
+            puts "Member added for policy #{policy.id}"
+            # Check if address present
+            if person_data && person_data[:addresses].present?
+              person_data[:addresses].each do |address_data| 
+                address_params = {}
+                address_data_mapping.each do |key,value|
+                  address_params[key] = eval value rescue nil
+                end
+                member_address= ReportSources::MemberAddress.create(address_params)
+                policy_member.addresses << member_address
+                puts "address added for policy #{policy.id}"
+              end
+            end
           end
         end
-      end
-    end
-
-    def load_data
-      begin
-        # puts "reading file now **************"
-        # File.readlines("db/seedfiles/sample_data1.json").each do |line|
-        # puts "parsing file now **************"
-        # @json_data = JSON.parse(json_file)
-        # puts "parsed done **************"
-        # binding.pry
-        return true  
-      rescue Exception => e
-        puts "Unable to load json file #{e}"
       end
     end
 

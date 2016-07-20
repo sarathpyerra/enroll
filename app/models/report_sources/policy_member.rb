@@ -1,8 +1,8 @@
-# NOT using at the moment -- SY jul/15/2016
 module ReportSources
-  class PolicyMemberStatistic
+  class PolicyMember
   	include Mongoid::Document
-  	embedded_in :policy_statistic
+  	
+    belongs_to :policy_statistic
 
   	field :is_tobacco_user, type: Boolean
   	field :hbx_id, type: String
@@ -10,6 +10,11 @@ module ReportSources
   	field :plan_name, type: String
   	field :first_name , type: String
   	field :last_name , type: String
+    field :middle_name , type: String
+    field :gender , type: String
+    field :is_active , type: Boolean
+
+    has_many :addresses , :class_name => "ReportSources::MemberAddress"
   end
 end
 
