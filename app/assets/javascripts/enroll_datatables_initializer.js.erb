@@ -133,8 +133,14 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.closest('.module').find('.datatable-header .search').prepend('<label>Search&nbsp;</label>')
     $new_button.removeClass('hidden');
     $search.removeClass('hidden');
+  }
 
-
+  function showButtonsBelow(table_id) {
+    findTable(table_id);
+    var $buttons_below_table = $table.closest('.module').find('.buttons-below-table').detach();
+    var $select_all = $table.closest('.module').find('.select-all');
+    $select_all.find('.vertically-aligned-row').html($buttons_below_table);
+    buttons_below_table.removeClass('hidden');
   }
 
   return {
@@ -147,7 +153,8 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     addButtonsBelowTable : addButtonsBelowTable,
     showPagination : showPagination,
     makeResponsiveTable : makeResponsiveTable,
-    swapSearchAndNewButton : swapSearchAndNewButton
+    swapSearchAndNewButton : swapSearchAndNewButton,
+    showButtonsBelow : showButtonsBelow
   };
 
 } )( window );

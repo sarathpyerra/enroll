@@ -22,7 +22,7 @@
   		["Send Secure Message", "", true],
   		["Delete", "", false]
   	],
-  	row_functions:  true,
+  	row_functions:  false,
   	row_actions:  [
   		["asterisk", "url", "request_type", "tooltip", "This Popover", [
         ["thisda", "url", true],
@@ -34,28 +34,28 @@
   		["bomb", "url", "request_type", "tooltip"],
       ["caret-down", "url", "request_type", "View Details"]
   	],
-  	buttons_below_table:  [
-  		['Export CSV', 'url', 'request_type'],
-  		['Print', 'url', 'request_type']
+  	buttons_below_table: [
+  		# ['Export CSV', 'url', 'request_type'],
+  		# ['Print', 'url', 'request_type']
   	],
-    child_rows:  [true, "datatables/child_row"],
+    child_rows:  [false, "datatables/child_row"],
     destroy: false,
     responsive:  true,
-  	checkboxes:  true,
+  	checkboxes:  false,
   	pagination:  true,
-  	ordering:  true,
+  	ordering:  false,
   	info:  true,
   	table_id:  "verification-dataTable",
   	data_url:  verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json),
   	columns:  [
       ["HBX ID", "hbx_id", "", [false, ""]],
-      ["First name", "first_name", "", [true, ""]],
+      ["First name", "first_name", "", [false, ""]],
       ["Last name", "last_name", "", [false, ""]],
       ["Documents", "documents", "", [false, ""]],
       ["Due date", "due_date", "", [false, ""]],
   	  ["Status", "review_status", "", [false, ""]],
   	  ["Review", "review", "", [false, ""]],
-  	  ["FedHub", "fed_hub", "", [true, ""]]
+  	  ["FedHub", "fed_hub", "", [false, ""]]
   	]
   } %>
 </div>
