@@ -86,7 +86,6 @@ Then(/^I see the Add SEP and History buttons$/) do
   #page.has_button?("SEP HISTORY")
 end
 
-
 Given(/^I have a primary subscriber who is registered only as a consumer$/) do
   person_ivl = FactoryGirl.create(:person, :with_family, :with_consumer_role)
   family_ivl = person_ivl.primary_family
