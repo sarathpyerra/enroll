@@ -6,7 +6,7 @@ function page_load_listeners () {
         toggle_plans([])
         reset_selected_plans()
     })
-    
+
     $('.dental_plan_selectors .criteria').on('click',function(){
         selected=this; sibs = $(selected).siblings();
         $.each(sibs, function(){ this.className='criteria' }) ;
@@ -40,7 +40,7 @@ function page_load_listeners () {
         benefit_group_id = $(this).val()
         $.ajax({
           type: 'GET',
-          data: {quote_id: quote_id, benefit_group_id},
+          data: {quote_id: quote_id, benefit_group_id: benefit_group_id},
           url: '/broker_agencies/quotes/get_quote_info.js'
         }).done(function(response){
             window.relationship_benefits = response['relationship_benefits']
