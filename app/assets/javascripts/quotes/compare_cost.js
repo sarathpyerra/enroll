@@ -1,5 +1,5 @@
 function get_health_cost_comparison() {
-  plans = selected_plans()
+  plans = selected_plans();
   if(plans.length == 0) {
     alert('Please select one or more plans for comparison');
     return;
@@ -19,12 +19,12 @@ function get_health_cost_comparison() {
   })
 }
 function get_dental_cost_comparison() {
-  plans = selected_plans()
-  quote_id=$('#quote').val()
+  plans = selected_plans();
+  quote_id=$('#quote').val();
   if(plans.length == 0) {
     alert('Please select one or more plans for comparison');
     return;
-   }  
+   }
   $.ajax({
     type: "GET",
     url: "/broker_agencies/quotes/dental_cost_comparison",
@@ -34,4 +34,3 @@ function get_dental_cost_comparison() {
     }
   })
 }
-
