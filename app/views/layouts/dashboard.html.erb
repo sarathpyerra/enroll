@@ -44,10 +44,10 @@
                 <li class="<%= 'active' if params[:action] == 'covered_lives' %>">
                   <%= link_to 'Covered Lives' , covered_lives_dashboards_path  %>
                 </li>
-               <!--  <li class="<%= 'active' if params[:action] == 'policies' %>">
-                  <%= link_to 'Policies'  %>
-                </li>
-                <li class="<%= 'active' if params[:action] == 'eligibility' %>">
+                  <li class="<%= 'active' if params[:action] == 'policies' %>">
+                  <%= link_to 'Policies' , covered_lives_dashboards_path %>
+                </li> 
+                <!-- <li class="<%= 'active' if params[:action] == 'eligibility' %>">
                   <%= link_to 'Eligibility' %>
                 </li> -->
               </ul>

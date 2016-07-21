@@ -17,8 +17,8 @@ module ReportSources
     field :policy_purchased_on, type: DateTime
     field :members_count, type: Integer
 
-    has_many :policy_members , :class_name => "ReportSources::PolicyMember"
-   # MARKETS = ["individual","shop","congress","dental"]
+    embeds_many :policy_members , :class_name => "ReportSources::PolicyMember" 
+
 
     def self.report_lives_count_by_market
 
@@ -35,6 +35,24 @@ module ReportSources
       end
       [categories, report_data]
     end
+
+    def self.report_lives_count_by_gender
+
+      categories = ["2014","2015","2016"]
+      lives_count = {
+        "individual" => lives_count_for_individual_by_gender,
+        "shop" => lives_count_for_shop_by_gender,
+        "congress" => lives_count_for_congress_by_gender,
+       # "dental" => lives_count_for_dental_by_gender
+      }
+      report_data = []
+      lives_count.each do |market ,report|
+          report_data << {name: market ,data: report.collect{|r| r["count"]} }
+      end
+      [categories, report_data]
+    end
+
+
 
     def self.lives_count_for_individual
       reports = ReportSources::PolicyStatistic.collection.aggregate([ 
@@ -77,5 +95,52 @@ module ReportSources
         ],
       :allow_disk_use => true).entries
     end
+
+    def self.lives_count_for_individual_by_gender
+      reports = ReportSources::PolicyStatistic.collection.aggregate([ 
+        {'$project': { gender: "$policy_members.gender" , market: "$market", plan_active_year: "$plan_active_year" } },
+        {'$match': {market: 'individual'}},
+        {'$unwind': "$gender"},
+        {'$match': {plan_active_year: {"$ne" => nil}}},
+        {'$group': {_id:{gender: '$gender'}, count: {'$sum':1}}},
+        ],
+      :allow_disk_use => true).entries
+    end
+
+    def self.lives_count_for_shop_by_gender
+      reports = ReportSources::PolicyStatistic.collection.aggregate([ 
+        {'$project': { gender: "$policy_members.gender" , market: "$market", plan_active_year: "$plan_active_year" } },
+        {'$match': {market: 'employer_sponsored'}},
+        {'$unwind': "$gender"},
+        {'$match': {plan_active_year: {"$ne" => nil}}},
+        {'$group': {_id:{gender: '$gender'}, count: {'$sum':1}}},
+        ],
+      :allow_disk_use => true).entries
+    end
+
+    def self.lives_count_for_congress_by_gender
+      reports = ReportSources::PolicyStatistic.collection.aggregate([ 
+        {'$project': { gender: "$policy_members.gender" , market: "$market", plan_active_year: "$plan_active_year", hbx_id: "$hbx_id" } },
+        {'$match': {market: 'employer_sponsored'}},
+        {'$match': {hbx_id:  {'$in': ['536002522','526002523','536002558']}}},
+        {'$unwind': "$gender"},
+        {'$match': {plan_active_year: {"$ne" => nil}}},
+        {'$group': {_id:{gender: '$gender'}, count: {'$sum':1}}},
+        ],
+      :allow_disk_use => true).entries
+    end
+
+    def self.lives_count_for_individual_by_zip
+      reports = ReportSources::PolicyStatistic.collection.aggregate([ 
+        {'$project': { zip: "$policy_members.addresses.zip" , market: "$market", plan_active_year: "$plan_active_year" } },
+        {'$match': {market: 'individual'}},
+        {'$unwind': "$zip"},
+        {'$unwind': "$zip"},
+        {'$match': {plan_active_year: {"$ne" => nil}}},
+        {'$group': {_id:{zip: '$zip'}, count: {'$sum':1}}},
+        ],
+      :allow_disk_use => true).entries
+    end
+
   end 
 end

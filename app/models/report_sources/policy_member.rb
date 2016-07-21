@@ -2,7 +2,7 @@ module ReportSources
   class PolicyMember
   	include Mongoid::Document
   	
-    belongs_to :policy_statistic
+    embedded_in :policy_statistic
 
   	field :is_tobacco_user, type: Boolean
   	field :hbx_id, type: String
@@ -14,7 +14,8 @@ module ReportSources
     field :gender , type: String
     field :is_active , type: Boolean
 
-    has_many :addresses , :class_name => "ReportSources::MemberAddress"
+    embeds_many :addresses , :class_name => "ReportSources::MemberAddress" 
+
   end
 end
 

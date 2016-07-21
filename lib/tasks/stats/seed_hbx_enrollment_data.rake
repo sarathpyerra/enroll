@@ -61,8 +61,8 @@ namespace :seed do
             person_data_mapping.each do |key,value|
               memeber_params[key] = eval value rescue nil
             end
-            policy_member= ReportSources::PolicyMember.create(memeber_params)
-            policy.policy_members << policy_member
+            # policy_member= ReportSources::PolicyMember.create(memeber_params)
+            policy_member = policy.policy_members.create(memeber_params) #<< policy_member
             puts "Member added for policy #{policy.id}"
             # Check if address present
             if person_data && person_data[:addresses].present?
@@ -71,8 +71,8 @@ namespace :seed do
                 address_data_mapping.each do |key,value|
                   address_params[key] = eval value rescue nil
                 end
-                member_address= ReportSources::MemberAddress.create(address_params)
-                policy_member.addresses << member_address
+                # member_address= ReportSources::MemberAddress.create(address_params)
+                policy_member.addresses.create(address_params)
                 puts "address added for policy #{policy.id}"
               end
             end
