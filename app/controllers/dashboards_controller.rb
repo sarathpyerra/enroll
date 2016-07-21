@@ -160,6 +160,9 @@ class DashboardsController < ApplicationController
     @reports = ReportSources::PolicyStatistic.report_lives_count_by_market
   end
 
+  def covered_lives_by_gender
+    @reports = ReportSources::PolicyStatistic.report_lives_count_by_gender
+  end
 
   private
   def init_plan_data

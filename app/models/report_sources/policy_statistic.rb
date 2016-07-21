@@ -130,6 +130,18 @@ module ReportSources
       :allow_disk_use => true).entries
     end
 
+    def self.lives_count_for_dental_by_gender
+      reports = ReportSources::PolicyStatistic.collection.aggregate([ 
+        {'$project': { gender: "$policy_members.gender" , market: "$market", plan_active_year: "$plan_active_year", coverage_kind: "$coverage_kind" } },
+        {'$match': {coverage_kind: {"$eq" => "dental"}}},
+        {'$unwind': "$gender"},
+        {'$match': {plan_active_year: {"$ne" => nil}}},
+        {'$group': {_id:{gender: '$gender'}, count: {'$sum':1}}},
+        ],
+      :allow_disk_use => true).entries
+    end
+
+
     def self.lives_count_for_individual_by_zip
       reports = ReportSources::PolicyStatistic.collection.aggregate([ 
         {'$project': { zip: "$policy_members.addresses.zip" , market: "$market", plan_active_year: "$plan_active_year" } },

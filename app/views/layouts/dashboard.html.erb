@@ -41,15 +41,12 @@
             <li class="<%= 'active' if params[:action] == 'key_indicators' %>"><%= link_to 'Key Indicators', key_indicators_dashboards_path %></li>
             <li class="<%= 'active' if params[:action] == 'weekly_reports' %>"><%= link_to 'Weekly Reports', weekly_reports_dashboards_path %>
               <ul class="nav">
-                <li class="<%= 'active' if params[:action] == 'covered_lives' %>">
+                <li class='active'>
                   <%= link_to 'Covered Lives' , covered_lives_dashboards_path  %>
                 </li>
-                  <li class="<%= 'active' if params[:action] == 'policies' %>">
-                  <%= link_to 'Policies' , covered_lives_dashboards_path %>
-                </li> 
-                <!-- <li class="<%= 'active' if params[:action] == 'eligibility' %>">
-                  <%= link_to 'Eligibility' %>
-                </li> -->
+                  <li class='active'>
+                  <%= link_to 'Policies' , covered_lives_by_gender_dashboards_path %>
+                </li>
               </ul>
             </li>
             <li>

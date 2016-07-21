@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       get :weekly_reports
       get :comparison_over_multiple_years
       get :covered_lives
+      get :covered_lives_by_gender
     end
   end
 
