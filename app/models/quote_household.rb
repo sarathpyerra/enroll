@@ -6,6 +6,7 @@ class QuoteHousehold
   embedded_in :quote
   embeds_many :quote_members
 
+
   field :family_id, type: String
 
   # Quote Benefit Group ID for this employee on the roster
@@ -36,6 +37,10 @@ class QuoteHousehold
 
   def dependents
     quote_members.ne("employee_relationship" => "employee")
+  end
+
+  def quote_benefit_group
+    quote.quote_benefit_groups.find(self.quote_benefit_group_id)
   end
 
   def assign_benefit_group_id

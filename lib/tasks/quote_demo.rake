@@ -84,9 +84,9 @@ namespace :quote_demo do
       qbg.plan_option_kind = "single_carrier"
       qbg.title = "Office Workers"
       qbg.build_relationship_benefits
-      qbg.published_reference_plan = BSON::ObjectId('5707c6d13ec0ba4f4f008f6d')
-      qbg.published_lowest_cost_plan = BSON::ObjectId('5707c6d13ec0ba4f4f008f6d')
-      qbg.published_highest_cost_plan = BSON::ObjectId('5707c6d13ec0ba4f4f008f6d')
+      qbg.published_reference_plan = BSON::ObjectId('56d5e954c324df0ba7009697')
+      qbg.published_lowest_cost_plan = BSON::ObjectId('56d5e954c324df0ba7009697')
+      qbg.published_highest_cost_plan = BSON::ObjectId('56d5e954c324df0ba7009697')
 
       qbg.relationship_benefit_for("employee").premium_pct=(70)
       qbg.relationship_benefit_for("spouse").premium_pct=(50)
@@ -96,9 +96,9 @@ namespace :quote_demo do
       qbg1.plan_option_kind = "single_carrier"
       qbg1.title = "Outside Workers"
       qbg1.build_relationship_benefits
-      qbg1.published_reference_plan = BSON::ObjectId('5707c6e03ec0ba4f4f00e2a5')
-      qbg1.published_lowest_cost_plan = BSON::ObjectId('5707c6e03ec0ba4f4f00e2a5')
-      qbg1.published_highest_cost_plan = BSON::ObjectId('5707c6e03ec0ba4f4f00e2a5')
+      qbg1.published_reference_plan = BSON::ObjectId('56d5e963c324df0ba700ee00')
+      qbg1.published_lowest_cost_plan = BSON::ObjectId('56d5e963c324df0ba700ee00')
+      qbg1.published_highest_cost_plan = BSON::ObjectId('56d5e963c324df0ba700ee00')
 
 
       qbg1.relationship_benefit_for("employee").premium_pct=(80)

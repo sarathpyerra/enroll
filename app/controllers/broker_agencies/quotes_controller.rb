@@ -94,16 +94,6 @@ class BrokerAgencies::QuotesController < ApplicationController
     dental_roster_premiums =  @quote_on_page.roster_cost_all_plans('dental')
     @dental_roster_premiums = dental_roster_premiums.to_json
     @quote_criteria = @quote_on_page.criteria_for_ui
-
-    #temp stuff until publish is fixed
-    @quote = @quote_on_page
-    @plan = @quote && @quote.plan
-    if @plan
-      @plans_offered = @quote.cost_for_plans([@plan], @plan).sort_by { |k| [k["employer_cost"], k["employee_cost"]] }
-    else
-      @plans_offered =[]
-    end
-
     @benefit_pcts_json = @bp_hash.to_json
   end
 
@@ -357,12 +347,11 @@ class BrokerAgencies::QuotesController < ApplicationController
     q = Quote.find(params[:quote_id])
     benefit_groups = q.quote_benefit_groups
     bg = (params[:benefit_group_id] && q.quote_benefit_groups.find(params[:benefit_group_id])) || benefit_groups.first
-
     summary = {name: q.quote_name,
      status: q.aasm_state.capitalize,
      plan_name: bg.plan && bg.plan.name || 'None',
      dental_plan_name: "bg.dental_plan && bg.dental_plan.name" || 'None',
-   }
+    }
     bg.quote_relationship_benefits.each{|bp| bp_hash[bp.relationship] = bp.premium_pct}
     render json: {'relationship_benefits' => bp_hash, 'roster_premiums' => bg.roster_cost_all_plans, 'criteria' => JSON.parse(bg.criteria_for_ui), summary: summary}
   end
@@ -370,42 +359,6 @@ class BrokerAgencies::QuotesController < ApplicationController
   def publish
     @q = Quote.find(params[:quote_id])
     @benefit_groups = @q.quote_benefit_groups
-    @benefit_group = (params[:benefit_group_id] && @benefit_groups.find(params[:benefit_group_id])) || @benefit_groups.first
-    #@quote = Quote.find(params[:quote_id])
-
-    if params[:plan_id]
-      @plan = Plan.find(params[:plan_id][8,100])
-      @elected_plan_choice = ['na', 'Single Plan', 'Single Carrier', 'Metal Level'][params[:elected].to_i]
-
-      @benefit_group.plan = @plan
-      @benefit_group.plan_option_kind = @elected_plan_choice
-      @roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds($quote_shop_health_plans,
-        @benefit_group.quote_relationship_benefits, @benefit_group.roster_cost_all_plans)
-      case @elected_plan_choice
-        when 'Single Carrier'
-          @offering_param  = @plan.name
-          @benefit_group.published_lowest_cost_plan = @roster_elected_plan_bounds[:carrier_low_plan][@plan.carrier_profile.abbrev]
-          @benefit_group.published_highest_cost_plan = @roster_elected_plan_bounds[:carrier_high_plan][@plan.carrier_profile.abbrev]
-        when 'Metal Level'
-          @offering_param  = @plan.metal_level.capitalize
-          @benefit_group.published_lowest_cost_plan = @roster_elected_plan_bounds[:metal_low_plan][@plan.metal_level]
-          @benefit_group.published_highest_cost_plan = @roster_elected_plan_bounds[:metal_high_plan][@plan.metal_level]
-        else
-          @offering_param = ""
-          @benefit_group.published_lowest_cost_plan = @plan
-          @benefit_group.published_highest_cost_plan = @plan
-      end
-      @benefit_group.save
-    else
-      @plan = @benefit_group.plan
-      @elected_plan_choice = @benefit_group.plan_option_kind
-    end
-
-    if @plan
-      @plans_offered = @benefit_group.cost_for_plans([@plan], @plan).sort_by { |k| [k["employer_cost"], k["employee_cost"]] }
-    else
-      @plans_offered = []
-    end
     respond_to do |format|
       format.html {render partial: 'publish'}
       format.pdf do
