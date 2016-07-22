@@ -162,6 +162,7 @@ class DashboardsController < ApplicationController
 
   def covered_lives_by_gender
     @reports = ReportSources::PolicyStatistic.report_lives_count_by_gender
+    @genders = ["MALE","FEMALE"]
   end
 
   private

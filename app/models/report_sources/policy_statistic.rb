@@ -38,12 +38,12 @@ module ReportSources
 
     def self.report_lives_count_by_gender
 
-      categories = ["2014","2015","2016"]
+      categories = ["INDIVIDUAL","SHOP","CONGRESS","DENTAL"]
       lives_count = {
         "individual" => lives_count_for_individual_by_gender,
         "shop" => lives_count_for_shop_by_gender,
         "congress" => lives_count_for_congress_by_gender,
-       # "dental" => lives_count_for_dental_by_gender
+        "dental" => lives_count_for_dental_by_gender
       }
       report_data = []
       lives_count.each do |market ,report|
@@ -119,8 +119,9 @@ module ReportSources
     end
 
     def self.lives_count_for_congress_by_gender
-      reports = ReportSources::PolicyStatistic.collection.aggregate([ 
-        {'$project': { gender: "$policy_members.gender" , market: "$market", plan_active_year: "$plan_active_year", hbx_id: "$hbx_id" } },
+      report = ReportSources::PolicyStatistic.collection.aggregate([ 
+        {'$project': { gender: "$policy_members.gender" , market: "$market", 
+                       plan_active_year: "$plan_active_year", hbx_id: "$hbx_id" }},
         {'$match': {market: 'employer_sponsored'}},
         {'$match': {hbx_id:  {'$in': ['536002522','526002523','536002558']}}},
         {'$unwind': "$gender"},
@@ -128,6 +129,8 @@ module ReportSources
         {'$group': {_id:{gender: '$gender'}, count: {'$sum':1}}},
         ],
       :allow_disk_use => true).entries
+      # work around for blank data
+      [{"_id"=>{"gender"=>"female"}, "count"=>0}, {"_id"=>{"gender"=>"male"}, "count"=>0}] if report.empty?
     end
 
     def self.lives_count_for_dental_by_gender
