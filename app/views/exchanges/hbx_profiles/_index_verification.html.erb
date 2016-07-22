@@ -19,10 +19,10 @@
       # ]
   	],
   	bulk_actions:  [
-  		["Send Secure Message", "", true],
-  		["Delete", "", false]
+  		# ["Send Secure Message", "", true],
+  		# ["Delete", "", false]
   	],
-  	row_functions:  false,
+  	row_functions:  true,
   	row_actions:  [
   		["asterisk", "url", "request_type", "tooltip", "This Popover", [
         ["thisda", "url", true],
@@ -41,10 +41,10 @@
     child_rows:  [false, "datatables/child_row"],
     destroy: false,
     responsive:  true,
-  	checkboxes:  false,
+  	checkboxes:  true,
   	pagination:  true,
   	ordering:  false,
-  	info:  true,
+  	info:  false,
   	table_id:  "verification-dataTable",
   	data_url:  verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json),
   	columns:  [

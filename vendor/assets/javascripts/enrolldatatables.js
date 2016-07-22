@@ -2893,7 +2893,7 @@
 					return false;
 				}
 			} )
-			.attr('aria-controls', tableId);
+			.attr('aria-controls', tableId)
 
 		// Update the input elements whenever the table is filtered
 		$(settings.nTable).on( 'search.dt.DT', function ( ev, s ) {
@@ -11494,7 +11494,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sLengthMenu": "_MENU_",
+			"sLengthMenu":  "_MENU_",
 
 
 			/**

@@ -46,9 +46,9 @@ var DataTable = $.fn.dataTable;
 /* Set the defaults for DataTables initialisation */
 $.extend( true, DataTable.defaults, {
 	dom:
-		"<'vertically-aligned-row header'<'select-all vertically-aligned-row'><'table-length hidden'l><'search text-right hidden'f>>"+
+		"<'vertically-aligned-row header'<'table-length hidden'l><'search text-right hidden'f>>"+
 		"t"+
-		"<'footer'<'select-all vertically-aligned-row'><'vertically-aligned-row'i><'col-xs-12'p>>",
+		"<'footer'<'vertically-aligned-row'i><'col-xs-12'p>>",
 	renderer: 'bootstrap'
 } );
 
@@ -56,7 +56,7 @@ $.extend( true, DataTable.defaults, {
 /* Default class modification */
 $.extend( DataTable.ext.classes, {
 	sWrapper:      "dataTables_wrapper form-inline dt-bootstrap",
-	sFilterInput:  "form-control input-sm",
+	sFilterInput:  "form-control",
 	sLengthSelect: "form-control input-sm",
 	sProcessing:   "dataTables_processing panel panel-default"
 } );

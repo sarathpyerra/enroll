@@ -1,9 +1,15 @@
 .module {
   .datatable {
     .datatable-header {
-      .vertically-aligned-row {
+      &.vertically-aligned-row {
         h1 {
           width: 25%;
+        }
+        .search {
+          width: 40%;
+          .input-group > input {
+            box-sizing: border-box;
+          }
         }
       }
     }
@@ -25,10 +31,10 @@
     }
     .table {
       margin-top: 0.675%;
-      margin-bottom: 0.5%;
+      margin-bottom: 0;
     }
     .table-responsive + .footer {
-      margin-top: .75%;
+      margin-top: 1.5%;
     }
     .table > tbody > tr {
       &.odd {
@@ -84,8 +90,10 @@
       text-align: center;
       &:focus {
         outline-color: transparent;
+        outline-style: none;
       }
-      .fa {
+      .fa-caret-up,
+      .fa-caret-down {
         color: $primary-gray;
         display: block;
       }
@@ -132,6 +140,9 @@
       > .vertically-aligned-row {
         width: 75%;
       }
+      .col-xs-2 {
+        width: 10%;
+      }
     }
     .table-length,
     .dataTables_length {
@@ -141,7 +152,7 @@
         margin-bottom: 0;
         width: 8.75%;
         min-width: 60px;
-        padding-left: 5%;
+        padding-left: 1.5%;
         .selectric {
           background-color: transparent !important;
           height: auto;
@@ -190,6 +201,11 @@
       }
     }
     .footer {
+      margin-top: 1.5%;
+      .combined-length-info.vertically-aligned-row {
+        display: table;
+        width: 100%;
+      }
       .dataTables_paginate {
         display: none;
       }
