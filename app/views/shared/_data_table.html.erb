@@ -95,9 +95,6 @@
         <% if buttons_below_table.present? %>
           EnrollDataTableInitializer.addButtonsBelowTable('<%= table_id %>');
         <% end %>
-        <% if checkboxes == false %>
-          EnrollDataTableInitializer.moveButtonsBelowUpwards('<%= table_id %>');        
-        <% end %>
         <% if info == true %>
           EnrollDataTableInitializer.moveInfo('<%= table_id %>');
         <% end %>
