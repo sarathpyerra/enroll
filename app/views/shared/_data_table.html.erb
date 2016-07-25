@@ -95,6 +95,9 @@
         <% if bulk_actions.present? && checkboxes == true %>
           EnrollDataTableInitializer.addBulkActions('<%= table_id %>');
         <% end %>
+        <% if checkboxes == true %>
+          EnrollDataTableInitializer.addCheckboxHandlers('<%= table_id %>');
+        <% end %>
         <% if buttons_below_table.present? %>
           EnrollDataTableInitializer.addButtonsBelowTable('<%= table_id %>');
         <% end %>

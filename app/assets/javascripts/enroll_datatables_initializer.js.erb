@@ -98,6 +98,10 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     var $dropdown = $('#'+table_id+'-bulk-actions').closest('.dropdown').detach();
     $header.prepend($dropdown);
     $dropdown.removeClass('hidden');
+  }
+
+  function addCheckboxHandlers(table_id) {
+    var $dropdown = $('#'+table_id+'-bulk-actions').closest('.dropdown')
     $(document).on('change', '#'+table_id+' .enroll-checkbox input', function() {
       if ( $dropdown.find('.disabled').length && $('#'+table_id+' .enroll-checkbox input:checked').length > 0 ) {
         $dropdown.find('.dropdown-toggle').removeClass('disabled');
@@ -212,6 +216,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     swapSearchAndNewButton : swapSearchAndNewButton,
     showButtonsBelow : showButtonsBelow,
     addRowDataToParams : addRowDataToParams,
+    addCheckboxHandlers : addCheckboxHandlers,
     attachPostDrawHandlers : attachPostDrawHandlers
   };
 
