@@ -221,7 +221,7 @@ class Exchanges::HbxProfilesController < ApplicationController
   def families_index_datatable
     dt_query = extract_datatable_parameters
     families = Family.all
-   
+
     @draw = dt_query.draw
     @total_records = families.count
     @records_filtered = families.count
@@ -232,6 +232,14 @@ class Exchanges::HbxProfilesController < ApplicationController
       @families = families.skip(dt_query.skip).limit(dt_query.take)
     end
     render "families_index_datatable"
+  end
+
+  def cancel_enrollment
+    @row = params[:row]
+    respond_to do |format|
+      format.js { render "datatables/cancel_enrollment" }
+    end
+
   end
 
   def broker_agency_index

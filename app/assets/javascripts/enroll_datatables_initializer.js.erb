@@ -150,6 +150,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   function wrapSearchInBootstrap(table_id) {
+    findTable(table_id);
     var $search_input = $table.closest('.module').find('.search input');
     $table.closest('.module').find('.search label:first').remove();
     $search_input.addClass('form-control');
@@ -158,7 +159,37 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.closest('.module').find('.input-group').wrap('<div class="input-no-pd"></div>');
   }
 
+  function addRowIndexToRowFunctionLinks(table_id) {
+    findTable(table_id);
+    $remote_links = $table.find('.row-actions .dropdown a[data-remote="true"]');
+    $remote_links.each(function() {
+      $row_index = $(this).closest('tr').find('td:first span').data('index');
+      $existing_href = $(this).attr('href');
+      $(this).attr('href', $existing_href+"?row="+$row_index);
+    });
+  }
+
+  function addRowDataToParams(table_id) {
+    findTable(table_id);
+      $table.find('.row-actions .dropdown a[data-remote="true"]').each(function() {
+        var $link = $(this);
+        var $row = $(this).closest('tr');
+        $row.find('.row-data span.for-remote').each(function(index, $link) {
+          var data_attributes = [];
+          $.each($(this).data(), function(k,v) {
+            data_attributes.push(k+"="+v);
+          });
+          $.each(data_attributes, function(index,value) {
+            var $link = $row.find('.row-actions .dropdown a[data-remote="true"]').eq(index);
+            var $existing_href = $link.attr('href');
+            $link.attr('href', $existing_href+"&"+value);
+          });
+        });
+      });
+  }
+
   return {
+    addRowIndexToRowFunctionLinks : addRowIndexToRowFunctionLinks,
     wrapSearchInBootstrap : wrapSearchInBootstrap,
     moveInfo : moveInfo,
     moveTableLength : moveTableLength,
@@ -170,7 +201,8 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     showPagination : showPagination,
     makeResponsiveTable : makeResponsiveTable,
     swapSearchAndNewButton : swapSearchAndNewButton,
-    showButtonsBelow : showButtonsBelow
+    showButtonsBelow : showButtonsBelow,
+    addRowDataToParams : addRowDataToParams
   };
 
 } )( window );

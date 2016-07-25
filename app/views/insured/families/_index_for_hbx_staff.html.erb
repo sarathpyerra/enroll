@@ -16,23 +16,26 @@
     ],
     row_functions:  true,
     row_actions:  [
-      ["trash fa-lg", "url", "request_type", "Cancel/Terminate", "Cancel/Terminate", [
-        ["Cancel", "url", true],
-        ["Terminate", "url", true]
-      ]]],
+      ["Cancel", cancel_enrollment_exchanges_hbx_profiles_path, true ]
+      # ["trash ", "url", "request_type", "Cancel/Terminate", "Cancel/Terminate", [
+      #   ["Cancel", cancel_enrollment_exchanges_hbx_profiles_path, true],
+      #   ["Terminate", "url", true]
+      # ]]
+    ],
     buttons_below_table:  [
       # ['Export CSV', 'url', 'request_type'],
       # ['Print', 'url', 'request_type']
     ],
+    row_data: true,
     child_rows:  [true, "datatables/child_row"],
     destroy: false,
-    responsive:  true,
+    responsive:  false,
     checkboxes:  true,
     pagination:  true,
     ordering:  false,
     info:  true,
     table_id: "family-dataTable",
-    data_url:families_index_datatable_exchanges_hbx_profiles_path(:format => :json),
+    data_url: families_index_datatable_exchanges_hbx_profiles_path(:format => :json),
     columns:  [
       ["Name", "name", "", [false, ""]],
       ["SSN", "ssn", "", [false, ""]],

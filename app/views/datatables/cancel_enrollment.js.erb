@@ -1,0 +1,2 @@
+var $parent_row = $( ".table tbody tr" ).eq( <%= @row %> );
+$parent_row.after('<tr><td colspan="10"><%= j render "datatables/cancel_enrollment" %></td></tr>');
