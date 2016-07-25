@@ -177,6 +177,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
         $row.find('.row-data span.for-remote').each(function(index, $link) {
           var data_attributes = [];
           $.each($(this).data(), function(k,v) {
+            k = k.replace(/(?:^|\.?)([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "")
             data_attributes.push(k+"="+v);
           });
           $.each(data_attributes, function(index,value) {
@@ -186,6 +187,14 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
           });
         });
       });
+  }
+
+  function attachPostDrawHandlers(table_id) {
+    findTable(table_id);
+    $table.on( 'draw.dt', function () {
+      EnrollDataTableInitializer.addRowIndexToRowFunctionLinks(table_id);
+      EnrollDataTableInitializer.addRowDataToParams(table_id);
+    });
   }
 
   return {
@@ -202,7 +211,8 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     makeResponsiveTable : makeResponsiveTable,
     swapSearchAndNewButton : swapSearchAndNewButton,
     showButtonsBelow : showButtonsBelow,
-    addRowDataToParams : addRowDataToParams
+    addRowDataToParams : addRowDataToParams,
+    attachPostDrawHandlers : attachPostDrawHandlers
   };
 
 } )( window );

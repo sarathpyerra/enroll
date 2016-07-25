@@ -112,6 +112,7 @@
         EnrollDataTableInitializer.wrapSearchInBootstrap('<%= table_id %>');
         EnrollDataTableInitializer.addRowIndexToRowFunctionLinks('<%= table_id %>');
         EnrollDataTableInitializer.addRowDataToParams('<%= table_id %>');
+        EnrollDataTableInitializer.attachPostDrawHandlers('<%= table_id %>');
       },
       "columns": [
         <% if checkboxes == true %>
@@ -160,7 +161,7 @@
             'className': 'row-actions',
             'render': function (data, type, full, meta) {
               // return '<% row_actions.each do |fa_icon, url, request_type, tooltip, popover_title, popover| %><% if popover.present? %><span title="<%= popover_title %>" data-toggle="popover" data-placement="top" data-html="true" data-content=\'<% popover.each do |popover_link| %><%= link_to "#{popover_link[0]}", "#{popover_link[1]}", remote: "#{popover_link[2]}" %><br/><% end %>\'><%="<i class=\"fa fa-#{fa_icon}\" data-toggle=\"tooltip\" title=\"#{popover_title}\" aria-hidden=\"true\"></i>".html_safe %></span><% else %><span><%= link_to j("<i class='fa fa-#{fa_icon}' aria-hidden='true'></i>".html_safe), "#{url}", remote: request_type, title: "#{tooltip}", data: {'toggle': 'tooltip'} %></span>&#10;<% end %><% end %>';
-                return '<div class="dropdown"><button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Actions<span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="dropdownMenu1"><% row_actions.each do |row_action| %><%= link_to "#{row_action[0]}", "#{row_action[1]}", remote: "#{row_action[2]}" %><% end %></ul></div>';
+                return '<div class="dropdown"><button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Actions <span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1"><% row_actions.each do |row_action| %><%= link_to "#{row_action[0]}", "#{row_action[1]}", remote: "#{row_action[2]}" %><% end %></ul></div>';
             }
           }, {
             'targets': <%= columns.length - 1 %>,
