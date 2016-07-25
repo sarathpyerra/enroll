@@ -22,32 +22,24 @@
   		# ["Send Secure Message", "", true],
   		# ["Delete", "", false]
   	],
-  	row_functions:  true,
-  	row_actions:  [
-  		["asterisk", "url", "request_type", "tooltip", "This Popover", [
-        ["thisda", "url", true],
-        ["thisssda", "url", true]
-      ],
+  	row_functions:  false,
+    row_actions:  [
+      ["Cancel", "asd", true ]
     ],
-  		["bomb", "url", "request_type", "tooltip"],
-  		["asterisk", "url", "request_type", "tooltip"],
-  		["bomb", "url", "request_type", "tooltip"],
-      ["caret-down", "url", "request_type", "View Details"]
-  	],
   	buttons_below_table: [
   		# ['Export CSV', 'url', 'request_type'],
   		# ['Print', 'url', 'request_type']
   	],
-    child_rows:  [false, "datatables/child_row"],
+    child_rows: [false, "datatables/child_row"],
     destroy: false,
-    responsive:  true,
-  	checkboxes:  true,
-  	pagination:  true,
-  	ordering:  false,
-  	info:  false,
-  	table_id:  "verification-dataTable",
-  	data_url:  verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json),
-  	columns:  [
+    responsive: true,
+  	checkboxes: false,
+  	pagination: true,
+  	ordering: true,
+  	info: false,
+  	table_id: "verification-dataTable",
+  	data_url: verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json),
+  	columns: [
       ["HBX ID", "hbx_id", "", [false, ""]],
       ["First name", "first_name", "", [false, ""]],
       ["Last name", "last_name", "", [false, ""]],
