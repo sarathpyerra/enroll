@@ -74,7 +74,13 @@
       "info": <%= info || false %>,
       "ajax": {
         url: "<%= data_url %>",
-        type: "POST"
+        type: "POST",
+        data: function ( d ) {
+          var dt_params = $('#<%= table_id %>').data('dt_params');
+          if ( dt_params ) {
+            $.extend(d, dt_params);
+          }
+       }
       },
       'order': [
         [1, 'asc']
@@ -116,6 +122,7 @@
         EnrollDataTableInitializer.addRowIndexToRowFunctionLinks('<%= table_id %>');
         EnrollDataTableInitializer.addRowDataToParams('<%= table_id %>');
         EnrollDataTableInitializer.attachPostDrawHandlers('<%= table_id %>');
+        EnrollDataTableInitializer.AddParamsBeforeDraw('<%= table_id %>', {name: "bob", dog: "cat"});
       },
       "columns": [
         <% if checkboxes == true %>
