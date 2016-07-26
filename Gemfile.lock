@@ -213,6 +213,8 @@ GEM
     factory_girl_rails (4.6.0)
       factory_girl (~> 4.5.0)
       railties (>= 3.0.0)
+    faker (1.6.6)
+      i18n (~> 0.5)
     ffi (1.9.10)
     font-awesome-rails (4.5.0.1)
       railties (>= 3.2, < 5.1)
@@ -557,6 +559,7 @@ DEPENDENCIES
   email_spec (= 2.0.0)
   eye
   factory_girl_rails (= 4.6.0)
+  faker
   font-awesome-rails (= 4.5.0.1)
   forgery
   haml
@@ -618,4 +621,4 @@ DEPENDENCIES
   wkhtmltopdf-binary-edge (~> 0.12.3.0)
 
 BUNDLED WITH
-   1.12.1
+   1.12.5

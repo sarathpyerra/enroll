@@ -125,6 +125,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.4.2'
   gem 'factory_girl_rails', "4.6.0"
   gem 'forgery'
+  gem 'faker'
   gem 'email_spec', '2.0.0'
   gem 'byebug', '8.2.2'
   gem 'rspec_junit_formatter', '0.2.3'
