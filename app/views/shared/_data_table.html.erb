@@ -122,6 +122,11 @@
         EnrollDataTableInitializer.addRowIndexToRowFunctionLinks('<%= table_id %>');
         EnrollDataTableInitializer.addRowDataToParams('<%= table_id %>');
         EnrollDataTableInitializer.attachPostDrawHandlers('<%= table_id %>');
+        <% if custom_handlers.present? %>
+          <% custom_handlers.each do |custom_handler| %>
+            <%= custom_handler %>('<%= table_id %>');
+          <% end %>
+        <% end %>
       },
       "columns": [
         <% if checkboxes == true %>
@@ -157,7 +162,7 @@
             'targets': 0,
             'searchable': false,
             'orderable': false,
-            'className': 'dt-body-center',
+            'className': 'dt-center',
             'render': function (data, type, full, meta) {
               return '<span data-index="'+meta.row+'" class="enroll-checkbox"><div class="checkbox"><label><input id="input_'+meta.row+'" type="checkbox" name="id['+meta.row+']" value="input_'+meta.row+'' + $('<div/>').text(data).html() + '"><label for="input_'+meta.row+'"><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>';
             }
@@ -188,7 +193,7 @@
             'targets': 0,
             'searchable': false,
             'orderable': false,
-            'className': 'dt-body-center',
+            'className': 'dt-center',
             'render': function (data, type, full, meta) {
               return '<span class="enroll-checkbox"><div class="checkbox"><label><input id="input_'+meta.row+'" type="checkbox" name="id['+meta.row+']" value="input_'+meta.row+'' + $('<div/>').text(data).html() + '"><label for="input_'+meta.row+'"><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>';
             }

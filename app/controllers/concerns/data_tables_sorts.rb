@@ -36,4 +36,32 @@ module DataTablesSorts
       end
     end
   end
+
+  module EmployersIndexSorts
+    def sort_employers_index_columns(employers, sort)
+      if params[:order]["0"][:column].present?
+        column = params[:order]["0"][:column]
+        order_by = (params[:columns][column][:data])
+
+        case order_by
+        when "last_name"
+          order_by = "_id"
+        when "first_name"
+          order_by = "_id"
+        end
+
+        order_by = order_by.to_sym
+
+        if sort == "asc"
+          employers = employers.order_by(order_by.asc)
+        else
+          employers = employers.order_by(order_by.desc)
+        end
+
+        return employers
+
+      end
+    end
+  end
+
 end

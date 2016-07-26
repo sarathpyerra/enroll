@@ -1,0 +1,92 @@
+var EmployerInvoicesDatatable = ( function( window, undefined ) {
+
+  function callAll(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $all_filter = $table.closest('.module').find('.first-level a:contains("All")');
+    $all_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {});
+      $table.DataTable().draw();
+    });
+  }
+
+  function callInitialFirstMonthFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Initial-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month %>")');
+    $active_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {filter: "InitialFirstMonthFilter"});
+    });
+  }
+
+  function callInitialSecondMonthFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Initial-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month %>")');
+    $active_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {filter: "InitialSecondMonthFilter"});
+    });
+  }
+
+  function callInitialThirdMonthFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Initial-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month %>")');
+    $active_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {filter: "InitialThirdMonthFilter"});
+    });
+  }
+
+  function callRenewingFirstMonthFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Renewing-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month %>")');
+    $active_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {filter: "RenewingFirstMonthFilter"});
+    });
+  }
+
+  function callRenewingSecondMonthFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Renewing-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month %>")');
+    $active_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {filter: "RenewingSecondMonthFilter"});
+    });
+  }
+
+  function callRenewingThirdMonthFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Renewing-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month %>")');
+    $active_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {filter: "RenewingThirdMonthFilter"});
+    });
+  }
+
+  function generateInvoicesForSelection(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $url = $table.closest('.module').data('generate-invoice-url');
+    var $generate_invoices_link = $('.dropdown-menu').find('a:contains("Generate Invoice")');
+    $generate_invoices_link.on('click', function() {
+      var $employer_ids = []
+      $table.find('tbody .enroll-checkbox input:checked').closest('tr').find('.row-data').find('span').each( function() {
+        $employer_ids.push($(this).data('employer-id'))
+      })
+      $.ajax({
+        context: this,
+        type: "post",
+        url: $url,
+        dataType: 'script',
+        data: {
+          employerId: $employer_ids
+        },
+      })
+    });
+  }
+
+  return {
+    callInitialFirstMonthFilter : callInitialFirstMonthFilter,
+    callInitialSecondMonthFilter : callInitialSecondMonthFilter,
+    callInitialThirdMonthFilter : callInitialThirdMonthFilter,
+    callRenewingFirstMonthFilter : callRenewingFirstMonthFilter,
+    callRenewingSecondMonthFilter : callRenewingSecondMonthFilter,
+    callRenewingThirdMonthFilter : callRenewingThirdMonthFilter,
+    generateInvoicesForSelection : generateInvoicesForSelection,
+    callAll: callAll
+  };
+
+} )( window );
