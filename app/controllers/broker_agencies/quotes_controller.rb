@@ -356,9 +356,49 @@ class BrokerAgencies::QuotesController < ApplicationController
     render json: {'relationship_benefits' => bp_hash, 'roster_premiums' => bg.roster_cost_all_plans, 'criteria' => JSON.parse(bg.criteria_for_ui), summary: summary}
   end
 
+  def set_plan
+    @q = Quote.find(params[:quote_id])
+
+    bg = (params[:benefit_group_id] && @q.quote_benefit_groups.find(params[:benefit_group_id]))
+
+    if params[:plan_id] && bg
+      plan = Plan.find(params[:plan_id][8,100])
+      elected_plan_choice = ['na', 'Single Plan', 'Single Carrier', 'Metal Level'][params[:elected].to_i]
+      bg.plan = plan
+      bg.plan_option_kind = elected_plan_choice
+      roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds($quote_shop_health_plans,
+         bg.quote_relationship_benefits, bg.roster_cost_all_plans)
+       case elected_plan_choice
+         when 'Single Carrier'
+           @offering_param  = plan.name
+           bg.published_lowest_cost_plan = roster_elected_plan_bounds[:carrier_low_plan][plan.carrier_profile.abbrev]
+           bg.published_highest_cost_plan = roster_elected_plan_bounds[:carrier_high_plan][plan.carrier_profile.abbrev]
+         when 'Metal Level'
+           @offering_param  = plan.metal_level.capitalize
+           bg.published_lowest_cost_plan = roster_elected_plan_bounds[:metal_low_plan][plan.metal_level]
+           bg.published_highest_cost_plan = roster_elected_plan_bounds[:metal_high_plan][plan.metal_level]
+         else
+           @offering_param = ""
+           bg.published_lowest_cost_plan = plan
+           bg.published_highest_cost_plan = plan
+       end
+       bg.save
+    end
+
+    @benefit_groups = @q.quote_benefit_groups
+    respond_to do |format|
+      format.html {render partial: 'publish'}
+      format.pdf do
+          render :pdf => "publised_quote",
+                 :template => "/broker_agencies/quotes/_publish.pdf.erb"
+      end
+    end
+  end
+
   def publish
     @q = Quote.find(params[:quote_id])
     @benefit_groups = @q.quote_benefit_groups
+    @offering_param = 'Logic based on plan_option_kind TODO VARUN'
     respond_to do |format|
       format.html {render partial: 'publish'}
       format.pdf do

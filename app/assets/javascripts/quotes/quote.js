@@ -2,7 +2,7 @@ function inject_quote(quote_id, benefit_group_id, plan_id, elected, cost) {
     console.log('jinect', quote_id, benefit_group_id)
     $.ajax({
       type: "GET",
-      url: "/broker_agencies/quotes/publish",
+      url: "/broker_agencies/quotes/set_plan",
       data: {quote_id: quote_id,
              benefit_group_id: benefit_group_id,
              plan_id: plan_id,
