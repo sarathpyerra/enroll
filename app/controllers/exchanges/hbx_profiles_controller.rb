@@ -235,7 +235,7 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def cancel_enrollment
-    @hbx_enrollment = HbxEnrollment.where(_id: params[:hbx_id])
+    @hbx_enrollment = HbxEnrollment.find(params[:hbx_id])
     @row = params[:row]
     respond_to do |format|
       format.js { render "datatables/cancel_enrollment" }

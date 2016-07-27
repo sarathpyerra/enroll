@@ -46,6 +46,7 @@ Rails.application.routes.draw do
         get :verification_index
         post :verifications_index_datatable
         get :cancel_enrollment
+        post :update_cancel_enrollment
       end
 
       member do
