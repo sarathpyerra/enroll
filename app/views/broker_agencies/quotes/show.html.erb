@@ -12,12 +12,10 @@
     <div class="panel panel-default">
       <div class="panel-heading" role="tab" id="feature-mgmt-header">
         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#feature-mgmt" aria-expanded="true" aria-controls="feature-mgmt">
-
           <b>Health Features and cost criteria</b>
-          <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
+          <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a>
           <span style='margin-left: 50px; font-size: 120%;'  id='show_plan_criteria_count'>Plan count</span>
            <label class='btn btn-normal hide' id='reset_criteria'> Reset Criteria</label>
-        </a>
       </div>
       <div id="feature-mgmt" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="">
       <%= render partial: 'my_features' %>
@@ -30,11 +28,11 @@
             <a role="button">
                  <div data-toggle="collapse" data-parent="#accordion" href="#plan-selection-mgmt"
                    aria-expanded="true" aria-controls="plan-selection-mgmt" style='display: inline; float_left'>
-                     <b>Health Plan Selection</b>
-                     <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
+                     <b>Health Plan Selection</b><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></div></a>
+
                      <span style='margin-left: 50px; font-size: 120%;'  id='show_plan_selected_count'>Plan count</span>
-                 </div>
-             </a>
+
+
              <label class='btn btn-normal' id='reset_selected'> Reset Selections</label>
                      </div>
                <div id="plan-selection-mgmt" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="">
