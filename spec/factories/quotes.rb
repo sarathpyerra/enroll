@@ -1,8 +1,15 @@
 FactoryGirl.define do
   factory :quote do
-    claim_code Faker::Lorem.characters(8)
+    sequence(:claim_code){|n| Faker::Lorem.characters(8)+ "#{n}"} 
+    after(:create) do |q, evaluator|
+        build(:quote_benefit_group, quote: q )
+    end
   end
-  # trait :with_household_and_members do 
-  # 	quote_household {[FactoryGirl.build(:quote_household)]}
-  # end
+
+  trait :with_household_and_members do
+		after(:create) do |q, evaluator|
+			create(:quote_household,:with_members, quote: q)
+    end
+  end
+  
 end
