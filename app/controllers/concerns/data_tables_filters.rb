@@ -11,11 +11,11 @@ module DataTablesFilters
       if filter.present?
         case filter
         when "InitialFirstMonthFilter"
-          employers = Organization.employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month)
+          employers = Organization.employer_profile_initial_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month)
         when "InitialSecondMonthFilter"
-          employers = Organization.employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month)
+          employers = Organization.employer_profile_initial_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month)
         when "InitialThirdMonthFilter"
-          employers = Organization.employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month)
+          employers = Organization.employer_profile_initial_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month)
         when "RenewingFirstMonthFilter"
           employers = Organization.employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month)
         when "RenewingSecondMonthFilter"
