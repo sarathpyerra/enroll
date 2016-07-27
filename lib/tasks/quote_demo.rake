@@ -79,14 +79,17 @@ namespace :quote_demo do
       q.plan_year = 2016
       q.start_on = Date.new(2016,7,2)
 
+      plan1 = Plan.where("active_year"=>2016, "hios_base_id" => "73987DC0040025").first.id
+      plan2 = Plan.where("active_year"=>2016, "hios_base_id" => "75753DC0010066").first.id
+
       #q.build_relationship_benefits
       qbg = q.quote_benefit_groups.build
       qbg.plan_option_kind = "single_carrier"
       qbg.title = "Office Workers"
       qbg.build_relationship_benefits
-      qbg.published_reference_plan = BSON::ObjectId('56d5e954c324df0ba7009697')
-      qbg.published_lowest_cost_plan = BSON::ObjectId('56d5e954c324df0ba7009697')
-      qbg.published_highest_cost_plan = BSON::ObjectId('56d5e954c324df0ba7009697')
+      qbg.published_reference_plan = plan1
+      qbg.published_lowest_cost_plan = plan1
+      qbg.published_highest_cost_plan = plan1
 
       qbg.relationship_benefit_for("employee").premium_pct=(70)
       qbg.relationship_benefit_for("spouse").premium_pct=(50)
@@ -96,9 +99,9 @@ namespace :quote_demo do
       qbg1.plan_option_kind = "single_carrier"
       qbg1.title = "Outside Workers"
       qbg1.build_relationship_benefits
-      qbg1.published_reference_plan = BSON::ObjectId('56d5e963c324df0ba700ee00')
-      qbg1.published_lowest_cost_plan = BSON::ObjectId('56d5e963c324df0ba700ee00')
-      qbg1.published_highest_cost_plan = BSON::ObjectId('56d5e963c324df0ba700ee00')
+      qbg1.published_reference_plan = plan2
+      qbg1.published_lowest_cost_plan = plan2
+      qbg1.published_highest_cost_plan = plan2
 
 
       qbg1.relationship_benefit_for("employee").premium_pct=(80)
