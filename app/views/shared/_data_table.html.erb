@@ -68,6 +68,11 @@
     var enroll_datatable = $('#<%= table_id %>').EnrollDataTable({
       "destroy": <%= destroy || false %>,
       "processing": true,
+      <% if processing_text.present? %>
+      "language": {
+         "processing": "<i class='fa fa-spinner fa-2x' aria-hidden='true'></i><h4><%= processing_text %></h4>"
+      },
+      <% end %>
       "serverSide": true,
       "ordering": <%= ordering || false %>,
       "paging": <%= pagination || false %>,
@@ -122,6 +127,15 @@
         EnrollDataTableInitializer.addRowIndexToRowFunctionLinks('<%= table_id %>');
         EnrollDataTableInitializer.addRowDataToParams('<%= table_id %>');
         EnrollDataTableInitializer.attachPostDrawHandlers('<%= table_id %>');
+        <% if custom_handlers.present? %>
+          <% custom_handlers.each do |custom_handler| %>
+            <%= custom_handler %>('<%= table_id %>');
+          <% end %>
+        <% end %>
+      },
+      "drawCallback": function( settings ) {
+        EnrollDataTableInitializer.moveInfo('<%= table_id %>');
+        EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
       },
       "columns": [
         <% if checkboxes == true %>
@@ -157,7 +171,7 @@
             'targets': 0,
             'searchable': false,
             'orderable': false,
-            'className': 'dt-body-center',
+            'className': 'dt-center',
             'render': function (data, type, full, meta) {
               return '<span data-index="'+meta.row+'" class="enroll-checkbox"><div class="checkbox"><label><input id="input_'+meta.row+'" type="checkbox" name="id['+meta.row+']" value="input_'+meta.row+'' + $('<div/>').text(data).html() + '"><label for="input_'+meta.row+'"><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>';
             }
@@ -188,7 +202,7 @@
             'targets': 0,
             'searchable': false,
             'orderable': false,
-            'className': 'dt-body-center',
+            'className': 'dt-center',
             'render': function (data, type, full, meta) {
               return '<span class="enroll-checkbox"><div class="checkbox"><label><input id="input_'+meta.row+'" type="checkbox" name="id['+meta.row+']" value="input_'+meta.row+'' + $('<div/>').text(data).html() + '"><label for="input_'+meta.row+'"><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>';
             }
@@ -241,18 +255,18 @@
         function format ( d ) {
           return '<%= j render("#{child_rows[1]}", columns_count: column_count) %>';
         }
-        // $('#<%= table_id %>').on('click', 'tr', function () {
-        //   var tr = $(this).closest('tr');
-        //   var row = enroll_datatable.row( tr );
-        //   if ( row.child.isShown() ) {
-        //     row.child.hide();
-        //     tr.removeClass('shown');
-        //   }
-        //   else {
-        //     row.child( format(row.data()) ).show();
-        //     tr.addClass('shown');
-        //   }
-        // });
+        $('#<%= table_id %>').on('click', 'tr', function () {
+          var tr = $(this).closest('tr');
+          var row = enroll_datatable.row( tr );
+          if ( row.child.isShown() ) {
+            row.child.hide();
+            tr.removeClass('shown');
+          }
+          else {
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+          }
+        });
       <% end %>
   });
 </script>
