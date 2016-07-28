@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   get 'check_time_until_logout' => 'session_timeout#check_time_until_logout', :constraints => { :only_ajax => true }
   get 'reset_user_clock' => 'session_timeout#reset_user_clock', :constraints => { :only_ajax => true }
-
+  post 'show_hints' => 'welcome#show_hints', :constraints => { :only_ajax => true }
 
   namespace :users do
     resources :orphans, only: [:index, :show, :destroy]
@@ -42,11 +42,15 @@ Rails.application.routes.draw do
         get :staff_index
         get :assister_index
         get :request_help
+        get :binder_index
+        get :binder_index_datatable
+        post :binder_paid
         get :verification_index
         get :verifications_index_datatable
       end
 
       member do
+        post :transmit_group_xml
         get :home
         get :inbox
       end
