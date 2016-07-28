@@ -135,7 +135,7 @@ class PlanCostDecorator < SimpleDelegator
         :first_name => m.first_name,
         :employee_relationship => m.employee_relationship,
         :age => m.age_on(TimeKeeper.date_of_record),
-        :family_id => m.quote_households.id,
+        :family_id => m.quote_household.id,
         :employee_cost => employee_cost_for(m),
         :employer_contribution_percent => employer_contribution_percent(m),
         :employee_contribution => employer_contribution_for(m),

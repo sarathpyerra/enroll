@@ -82,23 +82,22 @@ class QuoteBenefitGroup
 
   def set_bounding_cost_plans
     return if reference_plan_id.nil?
-
-      if quote.plan_option_kind == "single_plan"
-        plans = [reference_plan]
+    if quote.plan_option_kind == "single_plan"
+      plans = [reference_plan]
+    else
+      if quote.plan_option_kind == "single_carrier"
+        plans = Plan.shop_health_by_active_year(reference_plan.active_year).by_carrier_profile(reference_plan.carrier_profile)
       else
-        if quote.plan_option_kind == "single_carrier"
-          plans = Plan.shop_health_by_active_year(reference_plan.active_year).by_carrier_profile(reference_plan.carrier_profile)
-        else
-          plans = Plan.shop_health_by_active_year(reference_plan.active_year).by_health_metal_levels([reference_plan.metal_level])
-        end
+        plans = Plan.shop_health_by_active_year(reference_plan.active_year).by_health_metal_levels([reference_plan.metal_level])
       end
+    end
 
-      if plans.size > 0
-        plans_by_cost = plans.sort_by { |plan| plan.premium_tables.first.cost }
+    if plans.size > 0
+      plans_by_cost = plans.sort_by { |plan| plan.premium_tables.first.cost }
 
-        self.lowest_cost_plan_id  = plans_by_cost.first.id
-        self.highest_cost_plan_id = plans_by_cost.last.id
-      end
+      self.lowest_cost_plan_id  = plans_by_cost.first.id
+      self.highest_cost_plan_id = plans_by_cost.last.id
+    end
   end
 
 
