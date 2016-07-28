@@ -50,10 +50,6 @@ FactoryGirl.define do
     roles ["employee"]
   end
 
-  trait :employer_staff do
-    roles ["employer_staff"]
-  end
-
   trait "broker" do
     roles ["broker"]
   end
