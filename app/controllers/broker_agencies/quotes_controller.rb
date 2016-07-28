@@ -381,16 +381,16 @@ class BrokerAgencies::QuotesController < ApplicationController
        case elected_plan_choice
          when 'Single Carrier'
            @offering_param  = plan.name
-           bg.published_lowest_cost_plan = roster_elected_plan_bounds[:carrier_low_plan][plan.carrier_profile.abbrev]
-           bg.published_highest_cost_plan = roster_elected_plan_bounds[:carrier_high_plan][plan.carrier_profile.abbrev]
+           bg.published_lowest_cost_plan = roster_elected_plan_bounds[:carrier_low_plan][plan.carrier_profile.abbrev].id
+           bg.published_highest_cost_plan = roster_elected_plan_bounds[:carrier_high_plan][plan.carrier_profile.abbrev].id
          when 'Metal Level'
            @offering_param  = plan.metal_level.capitalize
-           bg.published_lowest_cost_plan = roster_elected_plan_bounds[:metal_low_plan][plan.metal_level]
-           bg.published_highest_cost_plan = roster_elected_plan_bounds[:metal_high_plan][plan.metal_level]
+           bg.published_lowest_cost_plan = roster_elected_plan_bounds[:metal_low_plan][plan.metal_level].id
+           bg.published_highest_cost_plan = roster_elected_plan_bounds[:metal_high_plan][plan.metal_level].id
          else
            @offering_param = ""
-           bg.published_lowest_cost_plan = plan
-           bg.published_highest_cost_plan = plan
+           bg.published_lowest_cost_plan = plan.id
+           bg.published_highest_cost_plan = plan.id
        end
        bg.save
     end
