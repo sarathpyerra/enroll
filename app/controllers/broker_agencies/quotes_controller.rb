@@ -50,12 +50,12 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     @payload = quotes.map { |q|
       {
-        :quote_name => (view_context.link_to q.quote_name, broker_agencies_quote_path(q.id)),
+        :quote_name => (view_context.link_to q.quote_name, broker_agencies_quote_path(q.id), data: { no_turbolink: true }),
         :family_count => q.quote_households.count,
         :benefit_group_count => q.quote_benefit_groups.count,
         :claim_code => q.claim_code,
         :quote_state => q.aasm_state,
-        :quote_roster => (view_context.link_to "View/Edit", edit_broker_agencies_quote_path(q.id)),
+        :quote_roster => (view_context.link_to "View/Edit", edit_broker_agencies_quote_path(q.id), data: { no_turbolink: true }),
         :quote_download => quote_download_link(q),
         :quote_delete => ('<button type="button" onclick="delete_quote_handler" id="close_button" data-quote-id="' + q.id + '" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>').html_safe
 
@@ -151,8 +151,8 @@ class BrokerAgencies::QuotesController < ApplicationController
       dup_household = @quote.quote_households.find(params[:duplicate_household]).dup
       dup_household.quote_members.each do |qhm|
         qhm.dob = nil
-        qhm.first_name = ""
-        qhm.last_name = ""
+        #qhm.first_name = ""
+        #qhm.last_name = ""
       end
       for i in 0..params[:num_of_dup].to_i
         temp_household = dup_household.dup
@@ -162,6 +162,9 @@ class BrokerAgencies::QuotesController < ApplicationController
         @quote.quote_households << temp_household
       end
     end
+
+    # Create place holder for a new benefit group
+    qbg = QuoteBenefitGroup.new
 
     # Create place holder for a new household and new member for the roster
     qhh = QuoteHousehold.new
@@ -173,6 +176,9 @@ class BrokerAgencies::QuotesController < ApplicationController
     qm = QuoteMember.new
     qhh.quote_members << qm
     @quote.quote_households << qhh
+    @quote_benefit_group_dropdown = @quote.quote_benefit_groups.dup
+    @quote.quote_benefit_groups << qbg
+
 
     #redirect_to edit_broker_agencies_quote_path(@quote.id)
 
@@ -183,7 +189,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     # Build Default Quote Benefit Group
     qbg = QuoteBenefitGroup.new
-    qbg.build_relationship_benefits
+    qbg.title = "Default Beneift Package"
     quote.quote_benefit_groups << qbg
 
     # Assign new quote to current broker
@@ -204,6 +210,10 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     update_params[:quote_households_attributes] = update_params[:quote_households_attributes].select {|k,v| update_params[:quote_households_attributes][k][:id].present?}
     insert_params[:quote_households_attributes] = insert_params[:quote_households_attributes].select {|k,v| insert_params[:quote_households_attributes][k][:id].blank?}
+
+    update_params[:quote_benefit_groups_attributes] = update_params[:quote_benefit_groups_attributes].select {|k,v| update_params[:quote_benefit_groups_attributes][k][:id].present?}
+    insert_params[:quote_benefit_groups_attributes] = insert_params[:quote_benefit_groups_attributes].select {|k,v| insert_params[:quote_benefit_groups_attributes][k][:id].blank?}
+
 
     if (@quote.update_attributes(update_params) && @quote.update_attributes(insert_params))
       redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :notice => "Successfully updated the employee roster" }
@@ -460,6 +470,7 @@ private
                     :quote_name,
                     :start_on,
                     :broker_role_id,
+                    :quote_benefit_groups_attributes => [:id, :title],
                     :quote_households_attributes => [ :id, :family_id , :quote_benefit_group_id,
                                        :quote_members_attributes => [ :id, :first_name, :last_name ,:dob,
                                                                       :employee_relationship,:_delete ] ] )
@@ -486,6 +497,16 @@ private
 
 
   def sanitize_quote_roster_params
+    #binding.pry
+
+    params[:quote][:quote_benefit_groups_attributes].each do |k,v|
+      #do not save if no data was entered for benefit group
+      if v["title"].blank?
+        puts "Deleting key: " + k.to_s
+        params[:quote][:quote_benefit_groups_attributes].delete(k)
+      end
+
+    end
 
     params[:quote][:quote_households_attributes].each do |key, fid|
       delete_family_key = 1

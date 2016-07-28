@@ -44,11 +44,8 @@ class QuoteHousehold
   end
 
   def assign_benefit_group_id
-    puts "Assigining Benefit Group IDs"
     if quote_benefit_group_id.nil?
-      puts "quote.quote_benefit_groups.first.id: " + quote.quote_benefit_groups.first.id.to_s
       self.quote_benefit_group_id = quote.quote_benefit_groups.first.id
-      puts "quote_benefit_group_id " + quote_benefit_group_id.to_s
     end
   end
 

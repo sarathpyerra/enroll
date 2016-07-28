@@ -2,7 +2,7 @@
 
 	<div>&nbsp;</div>
 	<%= link_to 'Upload Employee Roster' , upload_employee_roster_broker_agencies_quotes_path , class: "btn btn-trans" , remote: true  ,id: "upload_employees" %> <br>
-	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+	<!--<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">-->
 		<div class="panel panel-default">
 			<div class="panel-heading" role="tab" id="headingOne">
 				<h3 class="panel-title">
@@ -20,6 +20,31 @@
 				</div>
 			</div>
 		</div>
+
+
+		<div class="panel panel-default">
+			<div class="panel-heading" role="tab" id="headingTwo">
+				<h3 class="panel-title">
+					<a role="button" data-toggle="collapse" data-parent="#accordion" href="#quote-benefit-group" aria-expanded="true" aria-controls="quote-benefit-group">
+						Quote Benefit Groups
+					</a>
+				</h3>
+			</div>
+			<div id="quote-benefit-group" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingQuoteGroup">
+				<div class="panel-body" id="quote-info">
+					<%= f.fields_for :quote_benefit_groups do |benefit_group| %>
+					<div class="row form-inline">
+						<div class="form-group col-sm-12">
+							Benefit Group: <%= benefit_group.text_field :title , {size: 40, placeholder: 'Enter Beneift Group Name'} %>
+							<button type="button" data-quote-id="<%=@quote.id%>" data-benefit-group-id="<%=benefit_group.object.id%>" id="remove_benefit_button"  class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div>&nbsp;</div>
+					</div>
+					<% end %>
+				</div>
+			</div>
+		</div>
+
 		<div>&nbsp;</div>
 
     <h3>Quote Roster</h3>
@@ -31,7 +56,7 @@
 			<%= render "quote_household", qhh:qhh %>
 		<% end %>
 		</div>
-	</div>
+	<!--</div>-->
 
 <script>
 

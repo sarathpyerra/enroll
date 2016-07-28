@@ -12,7 +12,7 @@ class QuoteBenefitGroup
 
   embedded_in :quote
 
-  field :title, type: String, default: "My Benefit Group"
+  field :title, type: String#, default: "My Benefit Group"
   field :default, type: Boolean, default: false
 
   field :plan_option_kind, type: String, default: "single_carrier"
@@ -45,6 +45,10 @@ class QuoteBenefitGroup
   delegate :aasm_state, to: :quote
   #embeds_many :quote_dental_relationship_benefits, cascade_callbacks: true
 
+  validates_presence_of :title
+
+  before_save :build_relationship_benefits
+
   def dental_relationship_benefit_for(relationship)
     quote_relationship_benefits.where(relationship: relationship).first
   end
@@ -58,6 +62,8 @@ class QuoteBenefitGroup
   end
 
   def build_relationship_benefits
+    return if self.quote_relationship_benefits.present?
+    
     self.quote_relationship_benefits = PERSONAL_RELATIONSHIP_KINDS.map do |relationship|
        self.quote_relationship_benefits.build(relationship: relationship, offered: true)
     end

@@ -6,13 +6,6 @@ class Quote
 
   extend Mongorder
 
-  # PERSONAL_RELATIONSHIP_KINDS = [
-  #   :employee,
-  #   :spouse,
-  #   :domestic_partner,
-  #   :child_under_26,
-  #   :child_26_and_over
-  # ]
 
   PLAN_OPTION_KINDS = [:single_plan, :single_carrier, :metal_level]
   field :quote_name, type: String, default: "Sample Quote"
@@ -20,20 +13,10 @@ class Quote
   field :start_on, type: Date, default: TimeKeeper.date_of_record.beginning_of_year
   field :broker_role_id, type: BSON::ObjectId
 
-  # field :published_reference_plan, type: BSON::ObjectId
-  # field :published_lowest_cost_plan, type: BSON::ObjectId
-  # field :published_highest_cost_plan, type: BSON::ObjectId
-  #
-  # field :published_dental_reference_plan, type: BSON::ObjectId
 
   field :claim_code, type: String, default: ''
   associated_with_one :broker_role, :broker_role_id, "BrokerRole"
 
-  associated_with_one :plan, :published_reference_plan, "Plan"
-  associated_with_one :dental_plan, :published_dental_reference_plan, "Plan"
-
-  # field :plan_option_kind, type: String, default: "single_carrier"
-  # field :dental_plan_option_kind, type: String, default: "single_carrier"
 
   # Quote should now support multiple benefit groups
   embeds_many :quote_benefit_groups, cascade_callbacks: true
@@ -42,8 +25,9 @@ class Quote
   embeds_many :quote_households, cascade_callbacks: true
 
 
-  # accepts_nested_attributes_for :quote_households
+  # accepts_nested_attributes_for
   accepts_nested_attributes_for :quote_households, reject_if: :all_blank
+  accepts_nested_attributes_for :quote_benefit_groups, reject_if: :all_blank
 
   validates_uniqueness_of :claim_code, :case_sensitive => false
 
