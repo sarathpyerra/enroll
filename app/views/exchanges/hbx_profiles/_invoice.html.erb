@@ -43,21 +43,21 @@
     responsive: true,
   	checkboxes: true,
   	pagination: true,
-  	ordering: false,
+  	ordering: true,
   	info: true,
   	table_id: "employer-invoices-dataTable",
   	data_url: employer_invoice_datatable_exchanges_hbx_profiles_path(:format => :json),
   	columns: [
       ["FEIN", "fein", "", [false, ""]],
-      ["Legal name", "legal_name", "", [false, ""]],
+      ["Legal name", "legal_name", "", [true, ""]],
       ["Conversion?", "conversion", "", [false, ""]],
       ["Status", "status", "", [false, ""]],
       ["Effective Date", "effective_date", "", [false, ""]],
   	  ["Invoiced?", "invoiced", "", [false, ""]],
-  	  ["Enrolled/Waived", "enrolled_waived", "", [false, ""]],
-  	  ["Pending", "pending", "", [false, ""]],
+  	  ["Enrolled/Waived", "enrolled_waived", "dt-center", [false, ""]],
+  	  ["Pending", "pending", "dt-right", [false, ""]],
       ["Eligible", "eligible", "", [false, ""]],
-      ["Percentage", "percentage", "", [false, ""]]
+      ["Percentage", "percentage", "dt-right", [false, ""]]
   	]
   } %>
 </div>

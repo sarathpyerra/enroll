@@ -37,7 +37,7 @@ module DataTablesSorts
     end
   end
 
-  module EmployersIndexSorts
+  module EmployerInvoicesIndexSorts
     def sort_employers_index_columns(employers, sort)
       if params[:order]["0"][:column].present?
         column = params[:order]["0"][:column]
@@ -46,7 +46,8 @@ module DataTablesSorts
         case order_by
         when "last_name"
           order_by = "_id"
-        when "first_name"
+        when "legal_name"
+          debugger
           order_by = "_id"
         end
 
