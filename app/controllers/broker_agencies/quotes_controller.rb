@@ -346,7 +346,8 @@ class BrokerAgencies::QuotesController < ApplicationController
     #q = Quote.find(params[:quote_id]) OLD - To be Removed
 
     q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
-    return false if q.published?
+
+    return false if q.quote.published?
 
     benefits = params[:benefits]
     q.quote_relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
