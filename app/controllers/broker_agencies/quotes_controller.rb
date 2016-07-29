@@ -16,11 +16,11 @@ class BrokerAgencies::QuotesController < ApplicationController
     # TODO VARUN => Add more checks to publish and save
 
     if @quote.may_publish?
-      @benefit_group = @quote.quote_benefit_groups.first
-      @benefit_group.plan_option_kind = params[:plan_option_kind].gsub(' ','_').downcase
-      @benefit_group.published_reference_plan = Plan.find(params[:reference_plan_id]).id
+      # @benefit_group = @quote.quote_benefit_groups.first
+      # @benefit_group.plan_option_kind = params[:plan_option_kind].gsub(' ','_').downcase
+      # @benefit_group.published_reference_plan = Plan.find(params[:reference_plan_id]).id
+      @quote.claim_code = @quote.employer_claim_code
       @quote.publish!
-      @quote.save!
     end
 
     render "publish_quote" , :flash => {:notice => "Quote Published" }
@@ -344,7 +344,10 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def update_benefits
     #q = Quote.find(params[:quote_id]) OLD - To be Removed
+
     q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
+    return false if q.published?
+
     benefits = params[:benefits]
     q.quote_relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
     render json: {}
@@ -378,17 +381,22 @@ class BrokerAgencies::QuotesController < ApplicationController
       bg.plan_option_kind = elected_plan_choice
       roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds($quote_shop_health_plans,
          bg.quote_relationship_benefits, bg.roster_cost_all_plans)
+
+      #binding.pry
        case elected_plan_choice
          when 'Single Carrier'
            @offering_param  = plan.name
-           bg.published_lowest_cost_plan = roster_elected_plan_bounds[:carrier_low_plan][plan.carrier_profile.abbrev].id
-           bg.published_highest_cost_plan = roster_elected_plan_bounds[:carrier_high_plan][plan.carrier_profile.abbrev].id
+           bg.plan_option_kind = "single_carrier"
+           bg.published_lowest_cost_plan = roster_elected_plan_bounds[:carrier_low_plan][plan.carrier_profile.abbrev]
+           bg.published_highest_cost_plan = roster_elected_plan_bounds[:carrier_high_plan][plan.carrier_profile.abbrev]
          when 'Metal Level'
            @offering_param  = plan.metal_level.capitalize
-           bg.published_lowest_cost_plan = roster_elected_plan_bounds[:metal_low_plan][plan.metal_level].id
-           bg.published_highest_cost_plan = roster_elected_plan_bounds[:metal_high_plan][plan.metal_level].id
+           bg.plan_option_kind = "metal_level"
+           bg.published_lowest_cost_plan = roster_elected_plan_bounds[:metal_low_plan][plan.metal_level]
+           bg.published_highest_cost_plan = roster_elected_plan_bounds[:metal_high_plan][plan.metal_level]
          else
            @offering_param = ""
+           bg.plan_option_kind = "single_plan"
            bg.published_lowest_cost_plan = plan.id
            bg.published_highest_cost_plan = plan.id
        end

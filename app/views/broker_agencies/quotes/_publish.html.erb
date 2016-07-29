@@ -9,7 +9,7 @@
 
       <p>Costs are based on the roster associated with this quote of <b><%= @q.quote_households.count %></b> families:</p>
       <br>
-      <% @q.quote_households.each do |house_hold| %>
+      <% @q.quote_benefit_groups.each do |benefit_group| %>
       <div class="panel-body">
           <div class="panel benefitgroup col-xs-12">
             <div class="col-xs-12">
@@ -17,12 +17,12 @@
                 <section class="col-xs-10">
                   <header class="row">
                     <h3 class="title no-buffer">
-                      <%= "#{@q.quote_name} for Family #{house_hold.family_id}" %>
+                      <%= "#{@q.quote_name} for BG #{benefit_group.title}" %>
                     </h3>
                   </header>
                 </section>
                 <div class="col-xs-2">
-                  <button class="nav-toggle row view" id="showhidebutton" data-toggle="collapse" href="#collapse-health-<%=house_hold.id.to_s%>" onclick="viewDetails($(this))">View Details
+                  <button class="nav-toggle row view" id="showhidebutton" data-toggle="collapse" href="#collapse-health-<%=benefit_group.id.to_s%>" onclick="viewDetails($(this))">View Details
                     <i class="fa fa-chevron-down fa-lg"></i>
                   </button>
                 </div>
@@ -40,6 +40,7 @@
             </div>
           </div>
           <div class="col-xs-12 table-responsive">
+
             <table class="table table-striped table-hover table-sm panel panel-default">
               <thead class="thead-default">
                 <tr>
@@ -49,15 +50,23 @@
                   <th>DOB</th>
                 </tr>
               </thead>
-              <% house_hold.quote_members.each do |member| %>
+              <% @q.quote_households.each do |quote_household| %>
+                <% if quote_household.quote_benefit_group_id == benefit_group.id %>
+                  <% quote_household.quote_members.each do |member| %>
                 <tr>
                   <td><%=member.first_name%></td>
                   <td><%= member.last_name%></td>
                   <td><%= member.employee_relationship.humanize%></td>
                   <td><%= member.dob%></td>
                 </tr>
+                <% end %>
+                <tr>
+                  <td colspan="4">&nbsp;</td>
+                </tr>
+                 <% end %>
               <% end %>
             </table>
+
           </div>
           <div class="quote-benefit-group">
             <div class="benefit-package">
@@ -84,33 +93,33 @@
                   <tr>
                     <td class="col-md-2 col-xs-2">
                       <p>
-                        <%=house_hold.quote_benefit_group.plan.name %>
+                        <%=benefit_group.plan.name %>
                       </p>
                     </td>
                     <td class="col-md-2 col-xs-2">
                       <p>
-                        <%=house_hold.quote_benefit_group.plan.carrier_profile.abbrev.upcase %>
+                        <%=benefit_group.plan.carrier_profile.abbrev.upcase %>
                       </p>
                     </td>
                     <td class="col-md-2 col-xs-2">
                       <p>
-                        <%= house_hold.quote_benefit_group.plan.plan_type.upcase %>
+                        <%= benefit_group.plan.plan_type.upcase %>
                       </p>
                     </td>
                     <td class="col-md-2 col-xs-2">
                       <p>
-                        <%=house_hold.quote_benefit_group.plan.metal_level.capitalize%>
+                        <%=benefit_group.plan.metal_level.capitalize%>
                       </p>
                     </td>
                     <td class="col-md-2 col-xs-2">
                       <p>
-                        <%=house_hold.quote_benefit_group.plan_option_kind.titleize %>
+                        <%= benefit_group.plan_option_kind.titleize %>
                       </p>
                     </td>
                   </tr>
                 </table>
               </div>
-              <div id="collapse-health-<%=house_hold.id.to_s%>" class="collapse" >
+              <div id="collapse-health-<%=benefit_group.id.to_s%>" class="collapse" >
                 <div class="col-xs-1">
                   &nbsp;
                 </div>
@@ -121,7 +130,7 @@
                         <th>Offered</th>
                         <th>Employer Contribution</th>
                       </tr>
-                      <% house_hold.quote_benefit_group.quote_relationship_benefits.each do|rb| %>
+                      <% benefit_group.quote_relationship_benefits.each do|rb| %>
                         <tr>
                           <td><%=raw("<i class='fa fa-check-square-o fa-lg'></i>")%><%=rb.relationship.humanize %></td>
                           <td>
@@ -139,7 +148,7 @@
                           <div class="col-xs-4">
                             <div class="row">
                               <span>Employer Estimated Maximum Monthly Cost</span>
-                              <h2><%= number_to_currency(house_hold.quote_benefit_group.published_employer_cost)%></h2>
+                              <h2><%= number_to_currency(benefit_group.published_employer_cost)%></h2>
                             </div>
                           </div>
                           <div class="col-xs-8">
