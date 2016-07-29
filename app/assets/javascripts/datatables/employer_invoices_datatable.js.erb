@@ -1,5 +1,10 @@
 var EmployerInvoicesDatatable = ( function( window, undefined ) {
 
+  function setBaseModel() {
+    var base_model = "organization";
+    return base_model;
+  }
+
   function callAll(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
     var $all_filter = $table.closest('.module').find('.first-level a:contains("All")');
@@ -13,7 +18,11 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Initial-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month %>")');
     $active_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {filter: "InitialFirstMonthFilter"});
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(),
+        filters: [
+        "employer_profile_initial_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month)"
+      ]});
     });
   }
 
@@ -21,7 +30,11 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Initial-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month %>")');
     $active_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {filter: "InitialSecondMonthFilter"});
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(),
+        filters: [
+        "employer_profile_initial_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month)"
+      ]});
     });
   }
 
@@ -29,7 +42,11 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Initial-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month %>")');
     $active_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {filter: "InitialThirdMonthFilter"});
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(),
+        filters: [
+        "employer_profile_initial_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month)"
+      ]});
     });
   }
 
@@ -37,7 +54,11 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Renewing-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month %>")');
     $active_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {filter: "RenewingFirstMonthFilter"});
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(),
+        filters: [
+        "employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month)"
+      ]});
     });
   }
 
@@ -45,7 +66,11 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Renewing-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month %>")');
     $active_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {filter: "RenewingSecondMonthFilter"});
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(),
+        filters: [
+        "employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month)"
+      ]});
     });
   }
 
@@ -53,7 +78,25 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Renewing-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month %>")');
     $active_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {filter: "RenewingThirdMonthFilter"});
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(),
+        filters: [
+        "employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month)"
+      ]});
+    });
+  }
+
+  function addScopesBeforeSorting(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $invoiced_sort = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("Invoiced?")');
+    $invoiced_sort.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(),
+        order_by: "legal_name",
+        scopes: [
+          "all_employer_profiles"
+        ]
+      });
     });
   }
 
@@ -86,6 +129,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     callRenewingSecondMonthFilter : callRenewingSecondMonthFilter,
     callRenewingThirdMonthFilter : callRenewingThirdMonthFilter,
     generateInvoicesForSelection : generateInvoicesForSelection,
+    addScopesBeforeSorting : addScopesBeforeSorting,
     callAll: callAll
   };
 

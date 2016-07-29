@@ -163,13 +163,26 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.closest('.module').find('.input-group').wrap('<div class="input-no-pd"></div>');
   }
 
+  function replaceRowActionUrls(table_id) {
+    findTable(table_id);
+    $table.find('.row-data .for-remote-replace-url').each(function() {
+      var $new_url = $(this).data('replace-url');
+      var $replace_for = $(this).attr('id').replace(/-/g, '_');
+      $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('href', $new_url);
+    });
+  }
+
   function addRowIndexToRowFunctionLinks(table_id) {
     findTable(table_id);
     $remote_links = $table.find('.row-actions .dropdown a[data-remote="true"]');
     $remote_links.each(function() {
       $row_index = $(this).closest('tr').find('td:first span').data('index');
       $existing_href = $(this).attr('href');
-      $(this).attr('href', $existing_href+"?row="+$row_index);
+      if ( $existing_href.indexOf('?') ) {
+        $(this).attr('href', $existing_href+"&row="+$row_index);
+      } else {
+        $(this).attr('href', $existing_href+"?row="+$row_index);
+      }
     });
   }
 
@@ -208,10 +221,14 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       additional_params[k] = v;
     });
     $table.data('dt_params', additional_params );
-    $table.DataTable().draw();
+    if (additional_params.hasOwnProperty('key')) {
+    } else {
+      $table.DataTable().draw();
+    }
   }
 
   return {
+    replaceRowActionUrls : replaceRowActionUrls,
     addRowIndexToRowFunctionLinks : addRowIndexToRowFunctionLinks,
     wrapSearchInBootstrap : wrapSearchInBootstrap,
     moveInfo : moveInfo,

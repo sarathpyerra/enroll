@@ -1,11 +1,7 @@
 class Exchanges::HbxProfilesController < ApplicationController
   include DataTablesAdapter
   include DataTablesSorts
-  include DataTablesSorts::VerificationsIndexSorts
-  include DataTablesSorts::EmployerInvoicesIndexSorts
-
   include DataTablesFilters
-  include DataTablesFilters::EmployerInvoicesIndexFilters
 
   before_action :modify_admin_tabs?, only: [:binder_paid, :transmit_group_xml]
   before_action :check_hbx_staff_role, except: [:request_help, :show, :assister_index, :family_index]
@@ -173,28 +169,23 @@ class Exchanges::HbxProfilesController < ApplicationController
     # render
 
     dt_query = extract_datatable_parameters
-    employers = []
+    collection = []
     all_employers = Organization.all_employer_profiles.invoice_view_all
     if dt_query.search_string.blank?
-      employers = all_employers
+      collection = all_employers
     else
-      employers = all_employers
+      collection = all_employers
       # person_ids = Person.search(dt_query.search_string).pluck(:id)
       # employers = all_employers.where({
       #   "family_members.person_id" => {"$in" => person_ids}
       # })
     end
-
-    sort_direction = set_sort_direction
-    employers = sort_employers_index_columns(employers, sort_direction) if sort_direction.present?
-
-    filter = set_filter
-    employers = filter_employers(employers, filter) if filter.present?
-
+    collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
     @draw = dt_query.draw
     @total_records = all_employers.count
-    @records_filtered = employers.count
-    @employers = employers.skip(dt_query.skip).limit(dt_query.take)
+    @records_filtered = collection.count
+    @employers = collection.skip(dt_query.skip).limit(dt_query.take)
+    @profile = find_mailbox_provider
     render "datatables/employers_index_datatable"
 
   end
@@ -510,6 +501,17 @@ class Exchanges::HbxProfilesController < ApplicationController
 
   def setting_params
     params.require(:setting).permit(:name, :value)
+  end
+
+  def find_mailbox_provider
+    hbx_staff = current_user.person.hbx_staff_role
+    if hbx_staff
+      profile = current_user.person.hbx_staff_role.hbx_profile
+    else
+      broker_id = current_user.person.broker_role.broker_agency_profile_id.to_s
+      profile = BrokerAgencyProfile.find(broker_id)
+    end
+    return profile
   end
 
   def agent_assistance_messages(params, agent, role)

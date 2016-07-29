@@ -1,28 +1,28 @@
 <div class="module" data-generate-invoice-url="<%= generate_invoice_exchanges_hbx_profiles_path %>">
   <%= render partial: "shared/data_table", locals:  {
-    page_header:  ["Employer Invoices", ""],
+    page_header:  ["Employers", ""],
     directions:  "",
     new_button:  [],
 	  filters:  [
       ["All", "", true, []],
       ["Initial", "", true, [
-        [TimeKeeper.date_of_record.next_month.beginning_of_month, "url", "request_type"],
-  			[TimeKeeper.date_of_record.next_month.beginning_of_month.next_month, "url", "request_type"],
-        [TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month, "url", "request_type"]
+        [TimeKeeper.date_of_record.next_month.beginning_of_month, "javascript:;", false],
+  			[TimeKeeper.date_of_record.next_month.beginning_of_month.next_month, "javascript:;", false],
+        [TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month, "javascript:;", false]
       ]],
       ["Renewing", "", true, [
-        [TimeKeeper.date_of_record.next_month.beginning_of_month, "url", "request_type"],
-  			[TimeKeeper.date_of_record.next_month.beginning_of_month.next_month, "url", "request_type"],
-        [TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month, "url", "request_type"]
+        [TimeKeeper.date_of_record.next_month.beginning_of_month, "javascript:;", false],
+  			[TimeKeeper.date_of_record.next_month.beginning_of_month.next_month, "javascript:;", false],
+        [TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month, "javascript:;", false]
       ]
       ]
   	],
   	bulk_actions:  [
   		["Generate Invoice", "javascript:;", false]
   	],
-  	row_functions:  false,
+  	row_functions:  true,
     row_actions:  [
-      ["Cancel", "asd", true ]
+      ["Send Secure Message", "replace_url_send_secure_message", true ]
     ],
   	buttons_below_table: [
   		# ['Export CSV', 'url', 'request_type'],
@@ -36,6 +36,7 @@
       "EmployerInvoicesDatatable.callRenewingSecondMonthFilter",
       "EmployerInvoicesDatatable.callRenewingThirdMonthFilter",
       "EmployerInvoicesDatatable.generateInvoicesForSelection",
+      "EmployerInvoicesDatatable.addScopesBeforeSorting",
       "EmployerInvoicesDatatable.callAll"
     ],
     child_rows: [false, "datatables/child_row"],
@@ -48,16 +49,18 @@
   	table_id: "employer-invoices-dataTable",
   	data_url: employer_invoice_datatable_exchanges_hbx_profiles_path(:format => :json),
   	columns: [
+      ["Hbx Id", "hbx_id", "", [false, ""]],
       ["FEIN", "fein", "", [false, ""]],
-      ["Legal name", "legal_name", "", [true, ""]],
-      ["Conversion?", "conversion", "", [false, ""]],
-      ["Status", "status", "", [false, ""]],
-      ["Effective Date", "effective_date", "", [false, ""]],
-  	  ["Invoiced?", "invoiced", "", [false, ""]],
+      ["Legal name", "legal_name", "", [false, ""]],
+      ["Broker", "broker", "", [false, ""]],
+      ["Conversion?", "conversion", "dt-center", [false, ""]],
+      ["Status", "status", "dt-center", [false, ""]],
+      ["EFF Date", "effective_date", "", [false, ""]],
+  	  ["Invoiced?", "invoiced", "dt-center", [true, ""]],
   	  ["Enrolled/Waived", "enrolled_waived", "dt-center", [false, ""]],
-  	  ["Pending", "pending", "dt-right", [false, ""]],
-      ["Eligible", "eligible", "", [false, ""]],
-      ["Percentage", "percentage", "dt-right", [false, ""]]
+  	  ["Pending", "pending", "dt-center", [false, ""]],
+      ["Eligible", "eligible", "dt-center", [false, ""]],
+      ["PCT", "percentage", "dt-right", [false, ""]]
   	]
   } %>
 </div>

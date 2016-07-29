@@ -1,20 +1,23 @@
 <% plan_year = employer.employer_profile.latest_plan_year %>
-<% census_employees = plan_year.find_census_employees %>
+<% census_employees = plan_year.find_census_employees if plan_year.present? %>
 <% enrolled = plan_year.try(:enrolled).try(:count).to_i %>
 <% eligible_to_enroll_count = census_employees.try(:active).try(:count).to_i %>
 <% waived = census_employees.try(:waived).try(:count).to_i %>
 
 <% row_data = capture do %>
 	<span class="for-remote" data-employer-id="<%= employer._id %>"></span>
+	<span class="for-remote-replace-url" id="send-secure-message" data-replace-url="<%= new_employers_inbox_path(id: employer.employer_profile.id, profile_id: @profile._id, to: employer.legal_name)%>"></span>
 <% end %>
 
 {
+"hbx_id": "<%= json_escape employer.id %>",
 "fein": "<%= json_escape employer.fein %>",
-"legal_name": <%= raw (link_to employer.legal_name, employers_employer_profile_path(employer.employer_profile)).to_json %>,
-"conversion": "<%= raw (employer.employer_profile.is_conversion?).to_json %>",
+"legal_name": <%= raw (link_to employer.legal_name.titleize, employers_employer_profile_path(employer.employer_profile)).to_json %>,
+"broker": "<% if employer.employer_profile.broker_agency_profile.present? %><%= raw (employer.employer_profile.broker_agency_profile.organization.legal_name.titleize) %><% end %>",
+"conversion": <%= raw boolean_to_glyph(employer.employer_profile.is_conversion?).to_json %>,
 "status": "<%= raw employer.employer_profile.aasm_state.humanize %>",
-"effective_date" : "<%= raw employer.employer_profile.latest_plan_year.effective_date %>",
-"invoiced" : "<%= raw employer.current_month_invoice.present? %>",
+"effective_date" : "<% if plan_year.present? %><%= raw employer.employer_profile.latest_plan_year.effective_date %><% end %>",
+"invoiced" : <%= raw boolean_to_glyph(employer.current_month_invoice.present?).to_json %>,
 "enrolled_waived" : "<%= raw enrolled %>/<%= raw waived %>",
 "pending" : "<%= eligible_to_enroll_count - enrolled.to_i %>",
 "eligible" : "<%= eligible_to_enroll_count %>",

@@ -10,58 +10,15 @@ module DataTablesSorts
     end
   end
 
-  module VerificationsIndexSorts
-    def sort_verifications_index_columns(families, sort)
-      if params[:order]["0"][:column].present?
-        column = params[:order]["0"][:column]
-        order_by = (params[:columns][column][:data])
-
-        case order_by
-        when "last_name"
-          order_by = "_id"
-        when "first_name"
-          order_by = "_id"
-        end
-
-        order_by = order_by.to_sym
-
-        if sort == "asc"
-          families = families.order_by(order_by.asc)
-        else
-          families = families.order_by(order_by.desc)
-        end
-
-        return families
-
+  def apply_sort(collection, sort, cursor, limit, base_model, scopes, order_by)
+    if params[:order]["0"][:column].present?
+      if scopes.blank?
+        sorted_collection = "#{base_model.capitalize}.offset(cursor).limit(limit).order_by('#{order_by} #{sort.upcase}')"
+      else
+        sorted_collection = "#{base_model.capitalize}.#{scopes.join{"."}}.offset(cursor).limit(limit).order_by('#{order_by} #{sort.upcase}')"
       end
-    end
-  end
-
-  module EmployerInvoicesIndexSorts
-    def sort_employers_index_columns(employers, sort)
-      if params[:order]["0"][:column].present?
-        column = params[:order]["0"][:column]
-        order_by = (params[:columns][column][:data])
-
-        case order_by
-        when "last_name"
-          order_by = "_id"
-        when "legal_name"
-          debugger
-          order_by = "_id"
-        end
-
-        order_by = order_by.to_sym
-
-        if sort == "asc"
-          employers = employers.order_by(order_by.asc)
-        else
-          employers = employers.order_by(order_by.desc)
-        end
-
-        return employers
-
-      end
+      collection = eval(sorted_collection)
+      return collection
     end
   end
 

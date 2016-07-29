@@ -119,6 +119,7 @@
         EnrollDataTableInitializer.swapSearchAndNewButton('<%= table_id %>');
         EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
         EnrollDataTableInitializer.wrapSearchInBootstrap('<%= table_id %>');
+        EnrollDataTableInitializer.replaceRowActionUrls('<%= table_id %>');
         EnrollDataTableInitializer.addRowIndexToRowFunctionLinks('<%= table_id %>');
         EnrollDataTableInitializer.addRowDataToParams('<%= table_id %>');
         EnrollDataTableInitializer.attachPostDrawHandlers('<%= table_id %>');
@@ -127,6 +128,11 @@
             <%= custom_handler %>('<%= table_id %>');
           <% end %>
         <% end %>
+      },
+      "drawCallback": function( settings ) {
+        EnrollDataTableInitializer.replaceRowActionUrls('<%= table_id %>');
+        EnrollDataTableInitializer.moveInfo('<%= table_id %>');
+        EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
       },
       "columns": [
         <% if checkboxes == true %>
@@ -246,18 +252,18 @@
         function format ( d ) {
           return '<%= j render("#{child_rows[1]}", columns_count: column_count) %>';
         }
-        // $('#<%= table_id %>').on('click', 'tr', function () {
-        //   var tr = $(this).closest('tr');
-        //   var row = enroll_datatable.row( tr );
-        //   if ( row.child.isShown() ) {
-        //     row.child.hide();
-        //     tr.removeClass('shown');
-        //   }
-        //   else {
-        //     row.child( format(row.data()) ).show();
-        //     tr.addClass('shown');
-        //   }
-        // });
+        $('#<%= table_id %>').on('click', 'tr', function () {
+          var tr = $(this).closest('tr');
+          var row = enroll_datatable.row( tr );
+          if ( row.child.isShown() ) {
+            row.child.hide();
+            tr.removeClass('shown');
+          }
+          else {
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+          }
+        });
       <% end %>
   });
 </script>
