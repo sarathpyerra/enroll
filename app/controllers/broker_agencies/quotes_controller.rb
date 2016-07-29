@@ -381,26 +381,21 @@ class BrokerAgencies::QuotesController < ApplicationController
       bg.plan_option_kind = elected_plan_choice
       roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds($quote_shop_health_plans,
          bg.quote_relationship_benefits, bg.roster_cost_all_plans)
-
-      #binding.pry
-       case elected_plan_choice
-         when 'Single Carrier'
-           @offering_param  = plan.name
-           bg.plan_option_kind = "single_carrier"
-           bg.published_lowest_cost_plan = roster_elected_plan_bounds[:carrier_low_plan][plan.carrier_profile.abbrev]
-           bg.published_highest_cost_plan = roster_elected_plan_bounds[:carrier_high_plan][plan.carrier_profile.abbrev]
-         when 'Metal Level'
-           @offering_param  = plan.metal_level.capitalize
-           bg.plan_option_kind = "metal_level"
-           bg.published_lowest_cost_plan = roster_elected_plan_bounds[:metal_low_plan][plan.metal_level]
-           bg.published_highest_cost_plan = roster_elected_plan_bounds[:metal_high_plan][plan.metal_level]
-         else
-           @offering_param = ""
-           bg.plan_option_kind = "single_plan"
-           bg.published_lowest_cost_plan = plan.id
-           bg.published_highest_cost_plan = plan.id
-       end
-       bg.save
+      case elected_plan_choice
+        when 'Single Carrier'
+          bg.plan_option_kind = "single_carrier"
+          bg.published_lowest_cost_plan = roster_elected_plan_bounds[:carrier_low_plan][plan.carrier_profile.abbrev]
+          bg.published_highest_cost_plan = roster_elected_plan_bounds[:carrier_high_plan][plan.carrier_profile.abbrev]
+        when 'Metal Level'
+          bg.plan_option_kind = "metal_level"
+          bg.published_lowest_cost_plan = roster_elected_plan_bounds[:metal_low_plan][plan.metal_level]
+          bg.published_highest_cost_plan = roster_elected_plan_bounds[:metal_high_plan][plan.metal_level]
+        else
+          bg.plan_option_kind = "single_plan"
+          bg.published_lowest_cost_plan = plan.id
+          bg.published_highest_cost_plan = plan.id
+        end
+      bg.save
     end
 
     @benefit_groups = @q.quote_benefit_groups
@@ -416,7 +411,6 @@ class BrokerAgencies::QuotesController < ApplicationController
   def publish
     @q = Quote.find(params[:quote_id])
     @benefit_groups = @q.quote_benefit_groups
-    @offering_param = 'Logic based on plan_option_kind TODO VARUN'
     respond_to do |format|
       format.html {render partial: 'publish'}
       format.pdf do
