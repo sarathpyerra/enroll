@@ -1,55 +1,23 @@
 <div class="module container broker_quote_tool">
   <div class="row" class="col-md-12">
-         <input name='employee' value='50' type='hidden'>
-         <input name='spouse' value='0' type='hidden'>
-         <input name='domestic_partner' value='0' type='hidden'>
-         <input name='child_under_26' value='0' type='hidden'>
-        <p></p>
-        <%= form_tag(broker_agencies_quotes_root_path, method: :get) do  %>
+   <input name='employee' value='50' type='hidden'>
+   <input name='spouse' value='0' type='hidden'>
+   <input name='domestic_partner' value='0' type='hidden'>
+   <input name='child_under_26' value='0' type='hidden'>
+    <%= form_tag(broker_agencies_quotes_root_path, method: :get) do  %>
 
-        <br>
-
-    <div class="panel panel-default">
-      <div class="panel-heading" role="tab" id="feature-mgmt-header">
-        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#feature-mgmt" aria-expanded="true" aria-controls="feature-mgmt">
-          <b>Health Features and cost criteria</b>
-          <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a>
-          <span style='margin-left: 50px; font-size: 120%;'  id='show_plan_criteria_count'>Plan count</span>
-           <label class='btn btn-normal hide' id='reset_criteria'> Reset Criteria</label>
-      </div>
-      <div id="feature-mgmt" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="">
-      <%= render partial: 'my_features' %>
-      </div>
-    </div>
+    <h3>Quote calculator</h3>
 
 
-       <div class="panel panel-default">
-         <div class="panel-heading" role="tab" id="plan-selection-mgmt-header">
-            <a role="button">
-                 <div data-toggle="collapse" data-parent="#accordion" href="#plan-selection-mgmt"
-                   aria-expanded="true" aria-controls="plan-selection-mgmt" style='display: inline; float_left'>
-                     <b>Health Plan Selection</b><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></div></a>
 
-                     <span style='margin-left: 50px; font-size: 120%;'  id='show_plan_selected_count'>Plan count</span>
+      <%= render partial: 'my_features' unless @q.published? %>
+
+      <%= render partial: 'my_plans' unless @q.published? %>
 
 
-             <label class='btn btn-normal' id='reset_selected'> Reset Selections</label>
-                     </div>
-               <div id="plan-selection-mgmt" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="">
-
-             <%= render partial: 'my_plans' %>
-
-             <div class="panel panel-default">
-           <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="compare_benefits"  id="plan_comparison_frame">
-             <%= (render "quote_comparision" , quote_results: @quote_results) if @quote_results %>
-           </div>
-         </div>
-
-        </div>
-      </div>
 
       <% end %>
-      <%= render partial: 'broker_agencies/quotes/panels/dental' %>
+      <%= render partial: 'broker_agencies/quotes/panels/dental'  unless @q.published? %>
       <%= render partial: 'broker_agencies/quotes/panels/quote' %>
 
     </div>

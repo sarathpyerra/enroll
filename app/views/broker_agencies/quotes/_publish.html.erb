@@ -184,7 +184,7 @@
         <%= render :partial => "quote_publish_button" , :locals => { :quote => @q } %>
       <h4> Employer Claim Code: &nbsp;<b><%=@q.claim_code%></b></h4>
       <br>
-      <%= link_to 'Download PDF' , publish_broker_agencies_quotes_path(:format => :pdf,:quote_id => @q.id) , class: "btn btn-default" , :target => "_blank " %> <br>
+      <%= link_to 'Download PDF' , publish_broker_agencies_quotes_path(:format => :pdf,:quote_id => @q.id) , class: "btn btn-default" , :target => "_blank " %> <br><br>
     </div>
   </div>
 </div>
