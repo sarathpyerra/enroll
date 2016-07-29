@@ -66,8 +66,20 @@ class Quote
     state :published
 
     event :publish do
-      transitions from: :draft, to: :published
+      transitions from: :draft, to: :published, :guard => "can_quote_be_published?"
     end
+  end
+
+  def can_quote_be_published?
+    all_households_have_benefit_groups? && all_benefit_groups_have_plans?
+  end
+
+  def all_households_have_benefit_groups?
+    quote_households.map(&:quote_benefit_group_id).map(&:to_s).include?(nil) ? false : true
+  end
+
+  def all_benefit_groups_have_plans?
+    quote_benefit_groups.map(&:plan).include?(nil) ? false : true
   end
 
   def calc
