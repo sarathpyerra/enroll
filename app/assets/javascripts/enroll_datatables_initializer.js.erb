@@ -141,6 +141,12 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.closest('.module').find('.datatable-header').append($search);
     $search.wrap('<div class="search text-right"></div>');
     $table.closest('.module').find('.datatable-header .search').prepend('<label>Search&nbsp;</label>')
+    if ( !$('#'+table_id+'-bulk-actions').length ) {
+      var $new_button = $table.closest('.module').find('.header .search + .col-xs-2').detach();
+      var $filters_parent = $table.closest('.module').find('.first-level').parent();
+      $filters_parent.addClass('vertically-aligned-row');
+      $filters_parent.append($new_button);
+    }
     $new_button.removeClass('hidden');
     $search.removeClass('hidden');
   }
@@ -163,13 +169,26 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.closest('.module').find('.input-group').wrap('<div class="input-no-pd"></div>');
   }
 
+  function replaceRowActionUrls(table_id) {
+    findTable(table_id);
+    $table.find('.row-data .for-remote-replace-url').each(function() {
+      var $new_url = $(this).data('replace-url');
+      var $replace_for = $(this).attr('id').replace(/-/g, '_');
+      $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('href', $new_url);
+    });
+  }
+
   function addRowIndexToRowFunctionLinks(table_id) {
     findTable(table_id);
     $remote_links = $table.find('.row-actions .dropdown a[data-remote="true"]');
     $remote_links.each(function() {
       $row_index = $(this).closest('tr').find('td:first span').data('index');
       $existing_href = $(this).attr('href');
-      $(this).attr('href', $existing_href+"?row="+$row_index);
+      if ( $existing_href.indexOf('?') ) {
+        $(this).attr('href', $existing_href+"&row="+$row_index);
+      } else {
+        $(this).attr('href', $existing_href+"?row="+$row_index);
+      }
     });
   }
 
@@ -208,10 +227,14 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       additional_params[k] = v;
     });
     $table.data('dt_params', additional_params );
-    $table.DataTable().draw();
+    if (additional_params.hasOwnProperty('key')) {
+    } else {
+      $table.DataTable().draw();
+    }
   }
 
   return {
+    replaceRowActionUrls : replaceRowActionUrls,
     addRowIndexToRowFunctionLinks : addRowIndexToRowFunctionLinks,
     wrapSearchInBootstrap : wrapSearchInBootstrap,
     moveInfo : moveInfo,

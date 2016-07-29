@@ -1,6 +1,9 @@
 class BrokerAgencies::QuotesController < ApplicationController
 
   include DataTablesAdapter
+  include DataTablesSorts
+  include DataTablesFilters
+
 
   before_action :find_quote , :only => [:destroy ,:show, :delete_member, :delete_household, :publish_quote, :view_published_quote]
   before_action :format_date_params  , :only => [:update,:create]
@@ -30,39 +33,26 @@ class BrokerAgencies::QuotesController < ApplicationController
   # displays index page of quotes
   def my_quotes
     @all_quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
+    @broker = current_user.person.broker_role
   end
 
-  def quote_index_datatable
+  def quotes_index_datatable
 
     dt_query = extract_datatable_parameters
-
-    quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
-
-    @total_records = quotes.count
-    @records_filtered = quotes.count
-
-    unless dt_query.search_string.blank?
-      quotes = quotes.search(dt_query.search_string)
-      @records_filtered = quotes.count
+    quotes = []
+    all_quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
+    if dt_query.search_string.blank?
+      collection = all_quotes
+    else
+      collection = all_quotes
     end
+    collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
 
-    quotes = quotes.skip(dt_query.skip).limit(dt_query.take)
-
-    @payload = quotes.map { |q|
-      {
-        :quote_name => (view_context.link_to q.quote_name, broker_agencies_quote_path(q.id), data: { no_turbolink: true }),
-        :family_count => q.quote_households.count,
-        :benefit_group_count => q.quote_benefit_groups.count,
-        :claim_code => q.claim_code,
-        :quote_state => q.aasm_state,
-        :quote_roster => (view_context.link_to "View/Edit", edit_broker_agencies_quote_path(q.id), data: { no_turbolink: true }),
-        :quote_download => quote_download_link(q),
-        :quote_delete => ('<button type="button" onclick="delete_quote_handler" id="close_button" data-quote-id="' + q.id + '" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>').html_safe
-
-      }
-    }
-
-      @draw = dt_query.draw
+    @draw = dt_query.draw
+    @total_records = all_quotes.count
+    @records_filtered = collection.count
+    @quotes = collection.skip(dt_query.skip).limit(dt_query.take)
+    render "datatables/quotes_index_datatable"
 
   end
 

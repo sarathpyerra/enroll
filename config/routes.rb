@@ -304,7 +304,7 @@ Rails.application.routes.draw do
       root 'quotes#index'
       collection do
         get :my_quotes # soon to be the index view
-        post :quote_index_datatable
+        post :quotes_index_datatable
         get :upload_employee_roster
         post :build_employee_roster
         get :new_household , :format => "js"

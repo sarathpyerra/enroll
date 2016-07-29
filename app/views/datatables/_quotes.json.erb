@@ -1,0 +1,11 @@
+<% row_data = capture do %>
+	<span class="for-remote" data-id="<%= quote.id %>"></span>
+<% end %>
+
+{
+	"quote_name": <%= raw (link_to quote.quote_name, broker_agencies_quote_path(quote.id)).to_json %>,
+	"claim_code": "<%= json_escape quote.claim_code %>",
+	"family_count": "<%= json_escape quote.quote_households.count %>",
+	"quote_state" : "<%= json_escape quote.aasm_state %>",
+	"row_data" : <%= raw row_data.to_json %>
+}
