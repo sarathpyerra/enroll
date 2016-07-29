@@ -343,26 +343,25 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def update_benefits
-    #q = Quote.find(params[:quote_id]) OLD - To be Removed
 
-    q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
+    quote_benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
 
-    return false if q.quote.published?
+    return false if quote_benefit_group.quote.published?
 
     benefits = params[:benefits]
-    q.quote_relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
+    quote_benefit_group.quote_relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
     render json: {}
   end
 
   def get_quote_info
 
     bp_hash = {}
-    #q =  Quote.find(params[:quote
-    q = Quote.find(params[:quote_id])
-    benefit_groups = q.quote_benefit_groups
-    bg = (params[:benefit_group_id] && q.quote_benefit_groups.find(params[:benefit_group_id])) || benefit_groups.first
-    summary = {name: q.quote_name,
-     status: q.aasm_state.capitalize,
+
+    quote = Quote.find(params[:quote_id])
+    benefit_groups = quote.quote_benefit_groups
+    bg = (params[:benefit_group_id] && quote.quote_benefit_groups.find(params[:benefit_group_id])) || benefit_groups.first
+    summary = {name: quote.quote_name,
+     status: quote.aasm_state.capitalize,
      plan_name: bg.plan && bg.plan.name || 'None',
      dental_plan_name: "bg.dental_plan && bg.dental_plan.name" || 'None',
     }

@@ -1,8 +1,11 @@
 
+<div class="container module broker_quote_tool">
 <%= form_for @quote, url: {action: "update"}, method: "put", class: "form-inline" do |f| %>
 <%= render "edit_form" ,f:f %>
-
-<%= submit_tag "Update Roster", class: 'btn btn-primary' %>
-<%= link_to "Back to Quote Cost/Comparison", my_quotes_broker_agencies_quotes_path, class: 'btn btn-primary' %>
-
+<div class="footer navbar-fixed-bottom"></div>
+  <div class="sticky-main-nav">
+      <%= submit_tag "Save Changes", class: 'btn btn-primary btn-sm!' %>
+      <%= link_to "Back to Quote Cost/Comparison", my_quotes_broker_agencies_quotes_path, class: 'btn btn-primary btn-sm!' %>
+      </div>
+</div>
 <%end%>
