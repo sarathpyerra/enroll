@@ -47,6 +47,32 @@ input[type=number]::-webkit-outer-spin-button {
 .module {
   &.broker_quote_tool {
 
+    .wrapper {
+      position: relative;
+      overflow-y: auto;
+      clear: both;
+    }
+
+    .footer {
+      min-height: 80px;
+      background-color: #fff;//#f2f2f2;
+      border-bottom: solid 1px #c2c2c2;
+      border-top: solid 1px #c2c2c2;
+      bottom: 45px;
+      z-index: 50;
+    }
+
+    .sticky-main-nav {
+      //height: 40px;
+      width: inherit;
+      z-index: 150;
+      bottom: 60px;
+      position: fixed;
+      overflow: auto;
+      clear: both;
+    }
+
+
     .title {
       text-transform: uppercase;
       color: $primary-green;
