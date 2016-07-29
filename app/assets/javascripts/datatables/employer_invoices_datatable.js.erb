@@ -5,7 +5,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     return base_model;
   }
 
-  function callAll(table_id) {
+  function callAllFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
     var $all_filter = $table.closest('.module').find('.first-level a:contains("All")');
     $all_filter.on('click', function() {
@@ -130,7 +130,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     callRenewingThirdMonthFilter : callRenewingThirdMonthFilter,
     generateInvoicesForSelection : generateInvoicesForSelection,
     addScopesBeforeSorting : addScopesBeforeSorting,
-    callAll: callAll
+    callAllFilter: callAllFilter
   };
 
 } )( window );

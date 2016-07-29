@@ -68,6 +68,11 @@
     var enroll_datatable = $('#<%= table_id %>').EnrollDataTable({
       "destroy": <%= destroy || false %>,
       "processing": true,
+      <% if processing_text.present? %>
+      "language": {
+         "processing": "<i class='fa fa-spinner fa-2x' aria-hidden='true'></i><h4><%= processing_text %></h4>"
+      },
+      <% end %>
       "serverSide": true,
       "ordering": <%= ordering || false %>,
       "paging": <%= pagination || false %>,
