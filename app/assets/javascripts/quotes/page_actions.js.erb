@@ -3,16 +3,16 @@ function page_load_listeners () {
         selected=this; sibs = $(selected).siblings();
         $.each(sibs, function(){ this.className='criteria' }) ;
         selected.className='active';
-        toggle_plans([])
-        reset_selected_plans()
+        QuoteManagePlans.toggle_plans([])
+        QuoteManagePlans.reset_selected_plans()
     })
 
     $('.dental_plan_selectors .criteria').on('click',function(){
         selected=this; sibs = $(selected).siblings();
         $.each(sibs, function(){ this.className='criteria' }) ;
         selected.className='active';
-        toggle_plans([])
-        reset_selected_plans()
+        QuoteManagePlans.toggle_plans([])
+        QuoteManagePlans.reset_selected_plans()
     })
 
     $('.plan_buttons .btn').on('click', function() {
@@ -45,13 +45,13 @@ function page_load_listeners () {
         }).done(function(response){
             window.relationship_benefits = response['relationship_benefits']
             window.roster_premiums = response['roster_premiums']
-            turn_off_criteria()
-            toggle_plans(response['criteria'])
+            QuoteManagePlans.turn_off_criteria()
+            QuoteManagePlans.toggle_plans(response['criteria'])
             set_benefits()
             set_plan_costs()
         })
     })
-    $('#reset_selected').on('click', reset_selected_plans)
+    $('#reset_selected').on('click', QuoteManagePlans.reset_selected_plans)
     $('#CostComparison').on('click', get_health_cost_comparison)
     $('#DentalCostComparison').on('click', get_dental_cost_comparison)
    quote_listeners()

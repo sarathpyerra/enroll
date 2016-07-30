@@ -38,7 +38,7 @@ $(document).on('ready page:load', function () {
     set_plan_costs()
     slider_listeners()
     page_load_listeners()
-    toggle_plans(<%= raw @quote_criteria %>)
+    QuoteManagePlans.toggle_plans(<%= raw @quote_criteria %>)
     $('#PlanComparison').on('click', function(){
        sort_plans()
     });

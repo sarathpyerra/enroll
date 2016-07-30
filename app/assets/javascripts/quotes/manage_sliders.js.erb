@@ -149,10 +149,9 @@ function slider_listeners () {
       }
     });
 
-
     $('#ex1').on('slideStop', function(){deductible_value = this.value;
-      toggle_plans([]);
-      reset_selected_plans();
+      QuoteManagePlans.toggle_plans([]);
+      QuoteManagePlans.reset_selected_plans();
     })
     $('#ex2').on('slideStop', function(){deductible_value = this.value;
       toggle_dental_plans([]);

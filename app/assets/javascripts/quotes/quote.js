@@ -51,8 +51,8 @@ function quote_change(quote_id, benefit_group_id){
         }).done(function(response){
             window.relationship_benefits = response['relationship_benefits']
             window.roster_premiums = response['roster_premiums']
-            turn_off_criteria()
-            toggle_plans(response['criteria'])
+            QuoteManagePlans.turn_off_criteria()
+            QuoteManagePlans.toggle_plans(response['criteria'])
             set_plan_costs()
             inject_quote(quote_id, benefit_group_id)
             page_load_listeners()
