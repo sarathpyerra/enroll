@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :quote do
-    sequence(:claim_code){|n| Faker::Lorem.characters(8)+ "#{n}"} 
+    sequence(:claim_code){|n| Faker::Lorem.characters(8)+ "#{n}"}
     after(:create) do |q, evaluator|
       build(:quote_benefit_group, quote: q )
     end

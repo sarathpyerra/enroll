@@ -13,68 +13,79 @@ class Employers::EmployerProfilesController < Employers::EmployersController
 
 
   def link_from_quote
-
     claim_code = params[:claim_code].upcase
-
-    quote = Quote.where("claim_code" => claim_code).first
-
-    # Perform quote link if claim_code is valid
-    if quote.present?
-
-      py = @employer_profile.plan_years.build
-      py.start_on = (TimeKeeper.date_of_record + 2.months).beginning_of_month
-      py.end_on = (py.start_on + 1.year) - 1.day
-      py.open_enrollment_start_on = TimeKeeper.date_of_record
-      py.open_enrollment_end_on = (TimeKeeper.date_of_record + 1.month).beginning_of_month + 9.days
-      py.fte_count = quote.quote_households.map(&:quote_members).inject(:+).count # get count of quote_members
-
-      benefit_group_mapping = Hash.new
-
-      quote.quote_benefit_groups.each do |qbg|
-        bg = py.benefit_groups.build
-        bg.plan_option_kind =  qbg.plan_option_kind
-        bg.title = qbg.title
-        bg.description = "Linked from claim code " + claim_code
-
-        benefit_group_mapping[qbg.id.to_s] = bg.id
-
-        bg.lowest_cost_plan_id = qbg.published_lowest_cost_plan
-        bg.reference_plan_id = qbg.published_reference_plan
-        bg.highest_cost_plan_id = qbg.published_highest_cost_plan
-        bg.elected_plan_ids.push(qbg.published_reference_plan)
+    import_roster = params[:import_roster] == "yes" ? true : false
 
 
-        bg.relationship_benefits = qbg.quote_relationship_benefits.map{|x| x.attributes.slice(:offered,:relationship, :premium_pct)}
-      end
-
-      if py.save
-        if params[:import_roster] == "yes"
-          quote.quote_households.each do |qhh|
-            qhh_employee = qhh.employee
-            if qhh_employee.present?
-                quote_employee = qhh.employee
-                ce = CensusEmployee.new("employer_profile_id" => @employer_profile.id, "first_name" => quote_employee.first_name, "last_name" => quote_employee.last_name, "dob" => quote_employee.dob, "hired_on" => py.start_on)
-                ce.find_or_create_benefit_group_assignment(py.benefit_groups.find(benefit_group_mapping[qhh.quote_benefit_group_id.to_s].to_s))
-
-                qhh.dependents.each do |qhh_dependent|
-                  ce.census_dependents << CensusDependent.new(
-                    last_name: qhh_dependent.last_name, first_name: qhh_dependent.first_name, dob: qhh_dependent.dob, employee_relationship: qhh_dependent.employee_relationship
-                    )
-                end
-                ce.save(:validate => false)
-            end
-          end
-          flash[:notice] = 'Code claimed with success. Your Plan Year has been created.'
-        end
-      else
-        flash[:error] = 'An issue occured while processing your request.'
-      end
-    else
-      flash[:error] = 'Quote claim code not found.'
-    end
+    @employer_profile.build_plan_year_from_quote(claim_code, import_roster)
 
     redirect_to employers_employer_profile_path(@employer_profile, tab: 'benefits')
+
   end
+
+  # def link_from_quote
+  #
+  #   claim_code = params[:claim_code].upcase
+  #
+  #   quote = Quote.where("claim_code" => claim_code).first
+  #
+  #   # Perform quote link if claim_code is valid
+  #   if quote.present?
+  #
+  #     py = @employer_profile.plan_years.build
+  #     py.start_on = (TimeKeeper.date_of_record + 2.months).beginning_of_month
+  #     py.end_on = (py.start_on + 1.year) - 1.day
+  #     py.open_enrollment_start_on = TimeKeeper.date_of_record
+  #     py.open_enrollment_end_on = (TimeKeeper.date_of_record + 1.month).beginning_of_month + 9.days
+  #     py.fte_count = quote.quote_households.map(&:quote_members).inject(:+).count # get count of quote_members
+  #
+  #     benefit_group_mapping = Hash.new
+  #
+  #     quote.quote_benefit_groups.each do |qbg|
+  #       bg = py.benefit_groups.build
+  #       bg.plan_option_kind =  qbg.plan_option_kind
+  #       bg.title = qbg.title
+  #       bg.description = "Linked from claim code " + claim_code
+  #
+  #       benefit_group_mapping[qbg.id.to_s] = bg.id
+  #
+  #       bg.lowest_cost_plan_id = qbg.published_lowest_cost_plan
+  #       bg.reference_plan_id = qbg.published_reference_plan
+  #       bg.highest_cost_plan_id = qbg.published_highest_cost_plan
+  #       bg.elected_plan_ids.push(qbg.published_reference_plan)
+  #
+  #
+  #       bg.relationship_benefits = qbg.quote_relationship_benefits.map{|x| x.attributes.slice(:offered,:relationship, :premium_pct)}
+  #     end
+  #
+  #     if py.save
+  #       if params[:import_roster] == "yes"
+  #         quote.quote_households.each do |qhh|
+  #           qhh_employee = qhh.employee
+  #           if qhh_employee.present?
+  #               quote_employee = qhh.employee
+  #               ce = CensusEmployee.new("employer_profile_id" => @employer_profile.id, "first_name" => quote_employee.first_name, "last_name" => quote_employee.last_name, "dob" => quote_employee.dob, "hired_on" => py.start_on)
+  #               ce.find_or_create_benefit_group_assignment(py.benefit_groups.find(benefit_group_mapping[qhh.quote_benefit_group_id.to_s].to_s))
+  #
+  #               qhh.dependents.each do |qhh_dependent|
+  #                 ce.census_dependents << CensusDependent.new(
+  #                   last_name: qhh_dependent.last_name, first_name: qhh_dependent.first_name, dob: qhh_dependent.dob, employee_relationship: qhh_dependent.employee_relationship
+  #                   )
+  #               end
+  #               ce.save(:validate => false)
+  #           end
+  #         end
+  #         flash[:notice] = 'Code claimed with success. Your Plan Year has been created.'
+  #       end
+  #     else
+  #       flash[:error] = 'An issue occured while processing your request.'
+  #     end
+  #   else
+  #     flash[:error] = 'Quote claim code not found.'
+  #   end
+  #
+  #   redirect_to employers_employer_profile_path(@employer_profile, tab: 'benefits')
+  # end
 
   def index
     if params[:broker_agency_id].blank?
