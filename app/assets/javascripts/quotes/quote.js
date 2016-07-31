@@ -61,16 +61,6 @@ function quote_change(quote_id, benefit_group_id){
             set_benefits()
         })
     }
-function quote_listeners(){
-    $('#quote').on('change', function() {
-      quote_change($(this).val())
-      $("#plan_comparison_frame").html('')
-    })
-    $('.view-published').on('click', function(){
-      quote_change(this.id)
-      open_quote()
-    })
-}
 function viewDetails($thisObj) {
   if ( $thisObj.hasClass('view') ) {
     $thisObj.html('Hide Details <i class="fa fa-chevron-up fa-lg"></i>');
