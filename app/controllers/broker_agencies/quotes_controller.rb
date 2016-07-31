@@ -214,12 +214,17 @@ class BrokerAgencies::QuotesController < ApplicationController
     update_params[:quote_benefit_groups_attributes] = update_params[:quote_benefit_groups_attributes].select {|k,v| update_params[:quote_benefit_groups_attributes][k][:id].present?}
     insert_params[:quote_benefit_groups_attributes] = insert_params[:quote_benefit_groups_attributes].select {|k,v| insert_params[:quote_benefit_groups_attributes][k][:id].blank?}
 
+    if params[:commit] == "Add Family"
+      notice_message = "New family added."
+    elsif params[:commit] == "Save Changes"
+      notice_message = "Successfully saved quote/employee roster."
+    end
 
     if (@quote.update_attributes(update_params) && @quote.update_attributes(insert_params))
-      redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :notice => "Successfully updated the employee roster" }
+      redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :notice => notice_message }
     else
       #render "edit" , :flash => {:error => "Unable to update the employee roster" }
-      redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :error => "Unable to update the employee roster" }
+      redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :error => "Unable to update the employee roster." }
     end
   end
 
