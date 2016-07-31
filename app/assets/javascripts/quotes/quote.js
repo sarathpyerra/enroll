@@ -13,6 +13,18 @@ function inject_quote(quote_id, benefit_group_id, plan_id, elected, cost) {
       }
     })    
 }
+  function _open_quote() {
+    $('[aria-controls="quote-mgmt"]').attr('aria-expanded', false)
+    $('#quote-mgmt').removeClass('in')
+    $('[aria-controls="feature-mgmt"]').attr('aria-expanded', false)
+    $('#feature-mgmt').removeClass('in')
+    $('[aria-controls="plan-selection-mgmt"]').attr('aria-expanded', false)
+    $('#plan-selection-mgmt').removeClass('in')
+    $('[aria-controls="dental-plan-selection-mgmt"]').attr('aria-expanded', false)
+    $('#dental-plan-selection-mgmt').removeClass('in')
+    $('[aria-controls="publish-quote"]').attr('aria-expanded', true)
+    $('#publish-quote').addClass('in')
+  }
 function load_quote_listeners() {
     console.log('looad')
     $('.publish td').on('click', function(){
@@ -31,7 +43,7 @@ function load_quote_listeners() {
         }).done(function(response){
           set_quote_toolbar(response['summary'])
         })
-        open_quote()
+        _open_quote()
     })
 }
 function set_quote_toolbar(summary) {

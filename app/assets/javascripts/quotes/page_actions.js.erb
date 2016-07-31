@@ -57,13 +57,4 @@ function page_load_listeners () {
     $('#PlanComparison').on('click', function(){
        QuoteComparePlans.sort_plans()
     })
-
-    $('#quote').on('change', function() {
-      quote_change($(this).val())
-      $("#plan_comparison_frame").html('')
-    })
-    $('.view-published').on('click', function(){
-      quote_change(this.id)
-      open_quote()
-    })
 }
