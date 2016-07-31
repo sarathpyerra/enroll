@@ -1,4 +1,4 @@
-class DentalRelationshipBenefit
+class QuoteDentalRelationshipBenefit
   include Mongoid::Document
 
   embedded_in :quote_benefit_group
