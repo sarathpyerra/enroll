@@ -39,9 +39,7 @@ $(document).on('ready page:load', function () {
     slider_listeners()
     page_load_listeners()
     QuoteManagePlans.toggle_plans(<%= raw @quote_criteria %>)
-    $('#PlanComparison').on('click', function(){
-       sort_plans()
-    });
+
 
     $('.dental_carrier, .dental_metal, .dental_plan_type, .dc_network, .nationwide').on('click', function(){
 
