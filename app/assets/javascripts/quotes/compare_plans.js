@@ -25,7 +25,7 @@ QuoteComparePlans = ( function() {
     })
   }
   var compare_plans_listeners = function (){
-    ('#compare_plans_table').dragtable({dragaccept: '.movable'});
+    $('#compare_plans_table').dragtable({dragaccept: '.movable'});
     $('.cost_sort').on('click', sort_plans);
   }
   var compared_plans_export = function(){
