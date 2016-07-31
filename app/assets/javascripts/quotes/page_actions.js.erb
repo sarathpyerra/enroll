@@ -46,6 +46,10 @@ function page_load_listeners () {
             window.relationship_benefits = response['relationship_benefits']
             window.roster_premiums = response['roster_premiums']
             QuoteManagePlans.turn_off_criteria()
+            deductible_value = parseInt(response['summary']['deductible_value'])
+            $('#ex1').bootstrapSlider('setValue', deductible_value)
+            $('#ex1_input').val(deductible_value)
+            console.log('deductible', deductible_value)
             QuoteManagePlans.toggle_plans(response['criteria'])
             set_benefits()
             set_plan_costs()

@@ -40,6 +40,8 @@ class QuoteBenefitGroup
   embeds_many :quote_dental_relationship_benefits, cascade_callbacks: true
 
   field :criteria_for_ui, type: String, default: []
+  field :deductible_for_ui, type: String, default: 6000
+  field :dental_criteria_for_ui, type: String, default: []
 
   delegate :start_on, to: :quote
   delegate :quote_name, to: :quote

@@ -372,6 +372,7 @@ class BrokerAgencies::QuotesController < ApplicationController
      status: quote.aasm_state.capitalize,
      plan_name: bg.plan && bg.plan.name || 'None',
      dental_plan_name: "bg.dental_plan && bg.dental_plan.name" || 'None',
+     deductible_value: bg.deductible_for_ui,
     }
     bg.quote_relationship_benefits.each{|bp| bp_hash[bp.relationship] = bp.premium_pct}
     render json: {'relationship_benefits' => bp_hash, 'roster_premiums' => bg.roster_cost_all_plans, 'criteria' => JSON.parse(bg.criteria_for_ui), summary: summary}
@@ -429,14 +430,12 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def criteria
-    if params[:quote_id]
-      q = Quote.find(params[:quote_id])
-      criteria_for_ui = params[:criteria_for_ui]
-      q.update_attributes!(criteria_for_ui: criteria_for_ui ) if criteria_for_ui
-      render json: JSON.parse(q.criteria_for_ui)
-    else
-      render json: []
-    end
+    benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id]) 
+    criteria_for_ui = params[:criteria_for_ui]
+    deductible_for_ui = params[:deductible_for_ui]
+    benefit_group.update_attributes!(criteria_for_ui: criteria_for_ui ) if criteria_for_ui
+    benefit_group.update_attributes(deductible_for_ui: deductible_for_ui) if deductible_for_ui
+    render json: JSON.parse(benefit_group.criteria_for_ui)
   end
 
   def export_to_pdf

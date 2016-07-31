@@ -64,12 +64,16 @@ function quote_change(quote_id, benefit_group_id){
             window.relationship_benefits = response['relationship_benefits']
             window.roster_premiums = response['roster_premiums']
             QuoteManagePlans.turn_off_criteria()
-            QuoteManagePlans.toggle_plans(response['criteria'])
+
             set_plan_costs()
             inject_quote(quote_id, benefit_group_id)
             page_load_listeners()
             set_quote_toolbar(response['summary'])
             slider_listeners()
+             deductible_value = parseInt(response['summary']['deductible_value'])
+            $('#ex1').bootstrapSlider('setValue', deductible_value)
+            $('#ex1_input').val(deductible_value)
+            QuoteManagePlans.toggle_plans(response['criteria'])
             set_benefits()
         })
     }

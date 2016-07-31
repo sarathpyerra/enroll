@@ -51,7 +51,11 @@ QuoteManagePlans = ( function() {
     set_plan_counts()
     $.ajax({
       type: 'GET',
-      data: {quote_id: $('#quote').val(), criteria_for_ui: JSON.stringify(criteria) },
+      data: {
+        quote_id: $('#quote_id').val(),
+        benefit_id: $('#benefit_group_select option:selected').val(),
+        criteria_for_ui: JSON.stringify(criteria),
+        deductible_for_ui: deductible_value },
       url: '/broker_agencies/quotes/criteria.js'
     })
   }
