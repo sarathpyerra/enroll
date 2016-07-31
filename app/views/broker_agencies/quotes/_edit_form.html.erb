@@ -154,4 +154,10 @@ var duplicate_household = function() {
 
 $("[id^=duplicate-family-id]").change(duplicate_household);
 
+<% if @scrollTo == 1 %>
+$(document).ready(function() {
+	$('body').scrollTop(1000);
+});
+<% end %>
+
 </script>

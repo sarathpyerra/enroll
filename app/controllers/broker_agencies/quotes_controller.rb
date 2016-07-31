@@ -180,6 +180,7 @@ class BrokerAgencies::QuotesController < ApplicationController
     @quote.quote_benefit_groups << qbg
 
 
+    @scrollTo = params[:scrollTo] == "1" ? 1 : 0
     #redirect_to edit_broker_agencies_quote_path(@quote.id)
 
   end
@@ -216,12 +217,14 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     if params[:commit] == "Add Family"
       notice_message = "New family added."
+      scrollTo = 1
     elsif params[:commit] == "Save Changes"
       notice_message = "Successfully saved quote/employee roster."
+      scrollTo = 0
     end
 
     if (@quote.update_attributes(update_params) && @quote.update_attributes(insert_params))
-      redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :notice => notice_message }
+      redirect_to edit_broker_agencies_quote_path(@quote, scrollTo: scrollTo),  :flash => { :notice => notice_message }
     else
       #render "edit" , :flash => {:error => "Unable to update the employee roster" }
       redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :error => "Unable to update the employee roster." }
