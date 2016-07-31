@@ -52,10 +52,10 @@ function page_load_listeners () {
         })
     })
     $('#reset_selected').on('click', QuoteManagePlans.reset_selected_plans)
-    $('#CostComparison').on('click', get_health_cost_comparison)
-    $('#DentalCostComparison').on('click', get_dental_cost_comparison)
-   quote_listeners()
+    $('#CostComparison').on('click', QuoteComparePlans.get_health_cost_comparison)
+    $('#DentalCostComparison').on('click', QuoteComparePlans.get_dental_cost_comparison)
+    quote_listeners()
     $('#PlanComparison').on('click', function(){
-       sort_plans()
+       QuoteComparePlans.sort_plans()
     })
 }
