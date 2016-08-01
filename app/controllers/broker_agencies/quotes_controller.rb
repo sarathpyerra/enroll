@@ -430,7 +430,7 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def criteria
-    benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id]) 
+    benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
     criteria_for_ui = params[:criteria_for_ui]
     deductible_for_ui = params[:deductible_for_ui]
     benefit_group.update_attributes!(criteria_for_ui: criteria_for_ui ) if criteria_for_ui
@@ -511,7 +511,6 @@ private
     params[:quote][:quote_benefit_groups_attributes].each do |k,v|
       #do not save if no data was entered for benefit group
       if v["title"].blank?
-        puts "Deleting key: " + k.to_s
         params[:quote][:quote_benefit_groups_attributes].delete(k)
       end
 

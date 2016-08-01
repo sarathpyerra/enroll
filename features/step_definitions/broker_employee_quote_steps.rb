@@ -64,7 +64,7 @@ When(/^the broker clicks on the Save Changes button$/) do
 end
 
 Then(/^the broker should see a successful message$/) do
-  expect(page).to have_content('Successfully updated the employee roster')
+  expect(page).to have_content('Successfully saved quote/employee roster.')
 end
 
 Then(/^the broker clicks on Back to Quotes button$/) do
