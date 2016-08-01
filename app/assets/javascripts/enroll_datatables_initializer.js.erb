@@ -174,17 +174,25 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.find('.row-data .for-remote-replace-url').each(function() {
       var $new_url = $(this).data('replace-url');
       var $replace_for = $(this).attr('id').replace(/-/g, '_');
+      // add data-method: post if present
+      if ( $(this).data('method') == 'post' ) {
+        $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('data-method', 'post');
+      }
+      // add data-method: delete if present
+      if ( $(this).data('method') == 'delete' ) {
+        $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('data-method', 'delete');
+      }
       $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('href', $new_url);
     });
   }
 
   function addRowIndexToRowFunctionLinks(table_id) {
     findTable(table_id);
-    $remote_links = $table.find('.row-actions .dropdown a[data-remote="true"]');
+    $remote_links = $table.find('.row-actions .dropdown a');
     $remote_links.each(function() {
       $row_index = $(this).closest('tr').find('td:first span').data('index');
       $existing_href = $(this).attr('href');
-      if ( $existing_href.indexOf('?') ) {
+      if ( $existing_href.indexOf('?') == 0 ) {
         $(this).attr('href', $existing_href+"&row="+$row_index);
       } else {
         $(this).attr('href', $existing_href+"?row="+$row_index);
@@ -201,7 +209,10 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
           var data_attributes = [];
           $.each($(this).data(), function(k,v) {
             k = k.replace(/(?:^|\.?)([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "")
-            data_attributes.push(k+"="+v);
+            if ( k == "replace_url" ) {
+            } else {
+              data_attributes.push(k+"="+v);
+            }
           });
           $.each(data_attributes, function(index,value) {
             var $link = $row.find('.row-actions .dropdown a[data-remote="true"]').eq(index);

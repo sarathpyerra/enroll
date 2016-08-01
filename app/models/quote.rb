@@ -39,6 +39,11 @@ class Quote
 
   index({ broker_role_id: 1 })
 
+  scope :all_broker_quotes,                  ->( broker_role_id ){ where(broker_role_id: broker_role_id) }
+  scope :draft_quotes,                       ->{ where("aasm_state" => 'draft') }
+  scope :published_quotes,                   ->{ where("aasm_state" => 'published') }
+
+
 
   def self.default_search_order
     [[:quote_name, 1]]

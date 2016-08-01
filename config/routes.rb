@@ -307,7 +307,7 @@ Rails.application.routes.draw do
         post :quotes_index_datatable
         get :upload_employee_roster
         post :build_employee_roster
-        get :new_household , :format => "js"
+        get :new_household, :format => "js"
         post :update_benefits
         post :publish_quote
         get :get_quote_info
@@ -323,6 +323,7 @@ Rails.application.routes.draw do
         get :dental_plans_data
       end
       member do
+        post :delete_quote
         post :download_employee_roster
         delete :delete_member
         delete :delete_household

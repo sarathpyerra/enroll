@@ -37,7 +37,6 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def quotes_index_datatable
-
     dt_query = extract_datatable_parameters
     quotes = []
     all_quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
@@ -47,7 +46,6 @@ class BrokerAgencies::QuotesController < ApplicationController
       collection = all_quotes
     end
     collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
-
     @draw = dt_query.draw
     @total_records = all_quotes.count
     @records_filtered = collection.count
@@ -298,10 +296,25 @@ class BrokerAgencies::QuotesController < ApplicationController
     :disposition => "attachment; filename=Employee_Roster.csv")
   end
 
+  def delete_quote
+    @quote = Quote.find(params[:id])
+    if @quote.destroy
+      flash[:notice] = "Successfully deleted #{@quote.quote_name}."
+      respond_to do |format|
+        format.html {
+          redirect_to my_quotes_broker_agencies_quotes_path
+        }
+      end
+    end
+  end
+
   def destroy
     if @quote.destroy
+      flash[:notice] = "Successfully deleted #{@quote.quote_name}."
       respond_to do |format|
-        format.js { render :text => "deleted Successfully" , :status => 200 }
+        format.html {
+          redirect_to broker_agencies_quotes_root_path
+        }
       end
     end
   end

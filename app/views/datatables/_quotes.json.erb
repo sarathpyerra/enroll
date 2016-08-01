@@ -1,11 +1,13 @@
 <% row_data = capture do %>
-	<span class="for-remote" data-id="<%= quote.id %>"></span>
-<% end %>
+	<span class="for-remote-replace-url" id="edit-quote" data-replace-url="<%= edit_broker_agencies_quote_path(quote) %>"></span>
+	<span class="for-remote-replace-url" id="view-published-quote" data-replace-url="/broker_agencies/quotes/published_quote/<%= quote.id %>"></span>
+	<span class="for-remote-replace-url" id="delete-quote" data-method="post" data-replace-url="<%= delete_quote_broker_agencies_quote_path(quote) %>"></span>
 
+<% end %>
 {
-	"quote_name": <%= raw (link_to quote.quote_name, broker_agencies_quote_path(quote.id)).to_json %>,
+	"quote_name": <%= raw (link_to quote.quote_name.titleize, broker_agencies_quote_path(quote.id)).to_json %>,
 	"claim_code": "<%= json_escape quote.claim_code %>",
 	"family_count": "<%= json_escape quote.quote_households.count %>",
-	"quote_state" : "<%= json_escape quote.aasm_state %>",
+	"quote_state" : "<%= json_escape quote.aasm_state.humanize.titleize %>",
 	"row_data" : <%= raw row_data.to_json %>
 }

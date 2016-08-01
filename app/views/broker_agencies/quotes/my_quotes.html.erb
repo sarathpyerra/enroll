@@ -1,13 +1,14 @@
 <div class="container">
-  <div class="module">
+  <br/>
+  <div class="module broker-quotes-table" data-broker-id="<%= @broker.id %>" data-current-user-person-id="<%= current_user.person.id %>">
     <%= render partial: "shared/data_table", locals:  {
       page_header:  ["Quotes", ""],
       directions:  "",
       new_button:  ["New Roster", new_broker_agencies_quote_path(@broker.id), false],
   	  filters:  [
-    		["all", "", true, []],
+    		["All", "", true, []],
     		["Draft", "", true, []],
-    		["Published", "", false, []]
+    		["Published", "", true, []]
     	],
     	bulk_actions:  [
     		# ["Send Secure Message", "", true],
@@ -15,19 +16,21 @@
     	],
     	row_functions:  true,
       row_actions:  [
-        ["Edit Roster", '/broker_agencies/quotes/', false ],
-        ["View Published Quote", "asd", true ],
-        ["Delete", "asd", true ],
-        ["Reuse Roster", "asd", true ]
+        ["Edit Roster", "replace_url_edit_quote", false ],
+        ["View Published Quote", "replace_url_view_published_quote", false ],
+        ["Delete", "replace_url_delete_quote", false ]
       ],
     	buttons_below_table: [
     		# ['Export CSV', 'url', 'request_type'],
     		# ['Print', 'url', 'request_type']
     	],
       custom_handlers: [
+        "EmployerInvoicesDatatable.callAllFilter",
+        "EmployerInvoicesDatatable.callDraftFilter",
+        "EmployerInvoicesDatatable.callPublishedFilter"
       ],
       child_rows: [false, "datatables/child_row"],
-      destroy: false,
+      destroy: true,
       processing_text: "Loading Quotes...",
       responsive: true,
     	checkboxes: false,
