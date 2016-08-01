@@ -43,7 +43,10 @@ class BrokerAgencies::QuotesController < ApplicationController
     if dt_query.search_string.blank?
       collection = all_quotes
     else
-      collection = all_quotes
+        quote_ids = Quote.search(dt_query.search_string).pluck(:id)
+        collection = all_quotes.where({
+          "id" => {"$in" => quote_ids}
+        })
     end
     collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
     @draw = dt_query.draw
@@ -302,6 +305,16 @@ class BrokerAgencies::QuotesController < ApplicationController
     @employee_roster = @quote.quote_households.map(&:quote_members).flatten
     send_data(csv_for(@employee_roster), :type => 'text/csv; charset=iso-8859-1; header=present',
     :disposition => "attachment; filename=Employee_Roster.csv")
+  end
+
+  def delete_quote_modal
+    @row = params[:row]
+    @quote = Quote.find(params[:id])
+    respond_to do |format|
+      format.js {
+        render "datatables/delete_quote_modal"
+      }
+    end
   end
 
   def delete_quote

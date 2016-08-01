@@ -169,12 +169,24 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.closest('.module').find('.input-group').wrap('<div class="input-no-pd"></div>');
   }
 
+  function attachModalsToLinks(table_id) {
+    findTable(table_id);
+    $table.find('.row-data .for-modal').each(function() {
+      var $new_link = $(this).find('a');
+      var $replace_for = $(this).attr('id').replace(/-/g, '_');
+      $(this).closest('tr').find('.row-actions a[href="replace_with_modal_'+$replace_for+'"]').replaceWith($new_link);
+    });
+  }
+
   function replaceRowActionUrls(table_id) {
     findTable(table_id);
     $table.find('.row-data .for-remote-replace-url').each(function() {
       var $new_url = $(this).data('replace-url');
       var $replace_for = $(this).attr('id').replace(/-/g, '_');
       // add data-method: post if present
+      if ( $(this).hasClass('disabled')) {
+        $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').addClass('disabled');
+      }
       if ( $(this).data('method') == 'post' ) {
         $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('data-method', 'post');
       }
@@ -245,6 +257,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   return {
+    attachModalsToLinks : attachModalsToLinks,
     replaceRowActionUrls : replaceRowActionUrls,
     addRowIndexToRowFunctionLinks : addRowIndexToRowFunctionLinks,
     wrapSearchInBootstrap : wrapSearchInBootstrap,

@@ -321,6 +321,7 @@ Rails.application.routes.draw do
         get :export_to_pdf
         get :download_pdf
         get :dental_plans_data
+        get :delete_quote_modal
       end
       member do
         post :delete_quote
