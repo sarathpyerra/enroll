@@ -12,7 +12,7 @@ class QuoteBenefitGroup
 
   embedded_in :quote
 
-  field :title, type: String#, default: "My Benefit Group"
+  field :title, type: String
   field :default, type: Boolean, default: false
 
   field :plan_option_kind, type: String, default: "single_carrier"
@@ -27,31 +27,34 @@ class QuoteBenefitGroup
   field :reference_plan_id, type: BSON::ObjectId
   field :lowest_cost_plan_id, type: BSON::ObjectId
   field :highest_cost_plan_id, type: BSON::ObjectId
+  field :dental_reference_plan_id, type: BSON::ObjectId
 
   field :published_reference_plan, type: BSON::ObjectId
   field :published_lowest_cost_plan, type: BSON::ObjectId
   field :published_highest_cost_plan, type: BSON::ObjectId
+  field :published_dental_reference_plan, type: BSON::ObjectId
 
   associated_with_one :plan, :published_reference_plan, "Plan"
   associated_with_one :lowest_cost_plan, :published_lowest_cost_plan, "Plan"
   associated_with_one :highest_cost_plan, :published_highest_cost_plan, "Plan"
+  associated_with_one :dental_plan, :published_dental_reference_plan, "Plan"
 
   embeds_many :quote_relationship_benefits, cascade_callbacks: true
+  embeds_many :quote_dental_relationship_benefits, cascade_callbacks: true
 
   field :criteria_for_ui, type: String, default: []
+  field :deductible_for_ui, type: String, default: 6000
+  field :dental_criteria_for_ui, type: String, default: []
 
   delegate :start_on, to: :quote
   delegate :quote_name, to: :quote
   delegate :aasm_state, to: :quote
-  #embeds_many :quote_dental_relationship_benefits, cascade_callbacks: true
+
 
   validates_presence_of :title
 
   before_save :build_relationship_benefits
-
-  def dental_relationship_benefit_for(relationship)
-    quote_relationship_benefits.where(relationship: relationship).first
-  end
+  before_save :build_dental_relationship_benefits
 
   def quote_households
     quote.quote_households.select{|hh| hh.quote_benefit_group_id == self.id}
@@ -59,6 +62,10 @@ class QuoteBenefitGroup
 
   def relationship_benefit_for(relationship)
     quote_relationship_benefits.where(relationship: relationship).first
+  end
+
+  def dental_relationship_benefit_for(relationship)
+    quote_dental_relationship_benefits.where(relationship: relationship).first
   end
 
   def build_relationship_benefits
@@ -69,6 +76,13 @@ class QuoteBenefitGroup
     end
   end
 
+  def build_dental_relationship_benefits
+    return if self.quote_dental_relationship_benefits.present?
+
+    self.quote_dental_relationship_benefits = PERSONAL_RELATIONSHIP_KINDS.map do |relationship|
+       self.quote_dental_relationship_benefits.build(relationship: relationship, offered: true)
+    end
+  end
 
   def reference_plan=(new_reference_plan)
     raise ArgumentError.new("expected Plan") unless new_reference_plan.is_a? Plan
@@ -192,8 +206,8 @@ class QuoteBenefitGroup
 
   # Determines if this benefit group is assigned to a quote household
   def is_assigned?
-    self.quote.quote_households.each do |hh|
-      return true if self.id == hh.quote_benefit_group_id
+    self.quote.quote_households.each do |quote_household|
+      return true if self.id == quote_household.quote_benefit_group_id
     end
     return false
   end

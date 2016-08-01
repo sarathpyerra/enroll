@@ -168,6 +168,7 @@ class BrokerAgencies::QuotesController < ApplicationController
     @quote.quote_benefit_groups << qbg
 
 
+    @scrollTo = params[:scrollTo] == "1" ? 1 : 0
     #redirect_to edit_broker_agencies_quote_path(@quote.id)
 
   end
@@ -202,12 +203,19 @@ class BrokerAgencies::QuotesController < ApplicationController
     update_params[:quote_benefit_groups_attributes] = update_params[:quote_benefit_groups_attributes].select {|k,v| update_params[:quote_benefit_groups_attributes][k][:id].present?}
     insert_params[:quote_benefit_groups_attributes] = insert_params[:quote_benefit_groups_attributes].select {|k,v| insert_params[:quote_benefit_groups_attributes][k][:id].blank?}
 
+    if params[:commit] == "Add Family"
+      notice_message = "New family added."
+      scrollTo = 1
+    elsif params[:commit] == "Save Changes"
+      notice_message = "Successfully saved quote/employee roster."
+      scrollTo = 0
+    end
 
     if (@quote.update_attributes(update_params) && @quote.update_attributes(insert_params))
-      redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :notice => "Successfully updated the employee roster" }
+      redirect_to edit_broker_agencies_quote_path(@quote, scrollTo: scrollTo),  :flash => { :notice => notice_message }
     else
       #render "edit" , :flash => {:error => "Unable to update the employee roster" }
-      redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :error => "Unable to update the employee roster" }
+      redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :error => "Unable to update the employee roster." }
     end
   end
 
@@ -346,28 +354,28 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def update_benefits
-    #q = Quote.find(params[:quote_id]) OLD - To be Removed
 
-    q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
+    quote_benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
 
-    return false if q.quote.published?
+    return false if quote_benefit_group.quote.published?
 
     benefits = params[:benefits]
-    q.quote_relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
+    quote_benefit_group.quote_relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
     render json: {}
   end
 
   def get_quote_info
 
     bp_hash = {}
-    #q =  Quote.find(params[:quote
-    q = Quote.find(params[:quote_id])
-    benefit_groups = q.quote_benefit_groups
-    bg = (params[:benefit_group_id] && q.quote_benefit_groups.find(params[:benefit_group_id])) || benefit_groups.first
-    summary = {name: q.quote_name,
-     status: q.aasm_state.capitalize,
+
+    quote = Quote.find(params[:quote_id])
+    benefit_groups = quote.quote_benefit_groups
+    bg = (params[:benefit_group_id] && quote.quote_benefit_groups.find(params[:benefit_group_id])) || benefit_groups.first
+    summary = {name: quote.quote_name,
+     status: quote.aasm_state.capitalize,
      plan_name: bg.plan && bg.plan.name || 'None',
      dental_plan_name: "bg.dental_plan && bg.dental_plan.name" || 'None',
+     deductible_value: bg.deductible_for_ui,
     }
     bg.quote_relationship_benefits.each{|bp| bp_hash[bp.relationship] = bp.premium_pct}
     render json: {'relationship_benefits' => bp_hash, 'roster_premiums' => bg.roster_cost_all_plans, 'criteria' => JSON.parse(bg.criteria_for_ui), summary: summary}
@@ -425,14 +433,12 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def criteria
-    if params[:quote_id]
-      q = Quote.find(params[:quote_id])
-      criteria_for_ui = params[:criteria_for_ui]
-      q.update_attributes!(criteria_for_ui: criteria_for_ui ) if criteria_for_ui
-      render json: JSON.parse(q.criteria_for_ui)
-    else
-      render json: []
-    end
+    benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
+    criteria_for_ui = params[:criteria_for_ui]
+    deductible_for_ui = params[:deductible_for_ui]
+    benefit_group.update_attributes!(criteria_for_ui: criteria_for_ui ) if criteria_for_ui
+    benefit_group.update_attributes(deductible_for_ui: deductible_for_ui) if deductible_for_ui
+    render json: JSON.parse(benefit_group.criteria_for_ui)
   end
 
   def export_to_pdf
@@ -508,7 +514,6 @@ private
     params[:quote][:quote_benefit_groups_attributes].each do |k,v|
       #do not save if no data was entered for benefit group
       if v["title"].blank?
-        puts "Deleting key: " + k.to_s
         params[:quote][:quote_benefit_groups_attributes].delete(k)
       end
 

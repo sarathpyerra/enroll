@@ -1,4 +1,4 @@
-<div class="container-fluid" style='margin-bottom:5%'>
+<div class="container-fluid" style='margin-bottom:0%'>
     <div class='dental_plan_selectors'>
 
         <div id='dental-carriers' style='width: 148px;'>
@@ -35,18 +35,5 @@
             <div id="<%=nationwide%>" class="nationwide"> <%= nationwide %> </div>
           <% end %>
         </div>
-    </div>
-
-    <div class='left'>
-    <b>Limit maximum deductible 0-$6000</b>
-      <div class='row'>
-        <div class='col-sm-1'>
-          <%= number_field_tag 'ex2_input', '6000', {  class: "slider_input hidden-param", style: 'margin-top:3%;min-width:75px;' } %>
-        </div>
-        <div class='col-sm-4' style='margin-top:1%;'>
-          <input id="ex2" data-slider-id='ex2Slider' class='slider' type="text" data-slider-min="0" data-slider-max="6000" data-slider-step="1" data-slider-value="6000" style='width:350px;'/>
-        </div>
-          <div style='margin-top:1%;'><span id='ex2_label' class="slide-label" style='margin-left:2%;'>$6000</span></div>
-      </div>
     </div>
 </div>

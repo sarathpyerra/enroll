@@ -25,14 +25,7 @@ And(/^the broker is signed in$/) do
 end
 
 When(/^he visits the Roster Quoting tool$/) do
-  visit broker_agencies_quotes_root_path
-  # click_link 'Roster Quoting Tool'
-  # binding.pry
-  # find('.interaction-click-control-roster-quoting-tool').trigger 'click'
-end
-
-Then(/^click on QuoteRoster Management$/) do
-  click_link 'Quote/Roster Management'
+  visit my_quotes_broker_agencies_quotes_path
 end
 
 When(/^click on the New Quote button$/) do
@@ -58,29 +51,30 @@ Then(/^the broker should see the data in the table$/) do
   #expect(page).to have_selector("#quote_quote_households_attributes_0_quote_members_attributes_0_dob[value=\"03/14/2016\"]")
 end
 
-When(/^broker clicks on Add member to this family$/) do
-  click_button 'Add member to this family'
-end
-
 When(/^broker enters valid information$/) do
-  find(:css, '.uidatepicker:last-child').set('11/11/1991')
-  select "Employee", :from => "select-relationship"
-  find(:css, '.quote-member').set('Martin')
+  fill_in 'quote[quote_name]', with: 'Test Quote'
+  fill_in 'quote[quote_households_attributes][0][quote_members_attributes][0][dob]', with: "11/11/1991"
+  select "Employee", :from => "quote_quote_households_attributes_0_quote_members_attributes_0_employee_relationship"
+  fill_in 'quote[quote_households_attributes][0][quote_members_attributes][0][first_name]', with: "John"
+  fill_in 'quote[quote_households_attributes][0][quote_members_attributes][0][last_name]', with: "Bandari"
 end
 
-When(/^the broker clicks on the Save Quote button$/) do
-  find('.interaction-click-control-save-quote').trigger 'click'
+When(/^the broker clicks on the Save Changes button$/) do
+  find('.interaction-click-control-save-changes').trigger 'click'
 end
 
 Then(/^the broker should see a successful message$/) do
-  expect(page).to have_content('Successfully saved the employee roster')
+  expect(page).to have_content('Successfully saved quote/employee roster.')
 end
 
-
-When(/^the broker clicks on the close button$/) do
-  find(:xpath, "//table//button[contains(@id, 'close_button')]").click
+Then(/^the broker clicks on Back to Quotes button$/) do
+  find('.interaction-click-control-back-to-quotes').trigger 'click'
 end
 
-Then(/^the Roster should be deleted$/) do
-  page.should have_no_xpath("//table//input[contains(@id, 'family_id')]")
+Then(/^the broker clicks delete button$/) do
+  find('#close_button').trigger 'click'
+end
+
+Then(/^the quote should be deleted$/) do
+  page.should have_no_content('Test Quote')
 end

@@ -8,13 +8,9 @@
 
     <h2>Quote Calculator</h2>
 
-
-
       <%= render partial: 'my_features' unless @q.published? %>
 
       <%= render partial: 'my_plans' unless @q.published? %>
-
-
 
       <% end %>
       <%= render partial: 'broker_agencies/quotes/panels/dental'  unless @q.published? %>
@@ -30,22 +26,12 @@
 $(document).on('ready page:load', function () {
     window.select_health_plans = <%=raw @health_plan_quote_criteria %>
     health_plan_count = Object.keys(window.select_health_plans).length
-    deductible_value = 6000
-    quote_change("<%= @q.id%>", "<%= @quote_on_page.id%>")
 
-    window.relationship_benefits = <%= raw @benefit_pcts_json %>
-    window.dental_relationship_benefits = window.relationship_benefits
+    show_benefit_group("<%= @q.id%>", "<%= @quote_on_page.id%>")
 
-    window.roster_premiums = <%= raw @roster_premiums_json %>
+    window.dental_relationship_benefits =  <%= raw @benefit_pcts_json %>
     window.dental_roster_premiums = <%= raw @dental_roster_premiums %>
 
-    set_plan_costs()
-    slider_listeners()
-    page_load_listeners()
-    toggle_plans(<%= raw @quote_criteria %>)
-    $('#PlanComparison').on('click', function(){
-       sort_plans()
-    });
 
     $('.dental_carrier, .dental_metal, .dental_plan_type, .dc_network, .nationwide').on('click', function(){
 
