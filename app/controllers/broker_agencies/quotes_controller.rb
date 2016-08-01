@@ -74,6 +74,7 @@ class BrokerAgencies::QuotesController < ApplicationController
     active_year = Date.today.year
     @coverage_kind = "health"
 
+    # binding.pry
     @health_plans = $quote_shop_health_plans
     @health_selectors = $quote_shop_health_selectors
     @health_plan_quote_criteria  = $quote_shop_health_plan_features.to_json

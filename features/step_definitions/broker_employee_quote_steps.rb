@@ -78,3 +78,60 @@ end
 Then(/^the quote should be deleted$/) do
   page.should have_no_content('Test Quote')
 end
+
+Then(/^adds a new benefit group$/) do
+  fill_in "quote[quote_benefit_groups_attributes][1][title]", with: 'My Benefit Group'
+  find('.interaction-click-control-save-changes').trigger 'click'
+end
+
+Then(/^the broker assigns the benefit group to the family$/) do
+  select "My Benefit Group", :from => "quote[quote_households_attributes][0][quote_benefit_group_id]"
+end
+
+Then(/^the broker saves the quote$/) do
+  find('.interaction-click-control-save-changes').trigger 'click'
+end
+
+When(/^the broker clicks on quote$/) do
+  click_link 'Test Quote'
+end
+
+Given(/^the Plans exist$/) do
+  open_enrollment_start_on = TimeKeeper.date_of_record.end_of_month + 1.day
+  open_enrollment_end_on = open_enrollment_start_on + 12.days
+  start_on = open_enrollment_start_on + 1.months
+  end_on = start_on + 1.year - 1.day
+  plan1 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', metal_level: 'silver', active_year: start_on.year, csr_variant_id: "01")
+  plan2 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', metal_level: 'bronze', active_year: start_on.year, csr_variant_id: "01")
+  Caches::PlanDetails.load_record_cache!
+  $quote_shop_health_plans = [plan1,plan2]
+end
+
+Then(/^the broker enters Employer Contribution percentages$/) do
+  page.execute_script("$('#pct_employee').bootstrapSlider({})")
+  page.execute_script("$('#pct_employee').bootstrapSlider('setValue', 80)")
+  find(:xpath, "//div[contains(@class, 'health')]//*[@id='employee_slide_input']").set("80")
+  page.execute_script("$('#pct_employee').trigger('slideStop')")
+  page.execute_script("$('.publish td').trigger('click')")
+end
+
+Then(/^the broker filters the plans$/) do
+  find(:xpath, "//*[@id='quote-plan-list']/label[1]").trigger("click")
+  find(:xpath, "//*[@id='quote-plan-list']/label[2]").trigger("click")
+end
+
+Then(/^the broker clicks Compare Costs$/) do
+  find('#CostComparison').trigger 'click'
+end
+
+When(/^the broker selects the Reference Plan$/) do
+  find('td', text: "$175 / $193 / $193").trigger("click")
+end
+
+Then(/^the broker clicks Publish Quote button$/) do
+  click_button 'Publish Quote'
+end
+
+Then(/^the broker sees that the Quote is published$/) do
+  expect(page).to have_content('Your quote has been published')
+end
