@@ -1,6 +1,9 @@
 class BrokerAgencies::QuotesController < ApplicationController
 
   include DataTablesAdapter
+  include DataTablesSorts
+  include DataTablesFilters
+
 
   before_action :find_quote , :only => [:destroy ,:show, :delete_member, :delete_household, :publish_quote, :view_published_quote]
   before_action :format_date_params  , :only => [:update,:create]
@@ -30,39 +33,27 @@ class BrokerAgencies::QuotesController < ApplicationController
   # displays index page of quotes
   def my_quotes
     @all_quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
+    @broker = current_user.person.broker_role
   end
 
-  def quote_index_datatable
-
+  def quotes_index_datatable
     dt_query = extract_datatable_parameters
-
-    quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
-
-    @total_records = quotes.count
-    @records_filtered = quotes.count
-
-    unless dt_query.search_string.blank?
-      quotes = quotes.search(dt_query.search_string)
-      @records_filtered = quotes.count
+    quotes = []
+    all_quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
+    if dt_query.search_string.blank?
+      collection = all_quotes
+    else
+        quote_ids = Quote.search(dt_query.search_string).pluck(:id)
+        collection = all_quotes.where({
+          "id" => {"$in" => quote_ids}
+        })
     end
-
-    quotes = quotes.skip(dt_query.skip).limit(dt_query.take)
-
-    @payload = quotes.map { |q|
-      {
-        :quote_name => (view_context.link_to q.quote_name, broker_agencies_quote_path(q.id), data: { no_turbolink: true }),
-        :family_count => q.quote_households.count,
-        :benefit_group_count => q.quote_benefit_groups.count,
-        :claim_code => q.claim_code,
-        :quote_state => q.aasm_state,
-        :quote_roster => (view_context.link_to "View/Edit", edit_broker_agencies_quote_path(q.id), data: { no_turbolink: true }),
-        :quote_download => quote_download_link(q),
-        :quote_delete => ('<button type="button" onclick="delete_quote_handler" id="close_button" data-quote-id="' + q.id + '" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>').html_safe
-
-      }
-    }
-
-      @draw = dt_query.draw
+    collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
+    @draw = dt_query.draw
+    @total_records = all_quotes.count
+    @records_filtered = collection.count
+    @quotes = collection.skip(dt_query.skip).limit(dt_query.take)
+    render "datatables/quotes_index_datatable"
 
   end
 
@@ -317,10 +308,35 @@ class BrokerAgencies::QuotesController < ApplicationController
     :disposition => "attachment; filename=Employee_Roster.csv")
   end
 
+  def delete_quote_modal
+    @row = params[:row]
+    @quote = Quote.find(params[:id])
+    respond_to do |format|
+      format.js {
+        render "datatables/delete_quote_modal"
+      }
+    end
+  end
+
+  def delete_quote
+    @quote = Quote.find(params[:id])
+    if @quote.destroy
+      flash[:notice] = "Successfully deleted #{@quote.quote_name}."
+      respond_to do |format|
+        format.html {
+          redirect_to my_quotes_broker_agencies_quotes_path
+        }
+      end
+    end
+  end
+
   def destroy
     if @quote.destroy
+      flash[:notice] = "Successfully deleted #{@quote.quote_name}."
       respond_to do |format|
-        format.js { render :text => "deleted Successfully" , :status => 200 }
+        format.html {
+          redirect_to broker_agencies_quotes_root_path
+        }
       end
     end
   end
