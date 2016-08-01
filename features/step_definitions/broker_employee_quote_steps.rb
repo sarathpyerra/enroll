@@ -29,7 +29,7 @@ When(/^he visits the Roster Quoting tool$/) do
 end
 
 When(/^click on the New Quote button$/) do
-  click_link 'New Quote'
+  click_link 'New Roster'
 end
 
 
@@ -71,12 +71,24 @@ Then(/^the broker clicks on Back to Quotes button$/) do
   find('.interaction-click-control-back-to-quotes').trigger 'click'
 end
 
-Then(/^the broker clicks delete button$/) do
-  find('#close_button').trigger 'click'
+Then(/^the broker clicks Actions dropdown$/) do
+  find('#dropdownMenu1').trigger 'click'
+end
+
+When(/^the broker clicks delete$/) do
+  find('a', text: "Delete"). trigger 'click'
+end
+
+Then(/^the broker sees the confirmation$/) do
+  expect(page).to have_content('Are you sure you want to delete Test Quote?')
+end
+
+Then(/^the broker clicks Delete Quote$/) do
+  click_link 'Delete Quote'
 end
 
 Then(/^the quote should be deleted$/) do
-  page.should have_no_content('Test Quote')
+  expect(page).to have_content('Successfully deleted Test Quote.')
 end
 
 Then(/^adds a new benefit group$/) do

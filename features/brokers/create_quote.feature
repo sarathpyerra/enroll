@@ -30,7 +30,10 @@ Feature: Create Employee Roster
     When the broker clicks on the Save Changes button
     Then the broker should see a successful message
     And the broker clicks on Back to Quotes button
-    And the broker clicks delete button
+    Then the broker clicks Actions dropdown
+    When the broker clicks delete
+    Then the broker sees the confirmation
+    And the broker clicks Delete Quote
     Then the quote should be deleted
     And Broker logs out
     
