@@ -124,6 +124,8 @@
         EnrollDataTableInitializer.swapSearchAndNewButton('<%= table_id %>');
         EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
         EnrollDataTableInitializer.wrapSearchInBootstrap('<%= table_id %>');
+        EnrollDataTableInitializer.replaceRowActionUrls('<%= table_id %>');
+        EnrollDataTableInitializer.attachModalsToLinks('<%= table_id %>');
         EnrollDataTableInitializer.addRowIndexToRowFunctionLinks('<%= table_id %>');
         EnrollDataTableInitializer.addRowDataToParams('<%= table_id %>');
         EnrollDataTableInitializer.attachPostDrawHandlers('<%= table_id %>');
@@ -134,6 +136,7 @@
         <% end %>
       },
       "drawCallback": function( settings ) {
+        EnrollDataTableInitializer.replaceRowActionUrls('<%= table_id %>');
         EnrollDataTableInitializer.moveInfo('<%= table_id %>');
         EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
       },
@@ -181,9 +184,7 @@
             'orderable': false,
             'className': 'row-actions',
             'render': function (data, type, full, meta) {
-              // return '<% row_actions.each do |fa_icon, url, request_type, tooltip, popover_title, popover| %><% if popover.present? %><span title="<%= popover_title %>" data-toggle="popover" data-placement="top" data-html="true" data-content=\'<% popover.each do |popover_link| %><%= link_to "#{popover_link[0]}", "#{popover_link[1]}", remote: "#{popover_link[2]}" %><br/><% end %>\'><%="<i class=\"fa fa-#{fa_icon}\" data-toggle=\"tooltip\" title=\"#{popover_title}\" aria-hidden=\"true\"></i>".html_safe %></span><% else %><span><%= link_to j("<i class='fa fa-#{fa_icon}' aria-hidden='true'></i>".html_safe), "#{url}", remote: request_type, title: "#{tooltip}", data: {'toggle': 'tooltip'} %></span>&#10;<% end %><% end %>';
-                return '<div class="dropdown"><button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Actions <span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1"><% row_actions.each do |row_action| %><li><%= link_to "#{row_action[0]}", "#{row_action[1]}", remote: "#{row_action[2]}" %></li><% end %></ul></div>';
-            }
+              return '<div class="dropdown pull-right"><button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Actions <span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1"><% row_actions.each do |row_action| %><li><% if row_action[2] == true %><%= link_to "#{row_action[0]}", "#{row_action[1]}", remote: "#{row_action[2]}" %><% else %><%= link_to "#{row_action[0]}", "#{row_action[1]}" %><% end %></li><% end %></ul></div>';            }
           }, {
             'targets': <%= columns.length - 1 %>,
             'searchable': false,
@@ -204,8 +205,7 @@
             'orderable': false,
             'className': 'dt-center',
             'render': function (data, type, full, meta) {
-              return '<span class="enroll-checkbox"><div class="checkbox"><label><input id="input_'+meta.row+'" type="checkbox" name="id['+meta.row+']" value="input_'+meta.row+'' + $('<div/>').text(data).html() + '"><label for="input_'+meta.row+'"><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>';
-            }
+              return '<span data-index="'+meta.row+'" class="enroll-checkbox"><div class="checkbox"><label><input id="input_'+meta.row+'" type="checkbox" name="id['+meta.row+']" value="input_'+meta.row+'' + $('<div/>').text(data).html() + '"><label for="input_'+meta.row+'"><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>';            }
           }, {
             'targets': <%= columns.length-1 %>,
             'searchable': false,
@@ -213,20 +213,28 @@
             'className': 'row-data hidden'
           }
         ]
-      <% elsif row_functions == true %>, 'columnDefs': [
-        <% columns[0..columns.length-2].each_with_index do |col, idx| %>
+        <% elsif row_functions == true %>, 'columnDefs': [
           {
-            'targets': <%= idx %>,
-            'orderable': <%= col[3].first %>,
+            'targets': 0,
+            'searchable': false,
+            'orderable': false,
+            'render': function (data, type, full, meta) {
+              return '<span data-index="'+meta.row+'">' + data + '</span>';
+            }
           },
-        <% end %>
+          <% columns[1..columns.length-2].each_with_index do |col, idx| %>
+            {
+              'targets': <%= idx %>,
+              'orderable': <%= col[3].first %>,
+            },
+          <% end %>
           {
             'targets': <%= columns.length - 2 %>,
             'searchable': false,
             'orderable': false,
             'className': 'row-actions',
             'render': function (data, type, full, meta) {
-              return '<div class="dropdown"><button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Actions <span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1"><% row_actions.each do |row_action| %><li><%= link_to "#{row_action[0]}", "#{row_action[1]}", remote: "#{row_action[2]}" %></li><% end %></ul></div>';
+              return '<div class="dropdown pull-right"><button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Actions <span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1"><% row_actions.each do |row_action| %><li><% if row_action[2] == true %><%= link_to "#{row_action[0]}", "#{row_action[1]}", remote: "#{row_action[2]}" %><% else %><%= link_to "#{row_action[0]}", "#{row_action[1]}" %><% end %></li><% end %></ul></div>';
             }
           }, {
             'targets': <%= columns.length-1 %>,

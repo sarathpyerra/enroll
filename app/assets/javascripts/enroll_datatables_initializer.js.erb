@@ -141,6 +141,12 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.closest('.module').find('.datatable-header').append($search);
     $search.wrap('<div class="search text-right"></div>');
     $table.closest('.module').find('.datatable-header .search').prepend('<label>Search&nbsp;</label>')
+    if ( !$('#'+table_id+'-bulk-actions').length ) {
+      var $new_button = $table.closest('.module').find('.header .search + .col-xs-2').detach();
+      var $filters_parent = $table.closest('.module').find('.first-level').parent();
+      $filters_parent.addClass('vertically-aligned-row');
+      $filters_parent.append($new_button);
+    }
     $new_button.removeClass('hidden');
     $search.removeClass('hidden');
   }
@@ -163,13 +169,46 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.closest('.module').find('.input-group').wrap('<div class="input-no-pd"></div>');
   }
 
+  function attachModalsToLinks(table_id) {
+    findTable(table_id);
+    $table.find('.row-data .for-modal').each(function() {
+      var $new_link = $(this).find('a');
+      var $replace_for = $(this).attr('id').replace(/-/g, '_');
+      $(this).closest('tr').find('.row-actions a[href="replace_with_modal_'+$replace_for+'"]').replaceWith($new_link);
+    });
+  }
+
+  function replaceRowActionUrls(table_id) {
+    findTable(table_id);
+    $table.find('.row-data .for-remote-replace-url').each(function() {
+      var $new_url = $(this).data('replace-url');
+      var $replace_for = $(this).attr('id').replace(/-/g, '_');
+      // add data-method: post if present
+      if ( $(this).hasClass('disabled')) {
+        $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').addClass('disabled');
+      }
+      if ( $(this).data('method') == 'post' ) {
+        $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('data-method', 'post');
+      }
+      // add data-method: delete if present
+      if ( $(this).data('method') == 'delete' ) {
+        $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('data-method', 'delete');
+      }
+      $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('href', $new_url);
+    });
+  }
+
   function addRowIndexToRowFunctionLinks(table_id) {
     findTable(table_id);
-    $remote_links = $table.find('.row-actions .dropdown a[data-remote="true"]');
+    $remote_links = $table.find('.row-actions .dropdown a');
     $remote_links.each(function() {
       $row_index = $(this).closest('tr').find('td:first span').data('index');
       $existing_href = $(this).attr('href');
-      $(this).attr('href', $existing_href+"?row="+$row_index);
+      if ( $existing_href.indexOf('?') == 0 ) {
+        $(this).attr('href', $existing_href+"&row="+$row_index);
+      } else {
+        $(this).attr('href', $existing_href+"?row="+$row_index);
+      }
     });
   }
 
@@ -182,7 +221,10 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
           var data_attributes = [];
           $.each($(this).data(), function(k,v) {
             k = k.replace(/(?:^|\.?)([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "")
-            data_attributes.push(k+"="+v);
+            if ( k == "replace_url" ) {
+            } else {
+              data_attributes.push(k+"="+v);
+            }
           });
           $.each(data_attributes, function(index,value) {
             var $link = $row.find('.row-actions .dropdown a[data-remote="true"]').eq(index);
@@ -208,10 +250,15 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       additional_params[k] = v;
     });
     $table.data('dt_params', additional_params );
-    $table.DataTable().draw();
+    if (additional_params.hasOwnProperty('key')) {
+    } else {
+      $table.DataTable().draw();
+    }
   }
 
   return {
+    attachModalsToLinks : attachModalsToLinks,
+    replaceRowActionUrls : replaceRowActionUrls,
     addRowIndexToRowFunctionLinks : addRowIndexToRowFunctionLinks,
     wrapSearchInBootstrap : wrapSearchInBootstrap,
     moveInfo : moveInfo,
