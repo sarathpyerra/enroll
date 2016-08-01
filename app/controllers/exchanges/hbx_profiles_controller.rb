@@ -1,9 +1,7 @@
 class Exchanges::HbxProfilesController < ApplicationController
   include DataTablesAdapter
   include DataTablesSorts
-  include DataTablesSorts::VerificationsIndexSorts
   include DataTablesFilters
-  include DataTablesFilters::EmployerInvoicesIndexFilters
   
   before_action :check_hbx_staff_role, except: [:request_help, :show, :assister_index, :family_index]
   before_action :set_hbx_profile, only: [:edit, :update, :destroy]
