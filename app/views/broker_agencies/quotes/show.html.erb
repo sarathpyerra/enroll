@@ -34,28 +34,17 @@ $(document).on('ready page:load', function () {
 
 
     $('.dental_carrier, .dental_metal, .dental_plan_type, .dc_network, .nationwide').on('click', function(){
-
       class_name = $(this).attr('class')
-
       $("." + class_name).each(function(){
         $(this).removeClass('active1')
       });
-
       $(this).addClass('active1')
-
-      $('#dental_plans_container').click()
-
-      $.each($('#dental-feature-mgmt'), function() {
-        $(this).click();
-      });
-
       carrier_id = $('#dental-carriers').find('div.active1').attr('data-carrier')
       dental_level = $('#dental-metals').find('div.active1').attr('id')
       plan_type = $('#dental-plan_types').find('div.active1').attr('id')
       dc_network = $('#dental-dc_in_network').find('div.active1').attr('id')
       nationwide = $('#dental-nationwide').find('div.active1').attr('id')
       quote = $('#quote').val()
-
       $.get('/broker_agencies/quotes/dental_plans_data/', {
                                                             carrier_id: carrier_id,
                                                             dental_level: dental_level,

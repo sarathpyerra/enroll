@@ -6,14 +6,12 @@ function set_relationship_pct(relationship, val) {
     data: {benefits: window.relationship_benefits, quote_id: $('#quote_id').val(), benefit_id: $('#benefit_group_select option:selected').val() },
     url: '/broker_agencies/quotes/update_benefits.js',
   })
-  set_plan_costs()
+  QuoteComparePlans.set_plan_costs()
 }
-
 function set_dental_relationship_pct(relationship, val) {
   window.dental_relationship_benefits[relationship] = val
-  set_dental_plan_costs()
+  QuoteComparePlans.set_dental_plan_costs()
 }
-
 $(document).on('keyup', 'input.slider_input, input.right_slider_input', function() {
   if($(this).val() > 100) {
     if(['ex1_input','ex2_input'].includes($(this).attr('id'))) {

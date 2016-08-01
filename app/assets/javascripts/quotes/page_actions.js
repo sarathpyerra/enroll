@@ -32,10 +32,48 @@ QuotePageLoad = (function() {
               console.log('deductible', deductible_value)
               QuoteManagePlans.toggle_plans(response['criteria'])
               _set_benefits()
-              set_plan_costs()
+              QuoteComparePlans.set_plan_costs()
           })
   }
-  page_load_listeners = function() {
+
+  var _get_health_cost_comparison =function(){
+    var plans = selected_plans();
+    if(plans.length == 0) {
+      alert('Please select one or more plans for comparison');
+      return;
+     }
+    $.ajax({
+      type: "GET",
+      url: "/broker_agencies/quotes/health_cost_comparison",
+      data: {
+        plans: plans,
+        quote_id: $('#quote_id').val(),
+        benefit_id: $('#benefit_group_select option:selected').val()
+      },
+      success: function(response) {
+        $('#plan_comparison_frame').html(response);
+        _load_publish_listeners();
+      }
+    })
+  }
+  var _get_dental_cost_comparison= function() {
+    plans = selected_plans();
+    quote_id=$('#quote').val();
+    if(plans.length == 0) {
+      alert('Please select one or more plans for comparison');
+      return;
+     }
+    $.ajax({
+      type: "GET",
+      url: "/broker_agencies/quotes/dental_cost_comparison",
+      data: {plans: plans, quote: quote_id},
+      success: function(response) {
+        $('#dental_plan_comparison_frame').html(response);
+      }
+    })
+  }
+
+  var page_load_listeners = function() {
       $('.plan_selectors .criteria').on('click',function(){
           selected=this; sibs = $(selected).siblings();
           $.each(sibs, function(){ this.className='criteria' }) ;
@@ -43,7 +81,7 @@ QuotePageLoad = (function() {
           QuoteManagePlans.toggle_plans([])
           QuoteManagePlans.reset_selected_plans()
       })
-      $('.dental_plan_selectors .criteria').on('click',function(){
+      $('.dental_plan_selectors .criteriax').on('click',function(){
           selected=this; sibs = $(selected).siblings();
           $.each(sibs, function(){ this.className='criteria' }) ;
           selected.className='active';
@@ -74,14 +112,24 @@ QuotePageLoad = (function() {
           configure_benefit_group(quote_id, benefit_group_id)
       })
       $('#reset_selected').on('click', QuoteManagePlans.reset_selected_plans)
-      $('#CostComparison').on('click', QuoteComparePlans.get_health_cost_comparison)
-      $('#DentalCostComparison').on('click', QuoteComparePlans.get_dental_cost_comparison)
+      $('#CostComparison').on('click', _get_health_cost_comparison)
+      $('#DentalCostComparison').on('click', _get_dental_cost_comparison)
       $('#PlanComparison').on('click', function(){
          QuoteComparePlans.sort_plans()
       })
   }
+    var view_details=function($thisObj) {
+    if ( $thisObj.hasClass('view') ) {
+      $thisObj.html('Hide Details <i class="fa fa-chevron-up fa-lg"></i>');
+      $thisObj.removeClass("view");
+    } else {
+      $thisObj.html('View Details <i class="fa fa-chevron-down fa-lg"></i>');
+      $thisObj.addClass("view");
+    }
+  }
   return {
       page_load_listeners: page_load_listeners,
       configure_benefit_group: configure_benefit_group,
+      view_details: view_details,
   }
 })();

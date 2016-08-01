@@ -1,5 +1,43 @@
 QuoteComparePlans = ( function() {
   // Reference plans selected for comparison
+  var set_plan_costs = function() {
+    var plan_ids = Object.keys(window.roster_premiums)
+    for(var i = 0; i< plan_ids.length; i++){
+      premium = 0
+      plan_id = plan_ids[i]
+      premiums = window.roster_premiums[plan_ids[i]]
+      kinds = Object.keys(premiums) 
+      for (var j=0; j<kinds.length; j++) {
+        kind = kinds[j]
+        premium = premium + premiums[kind] *  window.relationship_benefits[kind]
+      }
+     premium = Math.round(premium)/100.
+     plan_button = "[value='" + plan_id + "']"
+     window.plan_button = plan_button
+     employee_cost_div = $(plan_button).parent().children()[1]
+     $(employee_cost_div).html(Math.ceil(parseFloat(premium)))
+    }
+  }
+
+  var set_dental_plan_costs = function() {
+    var plan_ids = Object.keys(window.dental_roster_premiums)
+    for(var i = 0; i< plan_ids.length; i++){
+      premium = 0
+      plan_id = plan_ids[i]
+      premiums = window.dental_roster_premiums[plan_ids[i]]
+      kinds = Object.keys(premiums) 
+      for (var j=0; j<kinds.length; j++) {
+        kind = kinds[j]
+        premium = premium + premiums[kind] * window.dental_relationship_benefits[kind]
+      }
+      premium = Math.round(premium)/100.
+      plan_button = "[value='" + plan_id + "']"
+      window.plan_button = plan_button
+      employee_cost_div = $(plan_button).parent().children()[1]
+      $(employee_cost_div).html(Math.ceil(parseFloat(premium)))
+    }
+  }
+
   var selected_plans = function(){
     var plans=[];
     $.each($('.btn.active input'), function(i,item){plans.push( $(item).attr("value"))})
@@ -69,7 +107,7 @@ QuoteComparePlans = ( function() {
       }
     })    
   }
-  var _load_quote_listeners= function() {
+  var _load_publish_listeners= function() {
     console.log('looad')
     $('.publish td').on('click', function(){
         td = $(this)
@@ -90,65 +128,18 @@ QuoteComparePlans = ( function() {
         _open_quote()
     })
   }
-  var get_health_cost_comparison =function(){
-    var plans = selected_plans();
-    if(plans.length == 0) {
-      alert('Please select one or more plans for comparison');
-      return;
-     }
-    $.ajax({
-      type: "GET",
-      url: "/broker_agencies/quotes/health_cost_comparison",
-      data: {
-        plans: plans,
-        quote_id: $('#quote_id').val(),
-        benefit_id: $('#benefit_group_select option:selected').val()
-      },
-      success: function(response) {
-        $('#plan_comparison_frame').html(response);
-        _load_quote_listeners();
-      }
-    })
-  }
-  var get_dental_cost_comparison= function() {
-    plans = selected_plans();
-    quote_id=$('#quote').val();
-    if(plans.length == 0) {
-      alert('Please select one or more plans for comparison');
-      return;
-     }
-    $.ajax({
-      type: "GET",
-      url: "/broker_agencies/quotes/dental_cost_comparison",
-      data: {plans: plans, quote: quote_id},
-      success: function(response) {
-        $('#dental_plan_comparison_frame').html(response);
-      }
-    })
-  }
-
   var show_benefit_group=function(quote_id, benefit_group_id){
     slider_listeners()
     QuotePageLoad.configure_benefit_group(quote_id, benefit_group_id)
     inject_plan_into_quote(quote_id, benefit_group_id)
     QuotePageLoad.page_load_listeners()
-
-      }
-  var view_details=function($thisObj) {
-    if ( $thisObj.hasClass('view') ) {
-      $thisObj.html('Hide Details <i class="fa fa-chevron-up fa-lg"></i>');
-      $thisObj.removeClass("view");
-    } else {
-      $thisObj.html('View Details <i class="fa fa-chevron-down fa-lg"></i>');
-      $thisObj.addClass("view");
-    }
   }
   return {
-    view_details: view_details,
+    set_plan_costs: set_plan_costs,
+    set_dental_plan_costs: set_dental_plan_costs,
+
     show_benefit_group: show_benefit_group,
     selected_plans: selected_plans,
     sort_plans: sort_plans,
-    get_health_cost_comparison: get_health_cost_comparison,
-    get_dental_cost_comparison: get_dental_cost_comparison,
   }
 })();  
