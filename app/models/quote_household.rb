@@ -49,6 +49,7 @@ class QuoteHousehold
     end
   end
 
+
   private
 
   def one_spouse_or_domestic_partner_per_family

@@ -329,25 +329,22 @@ class EmployerProfile
   end
 
   def build_plan_year_from_quote(quote_claim_code, import_census_employee=false)
-    quote = Quote.where("claim_code" => quote_claim_code).first
+    quote = Quote.where("claim_code" => quote_claim_code, "aasm_state" => "published").first
 
     # Perform quote link if claim_code is valid
-    if quote.present? && !quote_claim_code.blank?
+    if quote.present? && !quote_claim_code.blank? && quote.published?
 
-      plan_year = self.plan_years.build
-      plan_year.start_on = (TimeKeeper.date_of_record + 2.months).beginning_of_month
-      plan_year.end_on = (plan_year.start_on + 1.year) - 1.day
-      plan_year.open_enrollment_start_on = TimeKeeper.date_of_record
-      plan_year.open_enrollment_end_on = (TimeKeeper.date_of_record + 1.month).beginning_of_month + 9.days
-      plan_year.fte_count = quote.quote_households.map(&:quote_members).inject(:+).count # get count of quote_members
+      plan_year = self.plan_years.build({
+        start_on: (TimeKeeper.date_of_record + 2.months).beginning_of_month, end_on: ((TimeKeeper.date_of_record + 2.months).beginning_of_month + 1.year) - 1.day,
+        open_enrollment_start_on: TimeKeeper.date_of_record, open_enrollment_end_on: (TimeKeeper.date_of_record + 1.month).beginning_of_month + 9.days,
+        fte_count: quote.member_count
+        })
 
       benefit_group_mapping = Hash.new
 
+      # Build each quote benefit group
       quote.quote_benefit_groups.each do |quote_benefit_group|
-        benefit_group = plan_year.benefit_groups.build
-        benefit_group.plan_option_kind =  quote_benefit_group.plan_option_kind
-        benefit_group.title = quote_benefit_group.title
-        benefit_group.description = "Linked from claim code " + quote_claim_code
+        benefit_group = plan_year.benefit_groups.build({plan_option_kind: quote_benefit_group.plan_option_kind, title: quote_benefit_group.title, description: "Linked from claim code " + quote_claim_code })
 
         # map quote benefit group to newly created plan year benefit group so it can be assigned to census employees if imported
         benefit_group_mapping[quote_benefit_group.id.to_s] = benefit_group.id
@@ -363,10 +360,12 @@ class EmployerProfile
 
       if plan_year.save!
 
+        quote.claim!
+
         if import_census_employee == true
           quote.quote_households.each do |qhh|
             qhh_employee = qhh.employee
-            if qhh_employee.present?
+            if qhh.employee.present?
                 quote_employee = qhh.employee
                 ce = CensusEmployee.new("employer_profile_id" => self.id, "first_name" => quote_employee.first_name, "last_name" => quote_employee.last_name, "dob" => quote_employee.dob, "hired_on" => plan_year.start_on)
                 ce.find_or_create_benefit_group_assignment(plan_year.benefit_groups.find(benefit_group_mapping[qhh.quote_benefit_group_id.to_s].to_s))

@@ -39,6 +39,12 @@ class Quote
 
   index({ broker_role_id: 1 })
 
+  scope :all_broker_quotes,                  -> (broker_role_id) { where(broker_role_id: broker_role_id) }
+  scope :draft_quotes,                       -> { where("aasm_state" => 'draft') }
+  scope :published_quotes,                   -> { where("aasm_state" => 'published') }
+  scope :claimed_quotes,                   -> { where("aasm_state" => 'claimed') }
+
+
 
   def self.default_search_order
     [[:quote_name, 1]]
@@ -61,15 +67,6 @@ class Quote
     plan && roster_employer_contribution(plan.id, plan.id)
   end
 
-  aasm do
-    state :draft, initial: true
-    state :published
-
-    event :publish do
-      transitions from: :draft, to: :published, :guard => "can_quote_be_published?"
-    end
-  end
-
   def can_quote_be_published?
     all_households_have_benefit_groups? && all_benefit_groups_have_plans?
   end
@@ -82,6 +79,9 @@ class Quote
     quote_benefit_groups.map(&:plan).include?(nil) ? false : true
   end
 
+  def member_count
+    quote_households.map(&:quote_members).inject(:+).count
+  end
 
   def published?
     aasm_state == "published"
@@ -96,5 +96,20 @@ class Quote
   def employer_claim_code
      4.times.map{generate_character}.join + '-' + 4.times.map{generate_character}.join
   end
+
+  aasm do
+    state :draft, initial: true
+    state :published
+    state :claimed
+
+    event :publish do
+      transitions from: :draft, to: :published, :guard => "can_quote_be_published?"
+    end
+
+    event :claim do
+      transitions from: :published, to: :claimed
+    end
+  end
+
 
 end

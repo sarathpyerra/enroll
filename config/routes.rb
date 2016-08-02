@@ -46,7 +46,7 @@ Rails.application.routes.draw do
         get :binder_index_datatable
         post :binder_paid
         get :verification_index
-        get :verifications_index_datatable
+        post :verifications_index_datatable
       end
 
       member do
@@ -304,10 +304,10 @@ Rails.application.routes.draw do
       root 'quotes#index'
       collection do
         get :my_quotes # soon to be the index view
-        post :quote_index_datatable
+        post :quotes_index_datatable
         get :upload_employee_roster
         post :build_employee_roster
-        get :new_household , :format => "js"
+        get :new_household, :format => "js"
         post :update_benefits
         post :publish_quote
         get :get_quote_info
@@ -321,8 +321,10 @@ Rails.application.routes.draw do
         get :export_to_pdf
         get :download_pdf
         get :dental_plans_data
+        get :delete_quote_modal
       end
       member do
+        post :delete_quote
         post :download_employee_roster
         delete :delete_member
         delete :delete_household

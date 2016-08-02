@@ -1,4 +1,3 @@
-
 <div class="container module broker_quote_tool">
 	<%= form_for @quote, url: {action: "update"}, method: "put", class: "form-inline" do |f| %>
 	<%= render "edit_form" ,f:f %>
@@ -8,10 +7,9 @@
 			    <%= submit_tag "Save Changes", class: 'btn btn-primary btn-sm!' %>
 					<%= submit_tag "Add Family", class: 'btn btn-primary btn-sm!' %>
 					<%= link_to 'Upload Employee Roster' , upload_employee_roster_broker_agencies_quotes_path , class: "btn btn-primary" , remote: true  ,id: "upload_employees" %> <br>
-
 				</div>
 				<div class="col-sm-2">
-					<%= link_to "Back to Quotes", my_quotes_broker_agencies_quotes_path, class: 'btn btn-primary btn-sm!' %>
+					<%= link_to "Back to Quotes", my_quotes_broker_agencies_quotes_path, class: 'btn btn-primary btn-sm!', data: { no_turbolink: true } %>
 				</div>
   </div>
 </div>
