@@ -129,7 +129,7 @@ QuoteComparePlans = ( function() {
     })
   }
   var show_benefit_group=function(quote_id, benefit_group_id){
-    slider_listeners()
+    QuoteSliders.slider_listeners()
     QuotePageLoad.configure_benefit_group(quote_id, benefit_group_id)
     inject_plan_into_quote(quote_id, benefit_group_id)
     QuotePageLoad.page_load_listeners()

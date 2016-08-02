@@ -1,4 +1,77 @@
 QuotePageLoad = (function() {
+  var available_health_plans = 0
+  var _plan_test = function(plan, criteria){
+    var result = true
+    var critters = criteria.length
+    for (var j=0; j< critters; j++){
+      var criteria_type = criteria[j][0]
+      var criteria_value = criteria[j][1]
+      if ((criteria_type == 'carriers') && (criteria_value != plan['carrier_abbrev']))   {result=false; break; }
+      if ((criteria_type == 'metals') && (criteria_value != plan['metal']))     {result=false; break; }
+      if ((criteria_type == 'plan_types') && (criteria_value != plan['plan_type'])) {result=false; break; }
+      if ((criteria_type == 'nationwide') && (criteria_value != plan['nationwide'])) {result=false; break; }
+      if ((criteria_type == 'dc_in_network') && (criteria_value != plan['dc_in_network'])) {result=false; break; }
+    }
+    if (parseInt(plan['deductible']) > parseInt(deductible_value)) {result=false}
+
+    return result
+  }
+  var _set_plan_counts = function() {
+      $('#show_plan_criteria_count').text('Plans that meet your criteria: ' + String(available_health_plans))
+      $('#show_plan_selected_count').text('You have selected ' + String($('.btn.active').size()) +' plans.')
+      $('#show_dental_plan_criteria_count').text('Plans that meet your criteria: ' + '13')
+      $('#show_dental_plan_selected_count').text('You have selected ' + String($('.btn.active').size()) +' plans.')
+  }
+  var _turn_off_criteria = function() {
+      $.each($('#feature-mgmt .active'), function(index,value){ $(value).addClass('criteria').removeClass('active') })
+  }
+  var toggle_plans = function(criteria){
+    if(criteria.length== 0){
+        $.each($('.plan_selectors .active'), function() {
+            var criteria_type = this.parentNode.id
+            var criteria_value = this.id
+            if (criteria_value != 'any') {criteria.push([criteria_type,criteria_value])}
+     })
+    }
+    else{
+      turn_off_criteria()
+      for(var i = 0; i<criteria.length; i++){
+        $('#' + criteria[i][0] +' #' + criteria[i][1]).addClass('active')
+      }
+    }
+    available_health_plans = 0
+    for(var i = 0; i < health_plan_count; i++) {
+      var plan = window.select_health_plans[i]
+      var value = "[value~=" + plan['plan_id'] + "]"
+      var display = _plan_test(plan, criteria) ? 'inline' : 'none'
+      $(value).parent().css('display', display)
+      if (display=='inline') {available_health_plans += 1}
+    }   
+    $('#x-of-plans').html($('#quote-plan-list > label:visible').length);
+    _set_plan_counts()
+    $.ajax({
+      type: 'GET',
+      data: {
+        quote_id: $('#quote_id').val(),
+        benefit_id: $('#benefit_group_select option:selected').val(),
+        criteria_for_ui: JSON.stringify(criteria),
+        deductible_for_ui: deductible_value },
+      url: '/broker_agencies/quotes/criteria.js'
+    })
+  }
+  reset_selected_plans =  function(){
+      $.each($('.plan_buttons .btn.active input'), function(){
+      $(this).prop('checked', false)
+      $(this).parent().removeClass('active')
+      })
+      _set_plan_counts()
+      $('[aria-labelledby="compare_costs"]').html('')
+      $('[aria-labelledby="compare_benefits"]').html('')
+      setTimeout( function(){
+        $('[aria-controls="plan-selection-mgmt"]').attr('aria-expanded', true)
+        $('#plan-selection-mgmt').addClass('in')
+      }, 0)
+  }
   _set_benefits = function() {
       $('#pct_employee').bootstrapSlider('setValue', employee_value = window.relationship_benefits['employee']);
       $('#employee_slide_input').val(employee_value)
@@ -25,12 +98,12 @@ QuotePageLoad = (function() {
           }).done(function(response){
               window.relationship_benefits = response['relationship_benefits']
               window.roster_premiums = response['roster_premiums']
-              QuoteManagePlans.turn_off_criteria()
+              _turn_off_criteria()
               deductible_value = parseInt(response['summary']['deductible_value'])
               $('#ex1').bootstrapSlider('setValue', deductible_value)
               $('#ex1_input').val(deductible_value)
               console.log('deductible', deductible_value)
-              QuoteManagePlans.toggle_plans(response['criteria'])
+              toggle_plans(response['criteria'])
               _set_benefits()
               QuoteComparePlans.set_plan_costs()
           })
@@ -78,8 +151,8 @@ QuotePageLoad = (function() {
           selected=this; sibs = $(selected).siblings();
           $.each(sibs, function(){ this.className='criteria' }) ;
           selected.className='active';
-          QuoteManagePlans.toggle_plans([])
-          QuoteManagePlans.reset_selected_plans()
+          toggle_plans([])
+          reset_selected_plans()
       })
       $('.dental_carrier, .dental_metal, .dental_plan_type, .dc_network, .nationwide').on('click', function(){
         class_name = $(this).attr('class')
@@ -126,7 +199,7 @@ QuotePageLoad = (function() {
           benefit_group_id = $(this).val()
           configure_benefit_group(quote_id, benefit_group_id)
       })
-      $('#reset_selected').on('click', QuoteManagePlans.reset_selected_plans)
+      $('#reset_selected').on('click', reset_selected_plans)
       $('#CostComparison').on('click', _get_health_cost_comparison)
       $('#DentalCostComparison').on('click', _get_dental_cost_comparison)
       $('#PlanComparison').on('click', function(){
@@ -146,5 +219,7 @@ QuotePageLoad = (function() {
       page_load_listeners: page_load_listeners,
       configure_benefit_group: configure_benefit_group,
       view_details: view_details,
+      toggle_plans: toggle_plans,
+      reset_selected_plans: reset_selected_plans,
   }
 })();
