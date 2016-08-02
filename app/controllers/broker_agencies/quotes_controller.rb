@@ -65,7 +65,6 @@ class BrokerAgencies::QuotesController < ApplicationController
     active_year = Date.today.year
     @coverage_kind = "health"
 
-    # binding.pry
     @health_plans = $quote_shop_health_plans
     @health_selectors = $quote_shop_health_selectors
     @health_plan_quote_criteria  = $quote_shop_health_plan_features.to_json
@@ -182,7 +181,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     # Build Default Quote Benefit Group
     qbg = QuoteBenefitGroup.new
-    qbg.title = "Default Beneift Package"
+    qbg.title = "Default Benefit Package"
     quote.quote_benefit_groups << qbg
 
     # Assign new quote to current broker
@@ -526,7 +525,6 @@ private
 
 
   def sanitize_quote_roster_params
-    #binding.pry
 
     params[:quote][:quote_benefit_groups_attributes].each do |k,v|
       #do not save if no data was entered for benefit group
