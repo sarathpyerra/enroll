@@ -1,7 +1,6 @@
 class Exchanges::HbxProfilesController < ApplicationController
   include DataTablesAdapter
   include DataTablesSorts
-  include DataTablesSorts::VerificationsIndexSorts
   include DataTablesFilters
   include DataTablesFilters::EmployerInvoicesIndexFilters
   

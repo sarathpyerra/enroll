@@ -34,7 +34,7 @@ QuotePageLoad = (function() {
      })
     }
     else{
-      turn_off_criteria()
+      _turn_off_criteria()
       for(var i = 0; i<criteria.length; i++){
         $('#' + criteria[i][0] +' #' + criteria[i][1]).addClass('active')
       }
