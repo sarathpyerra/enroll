@@ -37,7 +37,7 @@ QuotePageLoad = (function() {
   }
 
   var _get_health_cost_comparison =function(){
-    var plans = selected_plans();
+    var plans = QuoteComparePlans.selected_plans();
     if(plans.length == 0) {
       alert('Please select one or more plans for comparison');
       return;
@@ -52,7 +52,7 @@ QuotePageLoad = (function() {
       },
       success: function(response) {
         $('#plan_comparison_frame').html(response);
-        _load_publish_listeners();
+        QuoteComparePlans.load_publish_listeners();
       }
     })
   }
@@ -81,13 +81,28 @@ QuotePageLoad = (function() {
           QuoteManagePlans.toggle_plans([])
           QuoteManagePlans.reset_selected_plans()
       })
-      $('.dental_plan_selectors .criteriax').on('click',function(){
-          selected=this; sibs = $(selected).siblings();
-          $.each(sibs, function(){ this.className='criteria' }) ;
-          selected.className='active';
-          QuoteManagePlans.toggle_plans([])
-          QuoteManagePlans.reset_selected_plans()
-      })
+      $('.dental_carrier, .dental_metal, .dental_plan_type, .dc_network, .nationwide').on('click', function(){
+        class_name = $(this).attr('class')
+        $("." + class_name).each(function(){
+          $(this).removeClass('active1')
+        });
+        $(this).addClass('active1')
+        carrier_id = $('#dental-carriers').find('div.active1').attr('data-carrier')
+        dental_level = $('#dental-metals').find('div.active1').attr('id')
+        plan_type = $('#dental-plan_types').find('div.active1').attr('id')
+        dc_network = $('#dental-dc_in_network').find('div.active1').attr('id')
+        nationwide = $('#dental-nationwide').find('div.active1').attr('id')
+        quote = $('#quote').val()
+        $.get('/broker_agencies/quotes/dental_plans_data/',
+          {
+            carrier_id: carrier_id,
+            dental_level: dental_level,
+            plan_type: plan_type,
+            dc_network: dc_network,
+            nationwide: nationwide,
+            quote: quote
+          }                                                     );
+      });
       $('.plan_buttons .btn').on('click', function() {
           var plan = $(this)
           window.this = plan

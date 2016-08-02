@@ -12,6 +12,7 @@ function set_dental_relationship_pct(relationship, val) {
   window.dental_relationship_benefits[relationship] = val
   QuoteComparePlans.set_dental_plan_costs()
 }
+function slider_listeners () {
 $(document).on('keyup', 'input.slider_input, input.right_slider_input', function() {
   if($(this).val() > 100) {
     if(['ex1_input','ex2_input'].includes($(this).attr('id'))) {
@@ -71,7 +72,7 @@ $(document).on('change', 'input.slider, input.right-slider', function(){
   }
 });
 
-function slider_listeners () {
+
     $('#ex1').bootstrapSlider({});
     $('#ex2').bootstrapSlider({});
     $('#total_plan_cost').bootstrapSlider({
@@ -198,3 +199,4 @@ function slider_listeners () {
     })
 
 }
+

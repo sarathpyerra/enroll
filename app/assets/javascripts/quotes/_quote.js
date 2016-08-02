@@ -107,7 +107,7 @@ QuoteComparePlans = ( function() {
       }
     })    
   }
-  var _load_publish_listeners= function() {
+  var load_publish_listeners= function() {
     console.log('looad')
     $('.publish td').on('click', function(){
         td = $(this)
@@ -137,7 +137,7 @@ QuoteComparePlans = ( function() {
   return {
     set_plan_costs: set_plan_costs,
     set_dental_plan_costs: set_dental_plan_costs,
-
+    load_publish_listeners: load_publish_listeners,
     show_benefit_group: show_benefit_group,
     selected_plans: selected_plans,
     sort_plans: sort_plans,
