@@ -371,7 +371,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     quote_benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
 
-    return false if quote_benefit_group.quote.published?
+    return false if quote_benefit_group.quote.is_complete?
 
     benefits = params[:benefits]
     quote_benefit_group.quote_relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
@@ -448,6 +448,9 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def criteria
     benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
+
+    return false if quote_benefit_group.quote.is_complete?
+
     criteria_for_ui = params[:criteria_for_ui]
     deductible_for_ui = params[:deductible_for_ui]
     benefit_group.update_attributes!(criteria_for_ui: criteria_for_ui ) if criteria_for_ui
