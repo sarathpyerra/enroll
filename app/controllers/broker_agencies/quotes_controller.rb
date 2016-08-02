@@ -448,7 +448,7 @@ class BrokerAgencies::QuotesController < ApplicationController
   def criteria
     benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
 
-    return false if quote_benefit_group.quote.is_complete?
+    return false if benefit_group.quote.is_complete?
 
     criteria_for_ui = params[:criteria_for_ui]
     deductible_for_ui = params[:deductible_for_ui]
