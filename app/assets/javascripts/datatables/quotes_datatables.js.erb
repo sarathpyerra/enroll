@@ -42,10 +42,25 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     });
   }
 
+  function callClaimedFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $claimed_filter = $table.closest('.module').find('.first-level a:contains("Claimed")');
+    var $broker_id = $('.broker-quotes-table').data('broker-id');
+    $claimed_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(),
+        filters: [
+        "all_broker_quotes('"+$broker_id+"')",
+        "claimed_quotes"
+      ]});
+    });
+  }
+
   return {
     callAllFilter: callAllFilter,
     callDraftFilter : callDraftFilter,
-    callPublishedFilter : callPublishedFilter
+    callPublishedFilter : callPublishedFilter,
+    callClaimedFilter : callClaimedFilter
   };
 
 } )( window );

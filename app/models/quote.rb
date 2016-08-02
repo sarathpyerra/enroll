@@ -42,6 +42,7 @@ class Quote
   scope :all_broker_quotes,                  -> (broker_role_id) { where(broker_role_id: broker_role_id) }
   scope :draft_quotes,                       -> { where("aasm_state" => 'draft') }
   scope :published_quotes,                   -> { where("aasm_state" => 'published') }
+  scope :claimed_quotes,                   -> { where("aasm_state" => 'claimed') }
 
 
 
