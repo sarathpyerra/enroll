@@ -1,4 +1,4 @@
-QuoteComparePlans = ( function() {
+var Quote = ( function() {
   // Reference plans selected for comparison
   var set_plan_costs = function() {
     var plan_ids = Object.keys(window.roster_premiums)

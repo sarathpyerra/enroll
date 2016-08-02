@@ -7,11 +7,11 @@ var QuoteSliders = (function() {
       data: {benefits: window.relationship_benefits, quote_id: $('#quote_id').val(), benefit_id: $('#benefit_group_select option:selected').val() },
       url: '/broker_agencies/quotes/update_benefits.js',
     })
-    QuoteComparePlans.set_plan_costs()
+    Quote.set_plan_costs()
   }
   var _set_dental_relationship_pct = function(relationship, val) {
     window.dental_relationship_benefits[relationship] = val
-    QuoteComparePlans.set_dental_plan_costs()
+    Quote.set_dental_plan_costs()
   }
   var slider_listeners = function() {
   $(document).on('keyup', 'input.slider_input, input.right_slider_input', function() {
