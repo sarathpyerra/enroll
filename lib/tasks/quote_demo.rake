@@ -72,7 +72,7 @@ namespace :quote_demo do
     def gen_quote (broker_id)
 
       q = Quote.new
-      q.claim_code = q.employer_claim_code
+      #q.claim_code = q.employer_claim_code
 
       q.broker_role_id = broker_id
       q.quote_name = "Demo Quote"
@@ -177,7 +177,7 @@ namespace :quote_demo do
 
 
       q = Quote.new
-      q.claim_code = q.employer_claim_code
+      #q.claim_code = q.employer_claim_code
 
       q.broker_role_id = broker_id
       q.quote_name = "Yet another quote"

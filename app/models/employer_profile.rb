@@ -334,15 +334,15 @@ class EmployerProfile
     # Perform quote link if claim_code is valid
     if quote.present? && !quote_claim_code.blank?
 
-      plan_year = self.plan_years.build
-      plan_year.start_on = (TimeKeeper.date_of_record + 2.months).beginning_of_month
-      plan_year.end_on = (plan_year.start_on + 1.year) - 1.day
-      plan_year.open_enrollment_start_on = TimeKeeper.date_of_record
-      plan_year.open_enrollment_end_on = (TimeKeeper.date_of_record + 1.month).beginning_of_month + 9.days
-      plan_year.fte_count = quote.quote_households.map(&:quote_members).inject(:+).count # get count of quote_members
+      plan_year = self.plan_years.build({
+        start_on: (TimeKeeper.date_of_record + 2.months).beginning_of_month, end_on: ((TimeKeeper.date_of_record + 2.months).beginning_of_month + 1.year) - 1.day,
+        open_enrollment_start_on: TimeKeeper.date_of_record, open_enrollment_end_on: (TimeKeeper.date_of_record + 1.month).beginning_of_month + 9.days,
+        fte_count: quote.member_count
+        })
 
       benefit_group_mapping = Hash.new
 
+      # Build each quote benefit group
       quote.quote_benefit_groups.each do |quote_benefit_group|
         benefit_group = plan_year.benefit_groups.build
         benefit_group.plan_option_kind =  quote_benefit_group.plan_option_kind

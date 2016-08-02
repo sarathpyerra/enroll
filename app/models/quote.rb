@@ -87,6 +87,9 @@ class Quote
     quote_benefit_groups.map(&:plan).include?(nil) ? false : true
   end
 
+  def member_count
+    quote_households.map(&:quote_members).inject(:+).count
+  end
 
   def published?
     aasm_state == "published"
