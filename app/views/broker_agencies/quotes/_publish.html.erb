@@ -2,7 +2,7 @@
   <div class="module container broker_quote_tool published">
     <div class="row">
       <div class="col-md-12">
-        <%= draft_quote_header(@q.aasm_state)%><br/>
+        <%= draft_quote_header(@q.aasm_state, @q.quote_name)%><br/>
 
         <p>Quote: "<%=@q.quote_name %>" effective <b><%=@q.start_on %></b></p>
 
@@ -18,7 +18,7 @@
                   <section class="col-xs-10">
                     <header class="row">
                       <h3 class="title no-buffer">
-                        <%= "Quote for #{benefit_group.title}" %>
+                        <%= "Quote for Benefit Group: #{benefit_group.title}" %>
                       </h3>
                     </header>
                   </section>
