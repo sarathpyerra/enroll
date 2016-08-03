@@ -4,6 +4,11 @@ $primay-active-button-text-color: #ffffff;
 $primary-bold: 600;
 
 .module, .modal {
+  a.disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    color: $primary-gray;
+  }
   .enroll-checkbox {
     input[type=checkbox] {
       display: none;

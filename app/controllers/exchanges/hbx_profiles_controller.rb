@@ -2,9 +2,9 @@ class Exchanges::HbxProfilesController < ApplicationController
   include DataTablesAdapter
   include DataTablesSorts
   include DataTablesFilters
-  
+
   before_action :check_hbx_staff_role, except: [:request_help, :show, :assister_index, :family_index]
-  before_action :set_hbx_profile, only: [:edit, :update, :destroy]
+  before_action :set_hbx_profile, only: [:edit, :update, :destroy, :update_cancel_enrollment]
   before_action :find_hbx_profile, only: [:employer_index, :broker_agency_index, :inbox, :configuration, :show]
   #before_action :authorize_for, except: [:edit, :update, :destroy, :request_help, :staff_index, :assister_index]
   #before_action :authorize_for_instance, only: [:edit, :update, :destroy]
@@ -235,6 +235,7 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def cancel_enrollment
+    debugger
     @hbx_enrollment = HbxEnrollment.find(params[:hbx_id])
     @row = params[:row]
     respond_to do |format|
@@ -244,7 +245,7 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def update_cancel_enrollment
-
+    debugger
   end
 
   def broker_agency_index

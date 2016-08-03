@@ -1,9 +1,10 @@
 <% row_data = capture do %>
 	<% if family.enrollments.present? %>
-			<span class="for-remote" data-hbx-id="<%= family.enrollments.detect{|enrollment| enrollment.coverage_kind = "health"}._id %>"></span>
+	<% active_health_enrollment = family.enrollments.detect{|enrollment| enrollment.coverage_kind = "health"} %>
+			<span class="for-remote-replace-url" id="cancel" data-replace-url="<%= cancel_enrollment_exchanges_hbx_profiles_path(hbx_id: active_health_enrollment._id) %>"></span>
+	<% else %>
+		<span class="for-remote-replace-url disabled" id="cancel" data-replace-url="asdasdsads"></span>
 	<% end %>
-	<span class="for-remote" data-this-cool-thing-id="<%= family.primary_family_member.full_name %>"></span>
-	<span class="for-remote" data-this-other-thing-id="<%= family.primary_family_member.ssn %>"></span>
 <% end %>
 {
 	"name": "<%= json_escape family.primary_family_member.full_name %>",

@@ -26,7 +26,7 @@
   <!-- EDI Transmission to Carrier -->
   <!-- EDI Transmisison checkbox -->
 
-  <%= form_for @hbx_enrollment, :url => update_cancel_enrollment_exchanges_hbx_profiles_path(@hbx_enrollment) do |f| %>
+  <%= form_for @hbx_enrollment, :url => update_cancel_enrollment_exchanges_hbx_profiles_path(@hbx_enrollment), :html => { :class => 'vertically-aligned-row' } do |f| %>
   <div class="enroll-checkbox">
     <div class="checkbox">
       <label>
@@ -45,7 +45,8 @@
     </div>
   </div>
   <div>
-  
+    <span class="btn btn-default btn-sm" onclick="EnrollDataTableInitializer.removeRow($(this));">Cancel</span>
+    <%= f.submit "Submit", class: 'btn btn-primary btn-sm' %>
   </div>
 <% end %>
   <!-- Drop down with cancellation reasons -->
