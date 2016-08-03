@@ -1,8 +1,8 @@
 class Exchanges::HbxProfilesController < ApplicationController
   include DataTablesAdapter
   include DataTablesSorts
-  include DataTablesSorts::VerificationsIndexSorts
-
+  include DataTablesFilters
+  
   before_action :check_hbx_staff_role, except: [:request_help, :show, :assister_index, :family_index]
   before_action :set_hbx_profile, only: [:edit, :update, :destroy]
   before_action :find_hbx_profile, only: [:employer_index, :broker_agency_index, :inbox, :configuration, :show]
@@ -302,6 +302,8 @@ class Exchanges::HbxProfilesController < ApplicationController
 
     sort_direction = set_sort_direction
     families = sort_verifications_index_columns(families, sort_direction) if sort_direction.present?
+    filter = set_filter
+    employers = filter_employers(employers, filter) if filter.present?
 
     @draw = dt_query.draw
     @total_records = all_families.count
