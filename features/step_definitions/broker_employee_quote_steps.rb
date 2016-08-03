@@ -29,7 +29,7 @@ When(/^he visits the Roster Quoting tool$/) do
 end
 
 When(/^click on the New Quote button$/) do
-  click_link 'New Roster'
+  click_link 'New Quote'
 end
 
 

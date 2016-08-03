@@ -149,7 +149,7 @@ var QuoteSliders = (function() {
       });
       $('#pct_spouse').on('slideStop', function() {
             val =$('#pct_spouse').bootstrapSlider('getValue')
-            QuotePageLoad.et_relationship_pct('spouse', val)
+            QuotePageLoad.set_relationship_pct('spouse', val)
            })
      $('#spouse_input').on('keyup', function() {
        setTimeout(function () {

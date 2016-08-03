@@ -82,7 +82,6 @@ namespace :quote_demo do
       plan1 = Plan.where("active_year"=>2016, "hios_base_id" => "73987DC0040025").first.id
       plan2 = Plan.where("active_year"=>2016, "hios_base_id" => "75753DC0010066").first.id
 
-      #q.build_relationship_benefits
       qbg = q.quote_benefit_groups.build
       qbg.plan_option_kind = "single_carrier"
       qbg.title = "Office Workers"
@@ -184,15 +183,15 @@ namespace :quote_demo do
       q.plan_year = 2016
       q.start_on = Date.new(2016,8,2)
 
-      #q.build_relationship_benefits
+
       qbg = q.quote_benefit_groups.build
       qbg.plan_option_kind = "single_carrier"
       qbg.title = "Essential Package"
       qbg.build_relationship_benefits
 
-      qbg.relationship_benefit_for("employee").premium_pct=(90)
-      qbg.relationship_benefit_for("spouse").premium_pct=(95)
-      qbg.relationship_benefit_for("child_under_26").premium_pct=(50)
+      #qbg.relationship_benefit_for("employee").premium_pct=(90)
+      #qbg.relationship_benefit_for("spouse").premium_pct=(95)
+      #qbg.relationship_benefit_for("child_under_26").premium_pct=(50)
 
 
       qh = q.quote_households.build

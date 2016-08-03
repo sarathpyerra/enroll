@@ -14,7 +14,7 @@ class Quote
   field :broker_role_id, type: BSON::ObjectId
 
 
-  field :claim_code, type: String, default: ''
+  field :claim_code, type: String
   associated_with_one :broker_role, :broker_role_id, "BrokerRole"
 
 
@@ -29,7 +29,7 @@ class Quote
   accepts_nested_attributes_for :quote_households, reject_if: :all_blank
   accepts_nested_attributes_for :quote_benefit_groups, reject_if: :all_blank
 
-  validates_uniqueness_of :claim_code, :case_sensitive => false
+  validates_uniqueness_of :claim_code, :case_sensitive => false, :allow_nil => true
 
   # fields for state machine
   field :aasm_state, type: String
@@ -38,6 +38,7 @@ class Quote
   field :criteria_for_ui, type: String, default: []
 
   index({ broker_role_id: 1 })
+  index({ broker_role_id: 1, aasm_state: 1 })
 
   scope :all_broker_quotes,                  -> (broker_role_id) { where(broker_role_id: broker_role_id) }
   scope :draft_quotes,                       -> { where("aasm_state" => 'draft') }

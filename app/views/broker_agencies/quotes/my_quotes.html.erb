@@ -2,9 +2,9 @@
   <br/>
   <div class="module broker-quotes-table" data-broker-id="<%= @broker.id %>" data-current-user-person-id="<%= current_user.person.id %>">
     <%= render partial: "shared/data_table", locals:  {
-      page_header:  ["Quotes", ""],
+      page_header:  ["Quote Management", ""],
       directions:  "",
-      new_button:  ["New Roster", new_broker_agencies_quote_path(@broker.id), false],
+      new_button:  ["New Quote", new_broker_agencies_quote_path(@broker.id), false],
   	  filters:  [
     		["All", "", true, []],
     		["Draft", "", true, []],
@@ -17,7 +17,7 @@
     	],
     	row_functions:  true,
       row_actions:  [
-        ["Edit Roster", "replace_url_edit_quote", false ],
+        ["Edit Quote/Roster", "replace_url_edit_quote", false ],
         ["View Published Quote", "replace_url_view_published_quote", false ],
         ["Delete", "replace_url_delete_quote", true ]
 
