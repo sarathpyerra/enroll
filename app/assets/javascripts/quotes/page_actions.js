@@ -243,7 +243,7 @@ QuotePageLoad = (function() {
       reset_selected_plans: reset_selected_plans,
       set_select_health_plans: set_select_health_plans,
       relationship_benefits: relationship_benefits,
-      dental_relationship_benefits,
+      dental_relationship_benefits: dental_relationship_benefits,
       roster_premiums: roster_premiums,
       dental_roster_premiums: dental_roster_premiums,
       set_relationship_pct: set_relationship_pct,
