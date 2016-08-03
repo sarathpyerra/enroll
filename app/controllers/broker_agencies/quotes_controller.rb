@@ -43,10 +43,10 @@ class BrokerAgencies::QuotesController < ApplicationController
     if dt_query.search_string.blank?
       collection = all_quotes
     else
-        quote_ids = Quote.search(dt_query.search_string).pluck(:id)
-        collection = all_quotes.where({
-          "id" => {"$in" => quote_ids}
-        })
+      quote_ids = Quote.search(dt_query.search_string).pluck(:id)
+      collection = all_quotes.where({
+        "id" => {"$in" => quote_ids}
+      })
     end
     collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
     @draw = dt_query.draw
