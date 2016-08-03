@@ -63,7 +63,7 @@ class QuoteBenefitGroup
 
   def build_relationship_benefits
     return if self.quote_relationship_benefits.present?
-    
+
     self.quote_relationship_benefits = PERSONAL_RELATIONSHIP_KINDS.map do |relationship|
        self.quote_relationship_benefits.build(relationship: relationship, offered: true)
     end
@@ -188,6 +188,14 @@ class QuoteBenefitGroup
 
   def published_employer_cost
     plan && roster_employer_contribution(plan.id, plan.id)
+  end
+
+  # Determines if this benefit group is assigned to a quote household
+  def is_assigned?
+    self.quote.quote_households.each do |hh|
+      return true if self.id == hh.quote_benefit_group_id
+    end
+    return false
   end
 
 end
