@@ -36,7 +36,7 @@
 					<div class="row form-inline">
 						<div class="form-group col-sm-12">
 							Benefit Group: <%= benefit_group.text_field :title , {size: 40, placeholder: 'Enter Beneift Group Name'} %>
-							<button type="button" data-quote-id="<%=@quote.id%>" data-benefit-group-id="<%=benefit_group.object.id%>" id="remove_benefit_button"  class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<button type="button" data-quote-id="<%=@quote.id%>" data-benefit-group-id="<%=benefit_group.object.id%>" id="remove_benefit_group_button"  class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 						</div>
 						<div>&nbsp;</div>
 					</div>
@@ -108,6 +108,28 @@ var remove_household_handler = function(){
 };
 
 $('button#remove_household_button').click(remove_household_handler);
+
+
+var remove_benefit_group_handler = function(){
+	if(this.getAttribute("data-benefit-group-id") != undefined){
+		// TO DO
+	//  $.ajax({
+  //       type: "POST",
+  //       url: "/broker_agencies/quotes/" + this.getAttribute("data-quote-id")  +"/delete_household/?household_id=" +this.getAttribute("data-household-id"),
+  //       dataType: "js",
+  //       data: {"_method":"delete"},
+  //       success: function(){
+  //         console.log("Deleted successfully");
+  //       }
+  //   });
+		console.log("Delete benefit group " + this.getAttribute("data-benefit-group-id"));
+	  $(this).parent().parent().remove();
+	}
+
+};
+
+$('button#remove_benefit_group_button').click(remove_benefit_group_handler);
+
 
 function addEmployeeRowToFamily(family, idx) {
 	var relation_options = '<select name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][employee_relationship]"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child_under_26">child</option></select>';
