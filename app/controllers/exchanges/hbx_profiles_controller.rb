@@ -243,6 +243,10 @@ class Exchanges::HbxProfilesController < ApplicationController
 
   end
 
+  def update_cancel_enrollment
+
+  end
+
   def broker_agency_index
     @broker_agency_profiles = BrokerAgencyProfile.all
 
