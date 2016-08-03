@@ -120,11 +120,13 @@ Given(/^the Plans exist$/) do
 end
 
 Then(/^the broker enters Employer Contribution percentages$/) do
+  page.execute_script(" QuoteSliders.slider_listeners()")
   page.execute_script("$('#pct_employee').bootstrapSlider({})")
-  page.execute_script("$('#pct_employee').bootstrapSlider('setValue', 80)")
+  sleep(2)
   find(:xpath, "//div[contains(@class, 'health')]//*[@id='employee_slide_input']").set("80")
+  page.execute_script("$('#pct_employee').bootstrapSlider('setValue', employee_value= 80)")
+  sleep(2)
   page.execute_script("$('#pct_employee').trigger('slideStop')")
-  page.execute_script("$('.publish td').trigger('click')")
 end
 
 Then(/^the broker filters the plans$/) do
