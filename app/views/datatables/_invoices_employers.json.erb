@@ -11,7 +11,7 @@
 
 {
 "hbx_id": "<%= json_escape employer.id %>",
-"fein": "<%= json_escape employer.fein %>",
+"fein": "<%= json_escape number_to_obscured_fein(employer.fein) %>",
 "legal_name": <%= raw (link_to employer.legal_name.titleize, employers_employer_profile_path(employer.employer_profile)).to_json %>,
 "broker": "<% if employer.employer_profile.broker_agency_profile.present? %><%= raw (employer.employer_profile.broker_agency_profile.organization.legal_name.titleize) %><% end %>",
 "conversion": <%= raw boolean_to_glyph(employer.employer_profile.is_conversion?).to_json %>,

@@ -100,8 +100,10 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
 
   function addSelectAll(table_id) {
     findTable(table_id)
-    $first_th = $table.find('thead>tr>th:first');
-    $first_th.html('<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" class="select-all" id="select-all" name="id[]" value=""><label for="select-all"><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>');
+    if ( $table.find('tbody tr').length >= 2 ) {
+      $first_th = $table.find('thead>tr>th:first');
+      $first_th.html('<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" class="select-all" id="select-all" name="id[]" value=""><label for="select-all"><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>');
+    }
   }
 
   function addBulkActions(table_id) {
@@ -268,7 +270,12 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     }
   }
 
+  function removeRow($thisObj) {
+    $thisObj.closest('tr').remove();
+  }
+
   return {
+    removeRow: removeRow,
     setScopesFromFilters : setScopesFromFilters,
     attachModalsToLinks : attachModalsToLinks,
     replaceRowActionUrls : replaceRowActionUrls,
