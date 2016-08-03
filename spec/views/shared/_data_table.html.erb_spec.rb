@@ -8,6 +8,7 @@ describe "shared/_data_table.html.erb" do
         new_button: ["Add Datatable", "url", "request_type"],
         directions: "Use this table to review verification documents.",
         processing_text: "Loading Plans...",
+        sibling_pages: [],
     	  filters: [
       		["all", "", true, []],
       		["some", "", true, [
@@ -122,6 +123,7 @@ describe "shared/_data_table.html.erb" do
         new_button: "",
         directions: "",
         processing_text: "Loading Plans...",
+        sibling_pages: [],
     	  filters: [
       		["all", "", true, []],
       		["some", "", true, [

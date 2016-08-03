@@ -217,9 +217,9 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       $row_index = $(this).closest('tr').find('td:first span').data('index');
       $existing_href = $(this).attr('href');
       if ( $existing_href.indexOf('?') == 0 ) {
-        $(this).attr('href', $existing_href+"&row="+$row_index);
-      } else {
         $(this).attr('href', $existing_href+"?row="+$row_index);
+      } else {
+        $(this).attr('href', $existing_href+"&row="+$row_index);
       }
     });
   }
