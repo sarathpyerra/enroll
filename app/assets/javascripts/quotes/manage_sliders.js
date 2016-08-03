@@ -1,18 +1,4 @@
 var QuoteSliders = (function() {
-  var _set_relationship_pct = function(relationship, val) {
-    window.relationship_benefits[relationship] = val
-    $("[name~='" + relationship + "']").val(val)
-    $.ajax({
-      type: 'POST',
-      data: {benefits: window.relationship_benefits, quote_id: $('#quote_id').val(), benefit_id: $('#benefit_group_select option:selected').val() },
-      url: '/broker_agencies/quotes/update_benefits.js',
-    })
-    QuoteComparePlans.set_plan_costs()
-  }
-  var _set_dental_relationship_pct = function(relationship, val) {
-    window.dental_relationship_benefits[relationship] = val
-    QuoteComparePlans.set_dental_plan_costs()
-  }
   var slider_listeners = function() {
   $(document).on('keyup', 'input.slider_input, input.right_slider_input', function() {
     if($(this).val() > 100) {
@@ -132,24 +118,24 @@ var QuoteSliders = (function() {
         QuotePageLoad.reset_selected_plans();
       })
       $('#pct_employee').on('slideStop', function() {
-          val =$('#pct_employee').bootstrapSlider('getValue')
-          _set_relationship_pct('employee', val)
-         })
+        val =$('#pct_employee').bootstrapSlider('getValue')
+        QuotePageLoad.set_relationship_pct('employee', val)
+      })
       $('#dental_pct_employee').on('slideStop', function() {
         val =$('#dental_pct_employee').bootstrapSlider('getValue')
-        _set_dental_relationship_pct('employee', val)
+        QuotePageLoad.set_dental_relationship_pct('employee', val)
       });
       $('#dental_pct_spouse').on('slideStop', function() {
         val =$('#dental_pct_spouse').bootstrapSlider('getValue')
-        _set_dental_relationship_pct('spouse', val)
+        QuotePageLoad.set_dental_relationship_pct('spouse', val)
       });
       $('#dental_pct_spouse').on('slideStop', function() {
         val =$('#dental_pct_spouse').bootstrapSlider('getValue')
-        _set_dental_relationship_pct('spouse', val)
+        QuotePageLoad.set_dental_relationship_pct('spouse', val)
       })
       $('#dental_pct_domestic_partner').on('slideStop', function() {
             val =$('#dental_pct_domestic_partner').bootstrapSlider('getValue')
-            _set_relationship_pct('domestic_partner', val)
+            QuotePageLoad.set_relationship_pct('domestic_partner', val)
       });
       $('#dental_pct_child_under_26').on('slideStop', function() {
             val =$('#dental_pct_child_under_26').bootstrapSlider('getValue')
@@ -158,37 +144,37 @@ var QuoteSliders = (function() {
       $('#employee_slide_input').on('keyup', function() {
         setTimeout(function () {
           val =$('#pct_employee').bootstrapSlider('getValue')
-          _set_relationship_pct('employee', val)
+          QuotePageLoad.set_relationship_pct('employee', val)
         }, 700);
       });
       $('#pct_spouse').on('slideStop', function() {
             val =$('#pct_spouse').bootstrapSlider('getValue')
-            _set_relationship_pct('spouse', val)
+            QuotePageLoad.et_relationship_pct('spouse', val)
            })
      $('#spouse_input').on('keyup', function() {
        setTimeout(function () {
          val =$('#pct_spouse').bootstrapSlider('getValue')
-         _set_relationship_pct('spouse', val)
+         QuotePageLoad.set_relationship_pct('spouse', val)
        }, 700);
      });
       $('#pct_domestic_partner').on('slideStop', function() {
             val =$('#pct_domestic_partner').bootstrapSlider('getValue')
-            _set_relationship_pct('domestic_partner', val)
+            QuotePageLoad.set_relationship_pct('domestic_partner', val)
            })
      $('#domestic_input').on('keyup', function() {
        setTimeout(function () {
          val =$('#pct_domestic_partner').bootstrapSlider('getValue')
-         _set_relationship_pct('domestic_partner', val)
+         QuotePageLoad.set_relationship_pct('domestic_partner', val)
        }, 700);
      });
       $('#pct_child_under_26').on('slideStop', function() {
             val =$('#pct_child_under_26').bootstrapSlider('getValue')
-            _set_relationship_pct('child_under_26', val)
+            QuotePageLoad.set_relationship_pct('child_under_26', val)
            })
      $('#child_input').on('keyup', function() {
        setTimeout(function () {
          val =$('#pct_child_under_26').bootstrapSlider('getValue')
-         _set_relationship_pct('child_under_26', val)
+         QuotePageLoad.set_relationship_pct('child_under_26', val)
        }, 700);
      });
       $('#employees_on_roster').on('slideStop', function(){

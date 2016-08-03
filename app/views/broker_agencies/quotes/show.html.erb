@@ -24,15 +24,11 @@
 <script type="text/javascript">
 
 $(document).on('ready page:load', function () {
-    window.select_health_plans = <%=raw @health_plan_quote_criteria %>
-    health_plan_count = Object.keys(window.select_health_plans).length
-
-    QuoteComparePlans.show_benefit_group("<%= @q.id%>", "<%= @quote_on_page.id%>")
+    QuotePageLoad.set_select_health_plans(<%=raw @health_plan_quote_criteria %>)
+    Quote.show_benefit_group("<%= @q.id%>", "<%= @quote_on_page.id%>")
 
     window.dental_relationship_benefits =  <%= raw @benefit_pcts_json %>
     window.dental_roster_premiums = <%= raw @dental_roster_premiums %>
-
-
 
 });
 </script>

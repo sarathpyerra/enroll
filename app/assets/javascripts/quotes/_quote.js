@@ -1,43 +1,38 @@
-QuoteComparePlans = ( function() {
-  // Reference plans selected for comparison
+var Quote = ( function() {
   var set_plan_costs = function() {
-    var plan_ids = Object.keys(window.roster_premiums)
+    var plan_ids = Object.keys(QuotePageLoad.roster_premiums)
     for(var i = 0; i< plan_ids.length; i++){
       premium = 0
       plan_id = plan_ids[i]
-      premiums = window.roster_premiums[plan_ids[i]]
+      premiums = QuotePageLoad.roster_premiums[plan_ids[i]]
       kinds = Object.keys(premiums) 
       for (var j=0; j<kinds.length; j++) {
         kind = kinds[j]
-        premium = premium + premiums[kind] *  window.relationship_benefits[kind]
+        premium = premium + premiums[kind] *  QuotePageLoad.relationship_benefits[kind]
       }
      premium = Math.round(premium)/100.
      plan_button = "[value='" + plan_id + "']"
-     window.plan_button = plan_button
      employee_cost_div = $(plan_button).parent().children()[1]
      $(employee_cost_div).html(Math.ceil(parseFloat(premium)))
     }
   }
-
   var set_dental_plan_costs = function() {
-    var plan_ids = Object.keys(window.dental_roster_premiums)
+    var plan_ids = Object.keys(QuotePageLoad.dental_roster_premiums)
     for(var i = 0; i< plan_ids.length; i++){
       premium = 0
       plan_id = plan_ids[i]
-      premiums = window.dental_roster_premiums[plan_ids[i]]
+      premiums = QuotePageLoad.dental_roster_premiums[plan_ids[i]]
       kinds = Object.keys(premiums) 
       for (var j=0; j<kinds.length; j++) {
         kind = kinds[j]
-        premium = premium + premiums[kind] * window.dental_relationship_benefits[kind]
+        premium = premium + premiums[kind] * QuotePageLoad.dental_relationship_benefits[kind]
       }
       premium = Math.round(premium)/100.
       plan_button = "[value='" + plan_id + "']"
-      window.plan_button = plan_button
       employee_cost_div = $(plan_button).parent().children()[1]
       $(employee_cost_div).html(Math.ceil(parseFloat(premium)))
     }
   }
-
   var selected_plans = function(){
     var plans=[];
     $.each($('.btn.active input'), function(i,item){plans.push( $(item).attr("value"))})
@@ -66,14 +61,12 @@ QuoteComparePlans = ( function() {
   var _compared_plans_export = function(){
     $.get('/broker_agencies/quotes/export_to_pdf');
   }
-
   var _compared_plans_export = function(){
     $.get('/broker_agencies/quotes/export_to_pdf');
   }
   var _export_compare_plans_listener = function(){
     $('#pdf_export_compare_plans').on('click', _compared_plans_export);
   }
-
   var _open_quote = function() {
     $('[aria-controls="quote-mgmt"]').attr('aria-expanded', false)
     $('#quote-mgmt').removeClass('in')
@@ -92,32 +85,27 @@ QuoteComparePlans = ( function() {
     $('#quote-plan-name').html(summary['plan_name'])
     $('#quote-dental-plan-name').html(summary['dental_plan_name'])
   }
-  var inject_plan_into_quote = function(quote_id, benefit_group_id, plan_id, elected, cost) {
-    console.log('jinect', quote_id, benefit_group_id)
+  var inject_plan_into_quote = function(quote_id, benefit_group_id, plan_id, elected) {
     $.ajax({
       type: "GET",
       url: "/broker_agencies/quotes/set_plan",
       data: {quote_id: quote_id,
              benefit_group_id: benefit_group_id,
              plan_id: plan_id,
-             elected: elected,
-             cost: cost},
+             elected: elected},
       success: function(response){
         $('#publish-quote').html(response);
       }
     })    
   }
   var load_publish_listeners= function() {
-    console.log('looad')
     $('.publish td').on('click', function(){
         td = $(this)
         quote_id=$('#quote_id').val()
         plan_id=td.parent().attr('id')
         benefit_group_id = $('#benefit_group_select').val()
         elected=td.index()
-        cost = td.html()
-        console.log(cost, cost.text)
-        inject_plan_into_quote(quote_id, benefit_group_id, plan_id, elected, cost)
+        inject_plan_into_quote(quote_id, benefit_group_id, plan_id, elected)
         $.ajax({
           type: 'GET',
           data: {quote_id: quote_id, benefit_group_id: benefit_group_id},

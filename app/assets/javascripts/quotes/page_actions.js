@@ -1,5 +1,26 @@
 QuotePageLoad = (function() {
+  var relationship_benefits = {}
+  var dental_relationship_benefits = {}
+  var roster_premiums =  {}
+  var dental_roster_premiums = {}
   var available_health_plans = 0
+  var _select_health_plans
+  var set_select_health_plans = function(plans){_select_health_plans = plans}
+  
+  var set_relationship_pct = function(relationship, val) {
+    relationship_benefits[relationship] = val
+    $("[name~='" + relationship + "']").val(val)
+    $.ajax({
+      type: 'POST',
+      data: {benefits: relationship_benefits, quote_id: $('#quote_id').val(), benefit_id: $('#benefit_group_select option:selected').val() },
+      url: '/broker_agencies/quotes/update_benefits.js',
+    })
+    Quote.set_plan_costs()
+  }
+  var set_dental_relationship_pct = function(relationship, val) {
+    dental_relationship_benefits[relationship] = val
+    Quote.set_dental_plan_costs()
+  }
   var _plan_test = function(plan, criteria){
     var result = true
     var critters = criteria.length
@@ -39,9 +60,9 @@ QuotePageLoad = (function() {
         $('#' + criteria[i][0] +' #' + criteria[i][1]).addClass('active')
       }
     }
-    available_health_plans = 0
+    var health_plan_count = Object.keys(_select_health_plans).length
     for(var i = 0; i < health_plan_count; i++) {
-      var plan = window.select_health_plans[i]
+      var plan = _select_health_plans[i]
       var value = "[value~=" + plan['plan_id'] + "]"
       var display = _plan_test(plan, criteria) ? 'inline' : 'none'
       $(value).parent().css('display', display)
@@ -59,7 +80,7 @@ QuotePageLoad = (function() {
       url: '/broker_agencies/quotes/criteria.js'
     })
   }
-  reset_selected_plans =  function(){
+  var reset_selected_plans =  function(){
       $.each($('.plan_buttons .btn.active input'), function(){
       $(this).prop('checked', false)
       $(this).parent().removeClass('active')
@@ -72,32 +93,32 @@ QuotePageLoad = (function() {
         $('#plan-selection-mgmt').addClass('in')
       }, 0)
   }
-  _set_benefits = function() {
-      $('#pct_employee').bootstrapSlider('setValue', employee_value = window.relationship_benefits['employee']);
+  var _set_benefits = function() {
+      $('#pct_employee').bootstrapSlider('setValue', employee_value = relationship_benefits['employee']);
       $('#employee_slide_input').val(employee_value)
       $('#employee_slide_label').html(employee_value + '%')
-      $('#pct_spouse').bootstrapSlider('setValue', spouse_value = window.relationship_benefits['spouse']);
+      $('#pct_spouse').bootstrapSlider('setValue', spouse_value = relationship_benefits['spouse']);
       $('#spouse_input').val(spouse_value)
       $('#spouse_label').html(spouse_value + '%')
-      $('#pct_domestic_partner').bootstrapSlider('setValue', domestic_value = window.relationship_benefits['domestic_partner']);
+      $('#pct_domestic_partner').bootstrapSlider('setValue', domestic_value = relationship_benefits['domestic_partner']);
       $('#domestic_input').val(domestic_value)
       $('#domestic_label').html(domestic_value + '%')
-      $('#pct_child_under_26').bootstrapSlider('setValue', child_value = window.relationship_benefits['child_under_26']);
+      $('#pct_child_under_26').bootstrapSlider('setValue', child_value = relationship_benefits['child_under_26']);
       $('#child_input').val(child_value)
       $('#child_label').html(child_value + '%')
-      $('#dental_pct_employee').bootstrapSlider('setValue',window.relationship_benefits['employee']);
-      $('#dental_pct_spouse').bootstrapSlider('setValue', window.relationship_benefits['spouse']);
-      $('#dental_pct_domestic_partner').bootstrapSlider('setValue', window.relationship_benefits['domestic_partner']);
-      $('#dental_pct_child_under_26').bootstrapSlider('setValue', window.relationship_benefits['child_under_26']);
+      $('#dental_pct_employee').bootstrapSlider('setValue',relationship_benefits['employee']);
+      $('#dental_pct_spouse').bootstrapSlider('setValue', relationship_benefits['spouse']);
+      $('#dental_pct_domestic_partner').bootstrapSlider('setValue', relationship_benefits['domestic_partner']);
+      $('#dental_pct_child_under_26').bootstrapSlider('setValue', relationship_benefits['child_under_26']);
   }
-  configure_benefit_group = function(quote_id, benefit_group_id) {
+  var configure_benefit_group = function(quote_id, benefit_group_id) {
     $.ajax({
             type: 'GET',
             data: {quote_id: quote_id, benefit_group_id: benefit_group_id},
             url: '/broker_agencies/quotes/get_quote_info.js'
           }).done(function(response){
-              window.relationship_benefits = response['relationship_benefits']
-              window.roster_premiums = response['roster_premiums']
+              relationship_benefits = response['relationship_benefits']
+              roster_premiums = response['roster_premiums']
               _turn_off_criteria()
               deductible_value = parseInt(response['summary']['deductible_value'])
               $('#ex1').bootstrapSlider('setValue', deductible_value)
@@ -105,12 +126,12 @@ QuotePageLoad = (function() {
               console.log('deductible', deductible_value)
               toggle_plans(response['criteria'])
               _set_benefits()
-              QuoteComparePlans.set_plan_costs()
+              Quote.set_plan_costs()
           })
   }
 
   var _get_health_cost_comparison =function(){
-    var plans = QuoteComparePlans.selected_plans();
+    var plans = Quote.selected_plans();
     if(plans.length == 0) {
       alert('Please select one or more plans for comparison');
       return;
@@ -125,7 +146,7 @@ QuotePageLoad = (function() {
       },
       success: function(response) {
         $('#plan_comparison_frame').html(response);
-        QuoteComparePlans.load_publish_listeners();
+        Quote.load_publish_listeners();
       }
     })
   }
@@ -178,7 +199,6 @@ QuotePageLoad = (function() {
       });
       $('.plan_buttons .btn').on('click', function() {
           var plan = $(this)
-          window.this = plan
           delta = plan.hasClass('active') ? -1 : 1;
           adjusted_count = $('.btn.active').size() + delta
           if ( (adjusted_count > 25) && (delta == 1)  ) {
@@ -203,10 +223,10 @@ QuotePageLoad = (function() {
       $('#CostComparison').on('click', _get_health_cost_comparison)
       $('#DentalCostComparison').on('click', _get_dental_cost_comparison)
       $('#PlanComparison').on('click', function(){
-         QuoteComparePlans.sort_plans()
+         Quote.sort_plans()
       })
   }
-    var view_details=function($thisObj) {
+  var view_details=function($thisObj) {
     if ( $thisObj.hasClass('view') ) {
       $thisObj.html('Hide Details <i class="fa fa-chevron-up fa-lg"></i>');
       $thisObj.removeClass("view");
@@ -221,5 +241,12 @@ QuotePageLoad = (function() {
       view_details: view_details,
       toggle_plans: toggle_plans,
       reset_selected_plans: reset_selected_plans,
+      set_select_health_plans: set_select_health_plans,
+      relationship_benefits: relationship_benefits,
+      dental_relationship_benefits,
+      roster_premiums: roster_premiums,
+      dental_roster_premiums: dental_roster_premiums,
+      set_relationship_pct: set_relationship_pct,
+      set_dental_relationship_pct: set_dental_relationship_pct,
   }
 })();
