@@ -72,7 +72,8 @@ class QuoteBenefitGroup
     return if self.quote_relationship_benefits.present?
 
     self.quote_relationship_benefits = PERSONAL_RELATIONSHIP_KINDS.map do |relationship|
-       self.quote_relationship_benefits.build(relationship: relationship, offered: true)
+      initial_premium_pct = relationship == "employee" ? 50 : 0
+       self.quote_relationship_benefits.build(relationship: relationship, offered: true, premium_pct: initial_premium_pct)
     end
   end
 
