@@ -2,8 +2,10 @@
 	<% if family.enrollments.present? %>
 	<% active_health_enrollment = family.enrollments.detect{|enrollment| enrollment.coverage_kind = "health"} %>
 			<span class="for-remote-replace-url" id="cancel" data-replace-url="<%= cancel_enrollment_exchanges_hbx_profiles_path(hbx_id: active_health_enrollment._id) %>"></span>
+			<span class="for-remote-replace-url" id="terminate" data-replace-url="<%= terminate_enrollment_exchanges_hbx_profiles_path(hbx_id: active_health_enrollment._id) %>"></span>
 	<% else %>
-		<span class="for-remote-replace-url disabled" id="cancel" data-replace-url="asdasdsads"></span>
+		<span class="for-remote-replace-url disabled" id="cancel" data-replace-url=""></span>
+		<span class="for-remote-replace-url disabled" id="terminate" data-replace-url=""></span>
 	<% end %>
 <% end %>
 {

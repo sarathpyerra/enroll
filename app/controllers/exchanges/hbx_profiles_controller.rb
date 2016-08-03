@@ -221,7 +221,7 @@ class Exchanges::HbxProfilesController < ApplicationController
   def families_index_datatable
     dt_query = extract_datatable_parameters
     all_families = Family.all
-    #if dt_query.search_string.blank?
+    # => if dt_query.search_string.blank?
       collection = all_families
     #else
       #debugger
@@ -252,6 +252,17 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def update_cancel_enrollment
+  end
+
+  def terminate_enrollment
+    @hbx_enrollment = HbxEnrollment.find(params[:hbx_id])
+    @row = params[:row]
+    respond_to do |format|
+      format.js { render "datatables/terminate_enrollment" }
+    end
+  end
+
+  def update_terminate_enrollment
   end
 
   def broker_agency_index
