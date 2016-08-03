@@ -28,7 +28,9 @@
       <td class="quote_detail_results_header text-center">Lowest / Reference / Highest</td>
       <td class="quote_detail_results_header text-center">Lowest / Reference / Highest</td>
     </tr>
+    <% i = 0 %>
    <% @quote_results.each do |k,v| %>
+   <% i = i + 1 %>
        <% cost =  v[:total_employer_cost].ceil
           plan = @health_plans.detect{|plan|plan.name == k}
           abbrev = CarrierProfile.find(plan.carrier_profile_id).abbrev
@@ -37,19 +39,17 @@
           carrier_low = @roster_elected_plan_bounds[:carrier_low][abbrev]
           carrier_high = @roster_elected_plan_bounds[:carrier_high][abbrev]
        %>
-       <tr class='publish' id='publish_<%=@quote_results[k][:plan_id]%>'>
+       <tr class="publish" id='publish_<%=@quote_results[k][:plan_id]%>'>
          <td class="quote_detail_results" style='white-space:nowrap'><%= k %></td>
          <td class="quote_detail_results text-center">
-            <div class='btn'>
-             $<%= cost %>
-             </div>
+            <div class='btn' id="single_plan_<%= i %>">$<%= cost %></div>
          </td>
-           <td class="quote_detail_results text-center"><div class='btn'>
-        $<%= carrier_low %> / $<%= cost %> / $<%= carrier_high %>
+           <td class="quote_detail_results text-center">
+             <div class='btn' id="single_carrier_<%= i %>">$<%= carrier_low %> / $<%= cost %> / $<%= carrier_high %>
         </div></td>
-      <td class="quote_detail_results text-center"><div class='btn'>
-        $<%= metal_low %> / $<%= cost %> / $<%= metal_high %>
-        </div></td>
+      <td class="quote_detail_results text-center">
+        <div class='btn' id="metal_level_<%= i %>">$<%= metal_low %> / $<%= cost %> / $<%= metal_high %></div>
+      </td>
        </tr>
     <% end %>
   </table>
@@ -65,9 +65,9 @@
       <td colspan="1" class="quote_detail_plan_header">
         <div style='width: 300px'>
         <b><%= qr[0] %></b><br>
-        <sm>Employee: 
+        <sm>Employee:
         $<%= qr[1][:total_employee_cost].ceil %>,
-        Employer: 
+        Employer:
 
        <span >$<%= qr[1][:total_employer_cost].ceil %></span>
        <br>
