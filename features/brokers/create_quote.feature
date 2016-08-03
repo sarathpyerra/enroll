@@ -19,7 +19,11 @@ Feature: Create Employee Roster
     And click on the New Quote button
     And click on the Upload Employee Roster button
     When the broker clicks on the Select File to Upload button
+    Then the broker clicks upload button
     And the broker should see the data in the table
+    When the broker clicks on the Save Changes button
+    Then the broker should see a successful message
+    And Broker logs out
 
   Scenario: Broker should be able to delete an existing Roster
     Given that a broker exists

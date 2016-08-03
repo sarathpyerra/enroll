@@ -32,23 +32,28 @@ When(/^click on the New Quote button$/) do
   click_link 'New Quote'
 end
 
-
 When(/^click on the Upload Employee Roster button$/) do
   click_link "Upload Employee Roster"
 end
 
 When(/^the broker clicks on the Select File to Upload button$/) do
+  find(:xpath,"//*[@id='modal-wrapper']/div/form/label").trigger('click')
   within '.upload_csv' do
-    attach_file('employee_roster_file', "#{Rails.root}/spec/test_data/employee_roster_import/Employee_Roster_sample.csv")
-    find('html div#modal-wrapper div.employee-upload form.upload_csv label.select.btn.btn-primary.btn-br').trigger("click")
+    attach_file('employee_roster_file', "#{Rails.root}/spec/test_data/employee_roster_import/Employee_Roster_sample.xlsx")
   end
 end
 
+Then(/^the broker clicks upload button$/) do
+  click_button 'Upload'
+end
+
 Then(/^the broker should see the data in the table$/) do
-  #expect(page).to have_selector("input#quote_quote_households_attributes_0_family_id[value=\"1\"]")
-  #expect(page).to have_selector("input#quote_quote_households_attributes_1_family_id[value=\"2\"]")
-  #expect(page).to have_selector('div.panel.panel-default div input.uidatepicker', count: 4)
-  #expect(page).to have_selector("#quote_quote_households_attributes_0_quote_members_attributes_0_dob[value=\"03/14/2016\"]")
+  expect(page).to have_selector("input#quote_quote_households_attributes_0_family_id[value=\"1\"]")
+  expect(page).to have_selector("input#quote_quote_households_attributes_1_family_id[value=\"2\"]")
+  expect(page).to have_selector('div.panel.panel-default div input.uidatepicker', count: 11)
+  expect(page).to have_selector("#quote_quote_households_attributes_0_quote_members_attributes_0_dob[value=\"06/01/1980\"]")
+  expect(page).to have_selector("input#quote_quote_households_attributes_2_quote_members_attributes_0_first_name[value=\"John\"]")
+  expect(page).to have_selector("input#quote_quote_households_attributes_1_quote_members_attributes_0_last_name[value=\"Ba\"]")
 end
 
 When(/^broker enters valid information$/) do

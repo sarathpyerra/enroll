@@ -230,7 +230,7 @@ class BrokerAgencies::QuotesController < ApplicationController
       render "new"  and return
     end
     if @quote.save
-      redirect_to  edit_broker_agencies_quote_path(@quote),:flash => { :notice => "Successfully saved the employee roster" }
+      redirect_to  edit_broker_agencies_quote_path(@quote),:flash => { :notice => "Successfully saved quote/employee roster." }
     else
       flash[:error]="Unable to save the employee roster : #{@quote.errors.full_messages.join(", ")}"
       render "new"
