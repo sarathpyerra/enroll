@@ -8,12 +8,12 @@
 
     <h2>Quote Calculator</h2>
 
-      <%= render partial: 'my_features' unless @q.published? %>
+      <%= render partial: 'my_features' if @q.can_edit? %>
 
-      <%= render partial: 'my_plans' unless @q.published? %>
+      <%= render partial: 'my_plans' if @q.can_edit? %>
 
       <% end %>
-      <%= render partial: 'broker_agencies/quotes/panels/dental'  unless @q.published? %>
+      <%= render partial: 'broker_agencies/quotes/panels/dental'  if @q.can_edit? %>
       <%= render partial: 'broker_agencies/quotes/panels/quote' %>
 
     </div>

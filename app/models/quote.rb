@@ -83,8 +83,12 @@ class Quote
     quote_households.map(&:quote_members).inject(:+).count
   end
 
-  def published?
-    aasm_state == "published"
+  def can_edit?
+    !(claimed? || published?)
+  end
+
+  def is_complete?
+    claimed? || published?
   end
 
   def generate_character
