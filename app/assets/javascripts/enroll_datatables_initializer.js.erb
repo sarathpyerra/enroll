@@ -10,18 +10,6 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.wrap('<div class="table-responsive"></div>');
   }
 
-  function setScopesFromFilters(table_id, tab) {
-    findTable(table_id);
-    $active_first_level_filter = $table.closest('.module').find('.first-level > a.active').text().toLowerCase();
-    $active_second_level_filter = $table.closest('.module').find('.btn-group-second > a.active').text().toLowerCase();
-    if ( $active_second_level_filter.length ) {
-      scopes = DataTablesFilterMap[tab][$active_first_level_filter][$active_second_level_filter]
-    } else {
-      scopes = DataTablesFilterMap[tab][$active_first_level_filter]
-    }
-    return scopes
-  }
-
   function moveInfo(table_id) {
     findTable(table_id)
     var $info = $table.closest('.module').find('.dataTables_info').detach();
@@ -100,10 +88,8 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
 
   function addSelectAll(table_id) {
     findTable(table_id)
-    if ( $table.find('tbody tr').length >= 2 ) {
-      $first_th = $table.find('thead>tr>th:first');
-      $first_th.html('<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" class="select-all" id="select-all" name="id[]" value=""><label for="select-all"><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>');
-    }
+    $first_th = $table.find('thead>tr>th:first');
+    $first_th.html('<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" class="select-all" id="select-all" name="id[]" value=""><label for="select-all"><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>');
   }
 
   function addBulkActions(table_id) {
@@ -219,9 +205,9 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       $row_index = $(this).closest('tr').find('td:first span').data('index');
       $existing_href = $(this).attr('href');
       if ( $existing_href.indexOf('?') == 0 ) {
-        $(this).attr('href', $existing_href+"?row="+$row_index);
-      } else {
         $(this).attr('href', $existing_href+"&row="+$row_index);
+      } else {
+        $(this).attr('href', $existing_href+"?row="+$row_index);
       }
     });
   }
@@ -270,13 +256,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     }
   }
 
-  function removeRow($thisObj) {
-    $thisObj.closest('tr').remove();
-  }
-
   return {
-    removeRow: removeRow,
-    setScopesFromFilters : setScopesFromFilters,
     attachModalsToLinks : attachModalsToLinks,
     replaceRowActionUrls : replaceRowActionUrls,
     addRowIndexToRowFunctionLinks : addRowIndexToRowFunctionLinks,
