@@ -10,6 +10,9 @@
           <% end %>
         </div>
       </div>
+      <% if sibling_pages.present? %>
+        <% render partial: 'datatables/sibling_pages_filter', locals: { sibling_pages: sibling_pages } %>
+      <% end %>
     <% end %>
     <% if new_button.present? %>
       <div class="col-xs-2 hidden">
