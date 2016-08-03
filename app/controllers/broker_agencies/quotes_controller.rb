@@ -224,19 +224,13 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def create
     @quote = Quote.new(quote_params)
-
-    # Build Default Quote Benefit Group
-    @qbg = QuoteBenefitGroup.new
-    @qbg.build_relationship_benefits
-    @quote.quote_benefit_groups << qbg
-
     @quote.broker_role_id= current_user.person(:try).broker_role.id
     if @format_errors.present?
       flash[:error]= "#{@format_errors.join(', ')}"
       render "new"  and return
     end
     if @quote.save
-      redirect_to  broker_agencies_quotes_root_path ,  :flash => { :notice => "Successfully saved the employee roster" }
+      redirect_to  edit_broker_agencies_quote_path(@quote),:flash => { :notice => "Successfully saved the employee roster" }
     else
       flash[:error]="Unable to save the employee roster : #{@quote.errors.full_messages.join(", ")}"
       render "new"
@@ -284,12 +278,14 @@ class BrokerAgencies::QuotesController < ApplicationController
   def build_employee_roster
     @employee_roster = parse_employee_roster_file
     @quote= Quote.new
+    @quote.quote_benefit_groups << QuoteBenefitGroup.new(:title =>"Default Benefit Package")
+    @quote_benefit_group_dropdown = @quote.quote_benefit_groups
     if @employee_roster.is_a?(Hash)
       @employee_roster.each do |family_id , members|
         @quote_household = @quote.quote_households.where(:family_id => family_id).first
         @quote_household= QuoteHousehold.new(:family_id => family_id ) if @quote_household.nil?
         members.each do |member|
-          @quote_members= QuoteMember.new(:employee_relationship => member[0], :dob => member[1], :first_name => member[2])
+          @quote_members= QuoteMember.new(:employee_relationship => member[0], :dob => member[1], :last_name => member[2], :first_name => member[3])
           @quote_household.quote_members << @quote_members
         end
         @quote.quote_households << @quote_household
@@ -587,9 +583,9 @@ private
         row = roster.row(i)
         row[1]="child_under_26" if row[1].downcase == "child"
         if census_employees[row[0].to_i].nil?
-          census_employees[row[0].to_i] = [[row[1].split.join('_').downcase,row[8],row[2]]]
+          census_employees[row[0].to_i] = [[row[1].split.join('_').downcase,row[8],row[2],row[3]]]
         else
-          census_employees[row[0].to_i] << [row[1].split.join('_').downcase,row[8],row[2]]
+          census_employees[row[0].to_i] << [row[1].split.join('_').downcase,row[8],row[2],row[3]]
         end
       end
       census_employees
