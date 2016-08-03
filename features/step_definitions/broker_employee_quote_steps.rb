@@ -137,7 +137,8 @@ Then(/^the broker clicks Compare Costs$/) do
 end
 
 When(/^the broker selects the Reference Plan$/) do
-  find('td', text: "$175 / $193 / $193").trigger("click")
+  Capybara.default_max_wait_time = 3
+  find('div#single_plan_1').trigger("click")
 end
 
 Then(/^the broker clicks Publish Quote button$/) do
