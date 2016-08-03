@@ -3,8 +3,8 @@ class Exchanges::HbxProfilesController < ApplicationController
   include DataTablesSorts
   include DataTablesFilters
 
-  before_action :check_hbx_staff_role, except: [:request_help, :show, :assister_index, :family_index]
-  before_action :set_hbx_profile, only: [:edit, :update, :destroy, :update_cancel_enrollment]
+  before_action :check_hbx_staff_role, except: [:request_help, :show, :assister_index, :family_index, :update_cancel_enrollment]
+  before_action :set_hbx_profile, only: [:edit, :update, :destroy]
   before_action :find_hbx_profile, only: [:employer_index, :broker_agency_index, :inbox, :configuration, :show]
   #before_action :authorize_for, except: [:edit, :update, :destroy, :request_help, :staff_index, :assister_index]
   #before_action :authorize_for_instance, only: [:edit, :update, :destroy]
@@ -248,10 +248,11 @@ class Exchanges::HbxProfilesController < ApplicationController
     respond_to do |format|
       format.js { render "datatables/cancel_enrollment" }
     end
-
   end
 
   def update_cancel_enrollment
+    @hbx_enrollment = HbxEnrollment.find(params[:hbx_id])
+    redirect_to exchanges_hbx_profiles_path, :flash => { :error => "Cancellation Successful" }
   end
 
   def broker_agency_index
