@@ -220,22 +220,29 @@ class Exchanges::HbxProfilesController < ApplicationController
 
   def families_index_datatable
     dt_query = extract_datatable_parameters
-    families = Family.all
-
+    all_families = Family.all
+    #if dt_query.search_string.blank?
+      collection = all_families
+    #else
+      #debugger
+      #families_ids = Family.search(dt_query.search_string).pluck(:id)
+      #collection = all_families.where({
+        #{}"id" => {"$in" => families_ids}
+      #})
+    #end
     @draw = dt_query.draw
-    @total_records = families.count
-    @records_filtered = families.count
+    @total_records = all_families.count
+    @records_filtered = collection.count
 
-    if families.is_a? Array
-      @families = families[dt_query.skip..families.count]
+    if collection.is_a? Array
+      @families = collection[dt_query.skip..@total_records.count]
     else
-      @families = families.skip(dt_query.skip).limit(dt_query.take)
+      @families = collection.skip(dt_query.skip).limit(dt_query.take)
     end
     render "families_index_datatable"
   end
 
   def cancel_enrollment
-    debugger
     @hbx_enrollment = HbxEnrollment.find(params[:hbx_id])
     @row = params[:row]
     respond_to do |format|
@@ -245,7 +252,6 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def update_cancel_enrollment
-    debugger
   end
 
   def broker_agency_index

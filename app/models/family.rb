@@ -104,6 +104,7 @@ class Family
   after_save :update_family_search_collection
   after_destroy :remove_family_search_record
 
+  default_scope -> {order("hbx_assigned_id ASC")}
   scope :with_enrollment_hbx_id, ->(enrollment_hbx_id) {
       where("households.hbx_enrollments.hbx_id" => enrollment_hbx_id)
     }
@@ -142,6 +143,7 @@ class Family
   scope :by_enrollment_created_datetime_range,  ->(start_at, end_at){ where(:"households.hbx_enrollments.created_at" => { "$gte" => start_at, "$lte" => end_at} )}
   scope :by_enrollment_updated_datetime_range,  ->(start_at, end_at){ where(:"households.hbx_enrollments.updated_at" => { "$gte" => start_at, "$lte" => end_at} )}
   scope :by_enrollment_effective_date_range,    ->(start_on, end_on){ where(:"households.hbx_enrollments.effective_on" => { "$gte" => start_on, "$lte" => end_on} )}
+
 
   def update_family_search_collection
 #    ViewFunctions::Family.run_after_save_search_update(self.id)
