@@ -1,14 +1,14 @@
 var Quote = ( function() {
   var set_plan_costs = function() {
-    var plan_ids = Object.keys(QuotePageLoad.roster_premiums)
+    var plan_ids = Object.keys(QuotePageLoad.roster_premiums())
     for(var i = 0; i< plan_ids.length; i++){
       premium = 0
       plan_id = plan_ids[i]
-      premiums = QuotePageLoad.roster_premiums[plan_ids[i]]
+      premiums = QuotePageLoad.roster_premiums()[plan_ids[i]]
       kinds = Object.keys(premiums) 
       for (var j=0; j<kinds.length; j++) {
         kind = kinds[j]
-        premium = premium + premiums[kind] *  QuotePageLoad.relationship_benefits[kind]
+        premium = premium + premiums[kind] *  QuotePageLoad.relationship_benefits()[kind]
       }
      premium = Math.round(premium)/100.
      plan_button = "[value='" + plan_id + "']"
@@ -17,11 +17,11 @@ var Quote = ( function() {
     }
   }
   var set_dental_plan_costs = function() {
-    var plan_ids = Object.keys(QuotePageLoad.dental_roster_premiums)
+    var plan_ids = Object.keys(QuotePageLoad.dental_roster_premiums())
     for(var i = 0; i< plan_ids.length; i++){
       premium = 0
       plan_id = plan_ids[i]
-      premiums = QuotePageLoad.dental_roster_premiums[plan_ids[i]]
+      premiums = QuotePageLoad.dental_roster_premiums()[plan_ids[i]]
       kinds = Object.keys(premiums) 
       for (var j=0; j<kinds.length; j++) {
         kind = kinds[j]
