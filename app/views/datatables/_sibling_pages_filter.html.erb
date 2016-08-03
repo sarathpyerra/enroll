@@ -1,1 +1,5 @@
-<%= select_tag "people", options_for_select(sibling_pages) %>
+<% sibling_pages.each do |sibling_page| %>
+  <div class="btn-group" role="group" aria-label="...">
+    <%= link_to "#{sibling_page}", "#{sibling_page}", remote: false, class: 'btn btn-default' %>
+  </div>
+<% end %>

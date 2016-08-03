@@ -90,12 +90,12 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     EnrollDataTableInitializer.findTable(table_id);
     var $invoiced_sort = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("Invoiced?")');
     $invoiced_sort.on('click', function() {
+      var tab = "Employer"
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(),
-        order_by: "legal_name",
-        scopes: [
-          "all_employer_profiles"
-        ]
+        custom_sort: true,
+        order_by: "current_month_invoice.present?",
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
       });
     });
   }

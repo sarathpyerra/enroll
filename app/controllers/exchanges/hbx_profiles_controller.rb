@@ -184,7 +184,11 @@ class Exchanges::HbxProfilesController < ApplicationController
     @draw = dt_query.draw
     @total_records = all_employers.count
     @records_filtered = collection.count
-    @employers = collection.skip(dt_query.skip).limit(dt_query.take)
+    if collection.is_a? Array
+      @employers = collection[dt_query.skip..@total_records]
+    else
+      @employers = collection.skip(dt_query.skip).limit(dt_query.take)
+    end
     @profile = find_mailbox_provider
     render "datatables/employers_index_datatable"
 

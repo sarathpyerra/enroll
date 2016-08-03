@@ -10,6 +10,18 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.wrap('<div class="table-responsive"></div>');
   }
 
+  function setScopesFromFilters(table_id, tab) {
+    findTable(table_id);
+    $active_first_level_filter = $table.closest('.module').find('.first-level > a.active').text().toLowerCase();
+    $active_second_level_filter = $table.closest('.module').find('.btn-group-second > a.active').text().toLowerCase();
+    if ( $active_second_level_filter.length ) {
+      scopes = DataTablesFilterMap[tab][$active_first_level_filter][$active_second_level_filter]
+    } else {
+      scopes = DataTablesFilterMap[tab][$active_first_level_filter]
+    }
+    return scopes
+  }
+
   function moveInfo(table_id) {
     findTable(table_id)
     var $info = $table.closest('.module').find('.dataTables_info').detach();
@@ -257,6 +269,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   return {
+    setScopesFromFilters : setScopesFromFilters,
     attachModalsToLinks : attachModalsToLinks,
     replaceRowActionUrls : replaceRowActionUrls,
     addRowIndexToRowFunctionLinks : addRowIndexToRowFunctionLinks,
