@@ -149,7 +149,6 @@ class BrokerAgencies::QuotesController < ApplicationController
         temp_household = dup_household.dup
         max_family_id = max_family_id + 1
         temp_household.family_id = max_family_id
-
         @quote.quote_households << temp_household
       end
     end
@@ -502,7 +501,7 @@ private
 
   def format_date_params
     @format_errors=[]
-    params[:quote][:start_on] =  Date.strptime(params[:quote][:start_on],"%m/%d/%Y") if params[:quote][:start_on]
+    params[:quote][:start_on] =  Date.strptime(params[:quote][:start_on],"%Y-%m-%d") if params[:quote][:start_on]
     if params[:quote][:quote_households_attributes]
       params[:quote][:quote_households_attributes].values.each do |household_attribute|
         if household_attribute[:quote_members_attributes].present?

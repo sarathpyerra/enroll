@@ -10,7 +10,7 @@ class Quote
   PLAN_OPTION_KINDS = [:single_plan, :single_carrier, :metal_level]
   field :quote_name, type: String, default: "Sample Quote"
   field :plan_year, type: Integer, default: TimeKeeper.date_of_record.year
-  field :start_on, type: Date, default: TimeKeeper.date_of_record.beginning_of_year
+  field :start_on, type: Date
   field :broker_role_id, type: BSON::ObjectId
 
 
