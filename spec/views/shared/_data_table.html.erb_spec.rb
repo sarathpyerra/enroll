@@ -7,6 +7,8 @@ describe "shared/_data_table.html.erb" do
         page_header: ["Test Datatable", "url", ""],
         new_button: ["Add Datatable", "url", "request_type"],
         directions: "Use this table to review verification documents.",
+        processing_text: "",
+        custom_handlers: [],
     	  filters: [
       		["all", "", true, []],
       		["some", "", true, [
@@ -94,7 +96,6 @@ describe "shared/_data_table.html.erb" do
       expect(rendered).to match(/addSelectAll/)
       expect(rendered).to match(/addBulkActions/)
       expect(rendered).to match(/addButtonsBelowTable/)
-      expect(rendered).to match(/moveInfo/)
       expect(rendered).to match(/showPagination/)
       expect(rendered).to match(/moveTableLength/)
     end
@@ -119,6 +120,8 @@ describe "shared/_data_table.html.erb" do
         page_header: "",
         new_button: "",
         directions: "",
+        processing_text: "",
+        custom_handlers: [],
     	  filters: [
       		["all", "", true, []],
       		["some", "", true, [
