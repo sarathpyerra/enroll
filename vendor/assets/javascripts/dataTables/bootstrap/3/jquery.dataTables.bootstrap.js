@@ -46,9 +46,15 @@ var DataTable = $.fn.dataTable;
 /* Set the defaults for DataTables initialisation */
 $.extend( true, DataTable.defaults, {
 	dom:
+<<<<<<< HEAD
 		"<'row'<'col-sm-6'l><'col-sm-6'f>>" +
 		"<'row'<'col-sm-12'tr>>" +
 		"<'row'<'col-sm-12'i><'col-sm-12'p>>",
+=======
+		"<'vertically-aligned-row header'<'table-length hidden'l><'search text-right hidden'f>>"+
+		"t"+
+		"<'footer'<'vertically-aligned-row'i><'col-xs-12'p>>",
+>>>>>>> 449412033d28e0604b1711fe99a410d9aa314032
 	renderer: 'bootstrap'
 } );
 
@@ -56,7 +62,7 @@ $.extend( true, DataTable.defaults, {
 /* Default class modification */
 $.extend( DataTable.ext.classes, {
 	sWrapper:      "dataTables_wrapper form-inline dt-bootstrap",
-	sFilterInput:  "form-control input-sm",
+	sFilterInput:  "form-control",
 	sLengthSelect: "form-control input-sm",
 	sProcessing:   "dataTables_processing panel panel-default"
 } );
