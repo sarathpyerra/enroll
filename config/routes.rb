@@ -50,6 +50,7 @@ Rails.application.routes.draw do
         post :sep_index_datatable
         post :add_new_sep
         post :verifications_index_datatable
+        get :add_sep_form
       end
 
       member do

@@ -1,7 +1,4 @@
-#Given(/^I have logged in as an HBX\-Admin$/) do
- # visit "/"
- # click_link 'HBX Portal'
-#end
+
 
 Given(/^I click the SEP link from the Admin DC Health Link login page$/) do
   # load the system with an instance of All. The admin portal by default goes to the All

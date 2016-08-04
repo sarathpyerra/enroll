@@ -53,6 +53,9 @@ function init_datepicker_for_qle_date(pre_event_sep_in_days, post_event_sep_in_d
   };
 
 var self_attested;
+var arrEffectiveDate;
+var idVal;
+var sepIndex;
 
 $(document).on('change','.admin_selected_sep_reason select',function(){
   if($(this).val() == '') {
@@ -67,8 +70,12 @@ $(document).on('change','.admin_selected_sep_reason select',function(){
    $('.start_end_date').hide();
 
    var selectedVal = $('.admin_selected_sep_reason .selectric-scroll .selected').text();
+   var sepIndex = $('.admin_selected_sep_reason .selectric-scroll .selected').index() - 1;
    var getObj = $('.admin_selected_sep_reason .selectric-hide-select select option:contains(' + selectedVal + ')');
    self_attested = getObj.data('is-self-attested');
+   arrEffectiveDate = getObj.data('effective-on-kinds');
+   idVal = getObj.data('id');
+
    init_datepicker_for_qle_date(getObj.data('pre-event-sep-in-days'), getObj.data('post-event-sep-in-days'), getDate())
    self_attested == true ? $('#start_on, #end_on').addClass("disabled-input") : $('#start_on').removeClass("disabled-input");
    $('input.floatlabel').floatlabel({
@@ -160,9 +167,9 @@ function getDate(){
 
 $(document).on('change','.radio_option input', function(){
   if($(this).val() == 'shop')
-    $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_shop.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, market_kind: c.market_kind, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
+    $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_shop.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, effective_on_kinds: c.effective_on_kinds, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
   else
-    $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_individual.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, market_kind: c.market_kind, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
+    $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_individual.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, effective_on_kinds: c.effective_on_kinds, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}] }) %>").selectric("refresh");
 
   market = $(this).val();
   $('.admin_effective_on_kind_options').hide();
@@ -177,23 +184,18 @@ $(document).on('change','.init_event_date input', function(){
   if($(this).val() == ''){
    $('.admin_effective_on_kind_options').hide();
    $('.start_end_date').hide();
-
   }
   else{
-   $('.admin_effective_on_kind_options #effective_on_date').val("");
-   $('.admin_effective_on_kind_options').show();
+    $('.admin_effective_on_kind_options #effective_on_date').val("");
 
-  if(self_attested == true){
-    $('.admin_effective_on_kind_options .selectric-hide-select select').html("<%= escape_javascript options_for_select([['EFFECTIVE DAY RULE', '']]) + options_for_select(@event_kinds_default)%>").selectric("refresh");
-  }
-  else {
-      if(market == 'ivl')
-        $('.admin_effective_on_kind_options .selectric-hide-select select').html("<%= escape_javascript options_for_select([['EFFECTIVE DAY RULE', '']]) + options_for_select(@event_kinds_all)%>").selectric("refresh");
-      else
-        $('.admin_effective_on_kind_options .selectric-hide-select select').html("<%= escape_javascript options_for_select([['EFFECTIVE DAY RULE', '']]) + options_for_select(@event_kinds_default)%>").selectric("refresh");
-   }
-   $('.init_effective_date input').val("");
-   $('.start_end_date').show();
+    $.ajax({
+      type: "GET",
+      data:{id: idVal, market: market},
+      url: "/exchanges/hbx_profiles/add_sep_form"
+    });    
+   
+    $('.init_effective_date input').val("");
+    $('.start_end_date').show();
     set_start_date('.init_event_date input', '.start_btn input', '.end_btn input');
   }
     $('.end_date input').val("");
@@ -344,11 +346,11 @@ $('.sep_table tbody').on('click', 'span.add-control', function () {
       $('div.add_sep_datatable_slider', row.child()).slideDown();
 
       if(market == 'shop'){
-        $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_shop.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
+        $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_shop.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, effective_on_kinds: c.effective_on_kinds, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
         $('.radio_option').hide();
       }
       else if (market == 'ivl'){
-        $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_individual.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
+        $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_individual.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, effective_on_kinds: c.effective_on_kinds, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
         $('.radio_option').hide();
       }
       else {
@@ -356,12 +358,19 @@ $('.sep_table tbody').on('click', 'span.add-control', function () {
           $('.radio_option').show();
         }
         else if (consumer == 'Yes' && employee == 'No'){
+          market = 'ivl';
           $('.radio_option').hide();
-          $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_individual.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
+          $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_individual.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, effective_on_kinds: c.effective_on_kinds, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
+        }
+        else if (consumer == 'No' && employee == 'Yes'){
+          market = 'shop';
+          $('.radio_option').hide();
+          $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_shop.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, effective_on_kinds: c.effective_on_kinds, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
         }
         else{
+          market = 'shop';
           $('.radio_option').hide();
-          $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_shop.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
+          $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_shop.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, effective_on_kinds: c.effective_on_kinds, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
         }
        }
       }

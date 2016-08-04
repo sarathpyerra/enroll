@@ -462,6 +462,16 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
 
+  def add_sep_form
+
+      @qle = QualifyingLifeEventKind.individual_market_events_admin.detect{ |x| x.id.to_s == params[:id]} 
+
+    respond_to do |format|
+      format.js {} 
+    end
+    binding.pry
+  end
+
 
   private
 
@@ -545,7 +555,7 @@ class Exchanges::HbxProfilesController < ApplicationController
   def setEventKinds
     @event_kinds_all = ['first_of_next_month', '15th_day_rule'];
     @event_kinds_default = ['first_of_next_month'];
-    @qualifying_life_events_shop = QualifyingLifeEventKind.shop_market_events
-    @qualifying_life_events_individual = QualifyingLifeEventKind.individual_market_events
+    @qualifying_life_events_shop = QualifyingLifeEventKind.shop_market_events_admin
+    @qualifying_life_events_individual = QualifyingLifeEventKind.individual_market_events_admin
   end
 end
