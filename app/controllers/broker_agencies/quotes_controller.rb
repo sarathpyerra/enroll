@@ -142,8 +142,8 @@ class BrokerAgencies::QuotesController < ApplicationController
       dup_household = @quote.quote_households.find(params[:duplicate_household]).dup
       dup_household.quote_members.each do |qhm|
         qhm.dob = nil
-        #qhm.first_name = ""
-        #qhm.last_name = ""
+        qhm.first_name = ""
+        qhm.last_name = ""
       end
       for i in 0..params[:num_of_dup].to_i
         temp_household = dup_household.dup

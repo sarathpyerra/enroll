@@ -116,5 +116,17 @@ class Quote
     end
   end
 
+  class << self
+
+    def claim_code_status?(quote_claim_code)
+      claim_code = Quote.where("claim_code" => quote_claim_code).first
+      if claim_code.nil?
+        return "invalid"
+      else
+        return claim_code.aasm_state
+      end
+    end
+
+  end
 
 end
