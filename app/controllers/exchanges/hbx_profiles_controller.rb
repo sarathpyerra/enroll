@@ -3,7 +3,7 @@ class Exchanges::HbxProfilesController < ApplicationController
   include DataTablesSorts
   include DataTablesFilters
 
-  before_action :check_hbx_staff_role, except: [:request_help, :show, :assister_index, :family_index, :update_cancel_enrollment]
+  before_action :check_hbx_staff_role, except: [:request_help, :show, :assister_index, :family_index, :update_cancel_enrollment, :update_terminate_enrollment]
   before_action :set_hbx_profile, only: [:edit, :update, :destroy]
   before_action :find_hbx_profile, only: [:employer_index, :broker_agency_index, :inbox, :configuration, :show]
   #before_action :authorize_for, except: [:edit, :update, :destroy, :request_help, :staff_index, :assister_index]
@@ -220,24 +220,25 @@ class Exchanges::HbxProfilesController < ApplicationController
 
   def families_index_datatable
     dt_query = extract_datatable_parameters
+    families_dt = []
     all_families = Family.all
-    # => if dt_query.search_string.blank?
-      collection = all_families
-    #else
+    if dt_query.search_string.blank?
+      families_dt = all_families
+    else
       #debugger
-      #families_ids = Family.search(dt_query.search_string).pluck(:id)
-      #collection = all_families.where({
-        #{}"id" => {"$in" => families_ids}
-      #})
-    #end
+      person_ids = Person.search(dt_query.search_string).pluck(:id)
+      families_dt = all_families.where({
+        "family_members.person_id" => {"$in" => person_ids}
+      })
+    end
     @draw = dt_query.draw
     @total_records = all_families.count
-    @records_filtered = collection.count
+    @records_filtered = families_dt.count
 
-    if collection.is_a? Array
-      @families = collection[dt_query.skip..@total_records.count]
+    if families_dt.is_a? Array
+      @families = families_dt[dt_query.skip..@total_records.count]
     else
-      @families = collection.skip(dt_query.skip).limit(dt_query.take)
+      @families = families_dt.skip(dt_query.skip).limit(dt_query.take)
     end
     render "families_index_datatable"
   end
@@ -252,7 +253,7 @@ class Exchanges::HbxProfilesController < ApplicationController
 
   def update_cancel_enrollment
     @hbx_enrollment = HbxEnrollment.find(params[:hbx_id])
-    redirect_to exchanges_hbx_profiles_path, :flash => { :error => "Cancellation Successful" }
+    redirect_to exchanges_hbx_profiles_path, :flash => { :success => "Cancellation Successful" }
   end
 
   def terminate_enrollment
@@ -264,6 +265,8 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def update_terminate_enrollment
+    @hbx_enrollment = HbxEnrollment.find(params[:hbx_id])
+    redirect_to exchanges_hbx_profiles_path, :flash => { :success => "Termination Successful" }
   end
 
   def broker_agency_index
