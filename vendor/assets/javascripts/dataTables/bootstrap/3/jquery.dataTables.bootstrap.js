@@ -49,10 +49,6 @@ $.extend( true, DataTable.defaults, {
 		"<'vertically-aligned-row header'<'table-length hidden'l><'search text-right hidden'f>>"+
 		"t"+
 		"<'footer'<'vertically-aligned-row'i><'col-xs-12'p>>",
-<<<<<<< HEAD
->>>>>>> 449412033d28e0604b1711fe99a410d9aa314032
-=======
->>>>>>> e52aa79... refs #5338 fix this
 	renderer: 'bootstrap'
 } );
 

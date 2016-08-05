@@ -56,6 +56,7 @@ var self_attested;
 var arrEffectiveDate;
 var idVal;
 var sepIndex;
+var personID;
 
 $(document).on('change','.admin_selected_sep_reason select',function(){
   if($(this).val() == '') {
@@ -87,49 +88,20 @@ $(document).on('change','.admin_selected_sep_reason select',function(){
 });
 
 $(document).on('change','.admin_effective_on_kind_options select', function(){
-
   if($(this).val() == ''){
     $('.init_effective_date input').val("");
   }
-
   else
-    set_effective_date($(this).val(), '.init_event_date input', '.init_effective_date input' );
+    //set_effective_date($(this).val(), '.init_event_date input', '.init_effective_date input' );
     $('.init_effective_date .label-floatlabel').removeClass('dn-1');
     $('.init_effective_date .label-floatlabel').addClass('dn-1');
+    $('.start_end_date').show();
+    $.ajax({
+      type: "GET",
+      data:{eventDate: $('#event_date').val(), effective_kind: $('#effective_on_date').val(), id: idVal, person: $('#person').val()},
+      url: "/exchanges/hbx_profiles/calculate_sep_dates"
+    });  
 });
-
-function set_start_date(init_target, start_day_target, end_day_target ){
-  var eventDate = $(init_target).datepicker('getDate');
-  var convertDate;
-
-  if (idTable == '#sepAdmin1')
-    convertDate = new Date(eventDate.getFullYear(), eventDate.getMonth() + 2, eventDate.getDate());
-  else if(idTable == '#sepAdmin2')
-    convertDate = new Date(eventDate.getFullYear(), eventDate.getMonth() + 1, eventDate.getDate());
-  else {
-    if (market == 'ivl')
-      convertDate = new Date(eventDate.getFullYear(), eventDate.getMonth() + 2, eventDate.getDate());
-    else
-      convertDate = new Date(eventDate.getFullYear(), eventDate.getMonth() + 1, eventDate.getDate());
-  }
-  $(start_day_target).datepicker().datepicker('setDate', eventDate);
-  $(end_day_target).datepicker().datepicker('setDate', convertDate);
-}
-
-function set_end_date(init_target, end_target){
-  var eventDate = $(init_target).datepicker('getDate');
-  if (idTable == '#sepAdmin1')
-    convertDate = new Date(eventDate.getFullYear(), eventDate.getMonth() + 2, eventDate.getDate());
-  else if(idTable == '#sepAdmin2')
-    convertDate = new Date(eventDate.getFullYear(), eventDate.getMonth() + 1, eventDate.getDate());
-  else {
-    if (market == 'ivl')
-      convertDate = new Date(eventDate.getFullYear(), eventDate.getMonth() + 2, eventDate.getDate());
-    else
-      convertDate = new Date(eventDate.getFullYear(), eventDate.getMonth() + 1, eventDate.getDate());
-  }
-  $(end_target).datepicker().datepicker('setDate', convertDate);
-}
 
 function set_effective_date(curObj, init_target, end_target){
   var eventDate, currentDate, midDay;
@@ -191,17 +163,17 @@ $(document).on('change','.init_event_date input', function(){
     $.ajax({
       type: "GET",
       data:{id: idVal, market: market},
-      url: "/exchanges/hbx_profiles/add_sep_form"
+      url: "/exchanges/hbx_profiles/update_effective_date"
     });    
    
     $('.init_effective_date input').val("");
-    $('.start_end_date').show();
-    set_start_date('.init_event_date input', '.start_btn input', '.end_btn input');
+    //$('.start_end_date').show();
   }
     $('.end_date input').val("");
     $('init_effective_date input').val("");
     $('.init_event_date .label-floatlabel').removeClass("dn-1");
     $('.init_event_date .label-floatlabel').addClass("dn-1");
+    $('.start_end_date').hide();
 });
 
 $(document).on('change','.start_end_date .start_btn input', function(){
@@ -344,6 +316,7 @@ $('.sep_table tbody').on('click', 'span.add-control', function () {
       });
 
       $('div.add_sep_datatable_slider', row.child()).slideDown();
+      personID = $('#person').val();
 
       if(market == 'shop'){
         $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_shop.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, effective_on_kinds: c.effective_on_kinds, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");

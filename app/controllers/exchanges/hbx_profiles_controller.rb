@@ -254,6 +254,20 @@ class Exchanges::HbxProfilesController < ApplicationController
     render
   end
 
+  def update_effective_date
+    chooseMarket
+    respond_to do |format|
+      format.js {} 
+    end
+  end
+
+  def calculate_sep_dates
+    calculateDates
+    respond_to do |format|
+      format.js {} 
+    end
+  end
+
   def broker_agency_index
     @broker_agency_profiles = BrokerAgencyProfile.all
 
@@ -461,18 +475,6 @@ class Exchanges::HbxProfilesController < ApplicationController
     redirect_to exchanges_hbx_profiles_root_path
   end
 
-
-  def add_sep_form
-
-      @qle = QualifyingLifeEventKind.individual_market_events_admin.detect{ |x| x.id.to_s == params[:id]} 
-
-    respond_to do |format|
-      format.js {} 
-    end
-    binding.pry
-  end
-
-
   private
 
   def agent_assistance_messages(params, agent, role)
@@ -557,5 +559,27 @@ class Exchanges::HbxProfilesController < ApplicationController
     @event_kinds_default = ['first_of_next_month'];
     @qualifying_life_events_shop = QualifyingLifeEventKind.shop_market_events_admin
     @qualifying_life_events_individual = QualifyingLifeEventKind.individual_market_events_admin
+  end
+
+  def chooseMarket
+    if params[:market] == 'ivl' 
+      @qle = QualifyingLifeEventKind.individual_market_events_admin.detect{ |x| x.id.to_s == params[:id]}
+    else
+      @qle = QualifyingLifeEventKind.shop_market_events_admin.detect{ |x| x.id.to_s == params[:id]}    
+    end
+  end
+
+  def calculateDates
+    if params[:person].present?
+      @family = Family.find(params[:person])
+      special_enrollment_period = @family.special_enrollment_periods.new(effective_on_kind: params[:effective_kind])
+      if params[:id].present?
+        qle = QualifyingLifeEventKind.find(params[:id])
+        special_enrollment_period.qualifying_life_event_kind = qle
+        special_enrollment_period.qle_on = Date.strptime(params[:eventDate], "%m/%d/%Y")
+      end
+    end
+    @start_on = special_enrollment_period.start_on
+    @end_on = special_enrollment_period.end_on
   end
 end
