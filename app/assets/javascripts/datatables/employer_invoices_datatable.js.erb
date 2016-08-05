@@ -1,7 +1,12 @@
 var EmployerInvoicesDatatable = ( function( window, undefined ) {
 
+  function setTab() {
+    var tab = "Employer";
+    return tab;
+  }
+
   function setBaseModel() {
-    var base_model = "organization";
+    var base_model = "Organization";
     return base_model;
   }
 
@@ -17,80 +22,56 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
   function callInitialFirstMonthFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Initial-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month %>")');
-    $active_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
-        base_model: setBaseModel(),
-        filters: [
-        "employer_profile_initial_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month)"
-      ]});
-    });
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
   function callInitialSecondMonthFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Initial-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month %>")');
-    $active_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
-        base_model: setBaseModel(),
-        filters: [
-        "employer_profile_initial_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month)"
-      ]});
-    });
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
   function callInitialThirdMonthFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Initial-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month %>")');
-    $active_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
-        base_model: setBaseModel(),
-        filters: [
-        "employer_profile_initial_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month)"
-      ]});
-    });
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
   function callRenewingFirstMonthFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Renewing-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month %>")');
-    $active_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
-        base_model: setBaseModel(),
-        filters: [
-        "employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month)"
-      ]});
-    });
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
   function callRenewingSecondMonthFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Renewing-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month %>")');
-    $active_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
-        base_model: setBaseModel(),
-        filters: [
-        "employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month)"
-      ]});
-    });
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
   function callRenewingThirdMonthFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Renewing-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month %>")');
-    $active_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
-        base_model: setBaseModel(),
-        filters: [
-        "employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month)"
-      ]});
-    });
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
   function addScopesBeforeSorting(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
     var $invoiced_sort = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("Invoiced?")');
     $invoiced_sort.on('click', function() {
-      var tab = "Employer"
+      var tab = setTab();
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(),
         custom_sort: true,

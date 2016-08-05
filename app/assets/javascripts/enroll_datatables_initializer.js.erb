@@ -10,6 +10,26 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.wrap('<div class="table-responsive"></div>');
   }
 
+  function setBaseModel(model) {
+    var base_model = model;
+    return base_model;
+  }
+
+  function setTab(tab) {
+    var tab = tab;
+    return tab;
+  }
+
+  function setFirstLevel($active_tab) {
+    var first_level = $active_tab.data('children-of');
+    return first_level;
+  }
+
+  function setSecondLevel($active_tab) {
+    var second_level = $active_tab.text().toLowerCase();
+    return second_level;
+  }
+
   function setScopesFromFilters(table_id, tab) {
     findTable(table_id);
     $active_first_level_filter = $table.closest('.module').find('.first-level > a.active').text().toLowerCase();
@@ -20,6 +40,35 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       scopes = DataTablesFilterMap[tab][$active_first_level_filter]
     }
     return scopes
+  }
+
+  function setFiltersFromScopeMap(table_id, tab, first_level, second_level) {
+    findTable(table_id);
+    if ( typeof second_level !== "undefined" ) {
+      scopes = DataTablesFilterMap[tab][first_level][second_level]
+    } else {
+      scopes = DataTablesFilterMap[tab][first_level]
+    }
+    return scopes
+  }
+
+  var setFilterCriteria = function(table_id, tab, first_level, second_level) {
+    $table = $('#'+table_id);
+    return {
+      tab: tab,
+      first_level: first_level,
+      second_level: second_level
+    }
+  }
+
+  function clickActiveFilter(table_id, $active_filter, filter_criteria, base_model) {
+    console.log(arguments);
+    $active_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(base_model),
+        filters: EnrollDataTableInitializer.setFiltersFromScopeMap(table_id, filter_criteria.tab, filter_criteria.first_level, filter_criteria.second_level)
+      });
+    });
   }
 
   function moveInfo(table_id) {
@@ -65,7 +114,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   function initializeFilters(table_id) {
     findTable(table_id)
     var $filters_first_level = $table.closest('.module').find('.btn-group.first-level');
-    $filters_first_level.find('a:first').addClass('active');
+    $filters_first_level.find('> a:first').addClass('active');
     $filters_first_level.find('> a').on('click', function() {
       if ( !$(this).hasClass('active') ) {
         $('.btn-group-second').find('.active').removeClass('active');
@@ -82,6 +131,9 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
         $(this).addClass('active');
       });
     });
+    if ( $filters_first_level.find('> a:first').hasClass('second-level') ) {
+      $filters_first_level.find('> a:first').trigger('click');
+    }
     $('.dataTables_filter').addClass('vertically-aligned-row');
   }
 
@@ -276,6 +328,13 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
 
   return {
     removeRow: removeRow,
+    setTab: setTab,
+    setFirstLevel: setFirstLevel,
+    setSecondLevel: setSecondLevel,
+    clickActiveFilter: clickActiveFilter,
+    setBaseModel: setBaseModel,
+    setFilterCriteria: setFilterCriteria,
+    setFiltersFromScopeMap : setFiltersFromScopeMap,
     setScopesFromFilters : setScopesFromFilters,
     attachModalsToLinks : attachModalsToLinks,
     replaceRowActionUrls : replaceRowActionUrls,

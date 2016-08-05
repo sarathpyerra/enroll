@@ -29,16 +29,16 @@
   <% if filters.present? %>
     <div>
       <div class="btn-group first-level" role="group" aria-label="...">
-        <% filters.each do |filter, url, request_type, second_level| %>
+        <% filters.each do |filter_name, url, request_type, second_level| %>
           <% if second_level.present? %>
-              <div class="btn-group btn-group-second <%=filter%>-second-level hidden">
+              <div class="btn-group btn-group-second <%= filter_name.downcase %> <%=filter_name%>-second-level hidden">
             <% second_level.each do |filter, url, request_type| %>
-              <%= link_to "#{filter}", "#{url}", remote: request_type, class: 'second-level btn btn-default', name: "#{filter}" %>
+              <%= link_to "#{filter}", "#{url}", remote: request_type, class: 'second-level btn btn-default', data: {'children-of': "#{filter_name.downcase}"}, name: "#{filter}" %>
             <% end %>
           </div>
-          <%= link_to "#{filter}", "javascript:;", class: 'second-level btn btn-default', onclick: 'EnrollDataTableInitializer.showSecondLevel($(this))', name: "#{filter}" %>
+          <%= link_to "#{filter_name}", "javascript:;", class: "second-level btn btn-default", onclick: 'EnrollDataTableInitializer.showSecondLevel($(this))', name: "#{filter_name}" %>
           <% else %>
-            <%= link_to "#{filter}", "#{url}", remote: request_type, class: 'btn btn-default' %>
+            <%= link_to "#{filter_name}", "#{url}", remote: request_type, class: 'btn btn-default' %>
           <% end %>
         <% end %>
       </div>
