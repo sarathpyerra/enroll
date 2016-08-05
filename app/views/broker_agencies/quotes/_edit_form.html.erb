@@ -66,7 +66,7 @@
 disableSelectric = true;
 
 var counter= 1000;
-$(".uidatepicker").datepicker({maxDate: "-1D"});
+$(".uidatepicker").datepicker({maxDate: "-1D", changeMonth: true, changeYear: true});
 var date_handler = function() {
 	    $(this).datepicker();
 			$(this).datepicker({ dateFormat: 'dd/mm/yyyy' , maxDate: "-1D" });
