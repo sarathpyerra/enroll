@@ -171,6 +171,8 @@ class BrokerAgencies::QuotesController < ApplicationController
 
 
     @scrollTo = params[:scrollTo] == "1" ? 1 : 0
+
+    flash.now[:notice] = "This quote has been published and no editing is allowed." if @quote.is_complete?
     #redirect_to edit_broker_agencies_quote_path(@quote.id)
 
   end

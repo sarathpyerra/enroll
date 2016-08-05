@@ -21,7 +21,7 @@ class Employers::EmployerProfilesController < Employers::EmployersController
     if claim_code_status == "invalid"
       flash[:error] = 'Quote claim code not found.'
     elsif claim_code_status == "claimed"
-      flash[:error] = 'Quote claim code alredy claimed.'
+      flash[:error] = 'Quote claim code already claimed.'
     else
       flash[:notice] = 'Code claimed with success. Your Plan Year has been created.'
       @employer_profile.build_plan_year_from_quote(claim_code, import_roster)
