@@ -6,7 +6,7 @@ QuotePageLoad = (function() {
   var available_health_plans = 0
   var _select_health_plans
   var set_select_health_plans = function(plans){_select_health_plans = plans}
-  
+
   var set_relationship_pct = function(relationship, val) {
     relationship_benefits[relationship] = val
     $("[name~='" + relationship + "']").val(val)
@@ -61,13 +61,14 @@ QuotePageLoad = (function() {
       }
     }
     var health_plan_count = Object.keys(_select_health_plans).length
+    available_health_plans = 0;
     for(var i = 0; i < health_plan_count; i++) {
       var plan = _select_health_plans[i]
       var value = "[value~=" + plan['plan_id'] + "]"
       var display = _plan_test(plan, criteria) ? 'inline' : 'none'
       $(value).parent().css('display', display)
       if (display=='inline') {available_health_plans += 1}
-    }   
+    }
     $('#x-of-plans').html($('#quote-plan-list > label:visible').length);
     _set_plan_counts()
     $.ajax({
