@@ -74,9 +74,8 @@ var date_handler = function() {
 	};
 
 var remove_member_handler = function(){
+	var $quote_member_id = $(this);
 	if(this.getAttribute("data-member-id") != undefined){
-
-		var $quote_member_id = $(this);
 
 	 $.ajax({
         type: "POST",
@@ -90,7 +89,9 @@ var remove_member_handler = function(){
 					$('[type="hidden"][value="' + $quote_member_id.attr("data-member-id") + '"]').remove();
         }
     });
-	}
+		}	else{
+				$quote_member_id.parent().parent().remove();
+		}
 };
 
 $('button#remove_member_button').click(remove_member_handler);
