@@ -10,7 +10,7 @@
 <% end %>
 {
 	"name": "<%= json_escape family.primary_family_member.full_name %>",
-	"ssn": "<%= json_escape family.primary_family_member.ssn %>",
+	"ssn": "<%= json_escape family.primary_family_member %>",
 	"dob": "<%= json_escape family.primary_family_member.dob %>",
 	"hbx_id": "<%= json_escape family.primary_family_member.hbx_id %>",
 	"family_ct": "<%= json_escape family.active_family_members.count %>",

@@ -51,9 +51,6 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     findTable(table_id)
     var $filters_first_level = $table.closest('.module').find('.btn-group.first-level');
     $filters_first_level.find('> a:first').addClass('active');
-    if ( $filters_first_level.find('> a:first').hasClass('second-level') ) {
-      $filters_first_level.find('> a:first').trigger('click');
-    }
     $filters_first_level.find('> a').on('click', function() {
       if ( !$(this).hasClass('active') ) {
         $('.btn-group-second').find('.active').removeClass('active');
@@ -70,6 +67,9 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
         $(this).addClass('active');
       });
     });
+    if ( $filters_first_level.find('> a:first').hasClass('second-level') ) {
+      $filters_first_level.find('> a:first').trigger('click');
+    }
     $('.dataTables_filter').addClass('vertically-aligned-row');
   }
 
