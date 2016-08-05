@@ -1,0 +1,36 @@
+var EmployerInvoicesDatatable = ( function( window, undefined ) {
+
+  function setBaseModel() {
+    var base_model = "family";
+    return base_model;
+  }
+
+  function callAllFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $all_filter = $table.closest('.module').find('.first-level a:contains("All")');
+    $all_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {});
+      $table.DataTable().draw();
+    });
+  }
+
+  function callAllIndividualFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.All-second-level a:contains("Individual")');
+    $active_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(),
+        filters: [
+          "by_enrollment_individual_market"
+      ]});
+    });
+  }
+
+  return {
+    generateInvoicesForSelection : generateInvoicesForSelection,
+    addScopesBeforeSorting : addScopesBeforeSorting,
+    callAllFilter: callAllFilter,
+    callAllIndividualFilter: callAllFilter
+  };
+
+} )( window );

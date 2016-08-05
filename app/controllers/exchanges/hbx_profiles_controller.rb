@@ -253,8 +253,12 @@ class Exchanges::HbxProfilesController < ApplicationController
 
   def update_cancel_enrollment
     @hbx_enrollment = HbxEnrollment.find(params[:hbx_id])
-    redirect_to exchanges_hbx_profiles_path, :flash => { :success => "Cancellation Successful" }
+    # debugger
+    if @hbx_enrollment.cancel_coverage!
+      redirect_to exchanges_hbx_profiles_path, :flash => { :success => "Cancellation Successful" }
+    end
   end
+
 
   def terminate_enrollment
     @hbx_enrollment = HbxEnrollment.find(params[:hbx_id])
