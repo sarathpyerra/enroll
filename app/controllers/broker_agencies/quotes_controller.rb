@@ -200,13 +200,14 @@ class BrokerAgencies::QuotesController < ApplicationController
     # update current attributs then insert new ones. Both can't be done at the same time.
     update_params = quote_params
     insert_params = quote_params
-
-    update_params[:quote_households_attributes] = update_params[:quote_households_attributes].select {|k,v| update_params[:quote_households_attributes][k][:id].present?}
-    insert_params[:quote_households_attributes] = insert_params[:quote_households_attributes].select {|k,v| insert_params[:quote_households_attributes][k][:id].blank?}
-
-    update_params[:quote_benefit_groups_attributes] = update_params[:quote_benefit_groups_attributes].select {|k,v| update_params[:quote_benefit_groups_attributes][k][:id].present?}
-    insert_params[:quote_benefit_groups_attributes] = insert_params[:quote_benefit_groups_attributes].select {|k,v| insert_params[:quote_benefit_groups_attributes][k][:id].blank?}
-
+    if update_params[:quote_households_attributes]
+      update_params[:quote_households_attributes] = update_params[:quote_households_attributes].select {|k,v| update_params[:quote_households_attributes][k][:id].present?}
+      insert_params[:quote_households_attributes] = insert_params[:quote_households_attributes].select {|k,v| insert_params[:quote_households_attributes][k][:id].blank?}
+    end
+    if update_params[:quote_benefit_groups_attributes]
+      update_params[:quote_benefit_groups_attributes] = update_params[:quote_benefit_groups_attributes].select {|k,v| update_params[:quote_benefit_groups_attributes][k][:id].present?}
+      insert_params[:quote_benefit_groups_attributes] = insert_params[:quote_benefit_groups_attributes].select {|k,v| insert_params[:quote_benefit_groups_attributes][k][:id].blank?}
+    end
     if params[:commit] == "Add Family"
       notice_message = "New family added."
       scrollTo = 1
@@ -522,18 +523,19 @@ private
 
 
   def sanitize_quote_roster_params
-
-    params[:quote][:quote_benefit_groups_attributes].each do |k,v|
-      #do not save if no data was entered for benefit group
-      if v["title"].blank?
-        params[:quote][:quote_benefit_groups_attributes].delete(k)
+    if params[:quote][:quote_benefit_groups_attributes].present?
+      params[:quote][:quote_benefit_groups_attributes].each do |k,v|
+        #do not save if no data was entered for benefit group
+        if v["title"].blank?
+          params[:quote][:quote_benefit_groups_attributes].delete(k)
+        end
       end
-
     end
 
-    params[:quote][:quote_households_attributes].each do |key, fid|
-      delete_family_key = 1
-      unless params[:quote][:quote_households_attributes][key][:quote_members_attributes].nil?
+    if params[:quote][:quote_households_attributes].present?
+      params[:quote][:quote_households_attributes].each do |key, fid|
+        delete_family_key = 1
+        unless params[:quote][:quote_households_attributes][key][:quote_members_attributes].nil?
           params[:quote][:quote_households_attributes][key][:quote_members_attributes].each do |k, mid|
             if mid['dob'].blank?
                 params[:quote][:quote_households_attributes][key][:quote_members_attributes].delete(k)
@@ -542,8 +544,9 @@ private
             end
           end
           params[:quote][:quote_households_attributes].delete(key) if delete_family_key == 1
-      else
-        params[:quote][:quote_households_attributes].delete(key)
+        else
+          params[:quote][:quote_households_attributes].delete(key)
+        end
       end
     end
   end
