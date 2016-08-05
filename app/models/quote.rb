@@ -45,7 +45,7 @@ class Quote
   scope :published_quotes,                   -> { where("aasm_state" => 'published') }
   scope :claimed_quotes,                   -> { where("aasm_state" => 'claimed') }
 
-
+  after_create :update_default_benefit_group
 
   def self.default_search_order
     [[:quote_name, 1]]
@@ -129,4 +129,10 @@ class Quote
 
   end
 
+  def update_default_benefit_group
+    qbg=quote_benefit_groups.first
+    quote_households.each do |qoute_household|
+      qoute_household.update_attributes(:quote_benefit_group_id => qbg.id)
+    end
+  end
 end
