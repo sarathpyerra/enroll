@@ -119,7 +119,6 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       if ( !$(this).hasClass('active') ) {
         $('.btn-group-second').find('.active').removeClass('active');
       }
-
       var $active_second_level_name = $filters_first_level.find('a.active').attr('name');
       if ( !$(this).hasClass('active') && $('.'+$active_second_level_name+'-second-level').is(':visible') ) {
         $('.'+$active_second_level_name+'-second-level').addClass('hidden');

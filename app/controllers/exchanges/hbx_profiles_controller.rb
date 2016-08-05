@@ -62,7 +62,7 @@ class Exchanges::HbxProfilesController < ApplicationController
 
     dt_query = extract_datatable_parameters
     collection = []
-    all_employers = Organization.all_employer_profiles.invoice_view_all
+    all_employers = Organization.all_employer_profiles
 
     if dt_query.search_string.blank?
       collection = all_employers
