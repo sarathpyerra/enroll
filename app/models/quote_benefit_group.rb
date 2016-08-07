@@ -56,6 +56,7 @@ class QuoteBenefitGroup
   before_save :build_relationship_benefits
   before_save :build_dental_relationship_benefits
 
+
   def quote_households
     quote.quote_households.select{|hh| hh.quote_benefit_group_id == self.id}
   end
@@ -213,6 +214,17 @@ class QuoteBenefitGroup
       return true if self.id == quote_household.quote_benefit_group_id
     end
     return false
+  end
+
+  class << self
+
+    def find(id)
+      quotes = Quote.where("quote_benefit_groups._id" => BSON::ObjectId.from_string(id))
+      quotes.size > 0 ? quotes.first.quote_benefit_group : nil
+    rescue
+      log("Can not find quote benefit group with id #{id}", {:severity => "error"})
+      nil
+    end
   end
 
 end

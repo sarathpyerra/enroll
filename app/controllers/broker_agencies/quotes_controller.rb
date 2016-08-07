@@ -358,6 +358,13 @@ class BrokerAgencies::QuotesController < ApplicationController
     end
   end
 
+  def delete_benefit_group
+
+      respond_to do |format|
+        format.js { render :nothing => true }
+      end
+  end
+
 
   def new_household
     @quote = Quote.new

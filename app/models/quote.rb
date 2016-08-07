@@ -39,6 +39,7 @@ class Quote
 
   index({ broker_role_id: 1 })
   index({ broker_role_id: 1, aasm_state: 1 })
+  index({"quote_benefit_groups._id" => 1}, { unique: true })
 
   scope :all_broker_quotes,                  -> (broker_role_id) { where(broker_role_id: broker_role_id) }
   scope :draft_quotes,                       -> { where("aasm_state" => 'draft') }

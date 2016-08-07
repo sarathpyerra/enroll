@@ -116,18 +116,17 @@ $('button#remove_household_button').click(remove_household_handler);
 
 var remove_benefit_group_handler = function(){
 	if(this.getAttribute("data-benefit-group-id") != undefined){
-		// TO DO
-	//  $.ajax({
-  //       type: "POST",
-  //       url: "/broker_agencies/quotes/" + this.getAttribute("data-quote-id")  +"/delete_household/?household_id=" +this.getAttribute("data-household-id"),
-  //       dataType: "js",
-  //       data: {"_method":"delete"},
-  //       success: function(){
-  //         console.log("Deleted successfully");
-  //       }
-  //   });
-		console.log("Delete benefit group " + this.getAttribute("data-benefit-group-id"));
-	  $(this).parent().parent().remove();
+	 $.ajax({
+        type: "POST",
+        url: "/broker_agencies/quotes/" + this.getAttribute("data-quote-id")  +"/delete_benefit_group/?quote_benefit_group_id=" +this.getAttribute("data-benefit-group-id"),
+        dataType: "js",
+        data: {"_method":"delete"},
+        success: function(){
+          console.log("Deleted successfully");
+        }
+    });
+		console.log("Delete benefit group " + this.getAttribute("data-quote-id")+ " - " + this.getAttribute("data-benefit-group-id"));
+	  //$(this).parent().parent().remove();
 	}
 
 };
@@ -136,22 +135,23 @@ $('button#remove_benefit_group_button').click(remove_benefit_group_handler);
 
 
 function addEmployeeRowToFamily(family, idx) {
-	var relation_options = '<select name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][employee_relationship]"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child_under_26">child</option></select>';
+	var relation_options = '<select class="custom_selectric" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][employee_relationship]"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child_under_26">Child</option></select>';
 	table_row = $('<div class="row form-inline">'
 								+ '<div class="form-group col-sm-3">DOB: <input type="text" class="uidatepicker" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][dob]" placeholder="Date of Birth (DOB)"/></div><div class="form-group col-sm-5">Name: <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][first_name]" placeholder="First Name"/>&nbsp;<input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][last_name]" placeholder="Last Name"/></div><div class="form-group col-sm-3">' + relation_options + '</div>' +
 									'<div class="form-group col-sm-1"><button type="button" id="remove_member_button" data-quote-id="" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
 								   + '</div>');
 									counter += 1 ;
 									$('#family-' + family).append(table_row);
+									$(".uidatepicker").datepicker({maxDate: "-1D", changeMonth: true, changeYear: true});
 									$(".uidatepicker").focus(date_handler);
 									$('button#remove_member_button').click(remove_member_handler);
-									$('select').selectric('refresh');
+									//$('select').selectric('refresh');
 }
 
 
 var duplicate_household = function() {
 	var url = '<%= Rails.application.routes.url_helpers.edit_broker_agencies_quote_path(@quote.id) %>';
-	if(confirm("Duplicate this family " + this.getAttribute("data-household-id"))) {
+	if(confirm("Duplicate this family?")) {
 
 		url = url + "?duplicate_household=" + this.getAttribute("data-household-id") + "&num_of_dup=" + $(this).find("option").filter(":selected").text();
 		console.log(url);
