@@ -96,10 +96,6 @@ describe "shared/_data_table.html.erb" do
       expect(rendered).to match(/addSelectAll/)
       expect(rendered).to match(/addBulkActions/)
       expect(rendered).to match(/addButtonsBelowTable/)
-<<<<<<< HEAD
-=======
-      expect(rendered).to match(/moveInfo/)
->>>>>>> datatables_helper
       expect(rendered).to match(/showPagination/)
       expect(rendered).to match(/moveTableLength/)
     end
