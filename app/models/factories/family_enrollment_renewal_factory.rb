@@ -78,7 +78,7 @@ module Factories
 
       renewal_enrollment.benefit_group_assignment_id = benefit_group_assignment.id
       renewal_enrollment.benefit_group_id = benefit_group_assignment.benefit_group_id
-      renewal_enrollment.effective_on = benefit_group_assignment.benefit_group.start_on  
+      renewal_enrollment.effective_on = benefit_group_assignment.benefit_group.start_on
       renewal_enrollment.waiver_reason = waived_enrollment.try(:waiver_reason) || "I do not have other coverage"
       renewal_enrollment.renew_waived
 
