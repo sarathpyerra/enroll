@@ -53,7 +53,7 @@ FactoryGirl.define do
   trait :broker_with_person do
     roles ["broker"]
 
-    ignore do
+    transient do
       organization {}
     end
 
