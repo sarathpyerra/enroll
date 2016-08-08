@@ -10,30 +10,32 @@ module DataTablesSorts
     end
   end
 
-  module VerificationsIndexSorts
-    def sort_verifications_index_columns(families, sort)
-      if params[:order]["0"][:column].present?
-        column = params[:order]["0"][:column]
-        order_by = (params[:columns][column][:data])
-
-        case order_by
-        when "last_name"
-          order_by = "_id"
-        when "first_name"
-          order_by = "_id"
-        end
-
-        order_by = order_by.to_sym
-
-        if sort == "asc"
-          families = families.order_by(order_by.asc)
+  def apply_sort(collection, sort, cursor, limit, base_model, scopes, order_by)
+    if params[:order]["0"][:column].present?
+      if scopes.blank?
+        if params[:custom_sort].present?
+          if sort == "asc"
+            sorted_collection = "#{base_model.capitalize}.offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by} ? 0 : 1}"
+          else
+            sorted_collection = "#{base_model.capitalize}.offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by} ? 1 : 0}"
+          end
         else
-          families = families.order_by(order_by.desc)
+          sorted_collection = "#{base_model.capitalize}.offset(cursor).limit(limit).order_by('#{order_by} #{sort.upcase}')"
         end
-
-        return families
-
+      else
+        if params[:custom_sort].present?
+          if sort == "asc"
+            sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by} ? 0 : 1}"
+          else
+            sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by} ? 1 : 0}"
+          end
+        else
+          sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.offset(cursor).limit(limit).order_by('#{order_by} #{sort.upcase}')"
+        end
       end
+      collection = eval(sorted_collection)
+      return collection
     end
   end
+
 end

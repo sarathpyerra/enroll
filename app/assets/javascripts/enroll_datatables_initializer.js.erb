@@ -10,6 +10,67 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.wrap('<div class="table-responsive"></div>');
   }
 
+  function setBaseModel(model) {
+    var base_model = model;
+    return base_model;
+  }
+
+  function setTab(tab) {
+    var tab = tab;
+    return tab;
+  }
+
+  function setFirstLevel($active_tab) {
+    var first_level = $active_tab.data('children-of');
+    return first_level;
+  }
+
+  function setSecondLevel($active_tab) {
+    var second_level = $active_tab.text().toLowerCase();
+    return second_level;
+  }
+
+  function setScopesFromFilters(table_id, tab) {
+    findTable(table_id);
+    $active_first_level_filter = $table.closest('.module').find('.first-level > a.active').text().toLowerCase();
+    $active_second_level_filter = $table.closest('.module').find('.btn-group-second > a.active').text().toLowerCase();
+    if ( $active_second_level_filter.length ) {
+      scopes = DataTablesFilterMap[tab][$active_first_level_filter][$active_second_level_filter]
+    } else {
+      scopes = DataTablesFilterMap[tab][$active_first_level_filter]
+    }
+    return scopes
+  }
+
+  function setFiltersFromScopeMap(table_id, tab, first_level, second_level) {
+    findTable(table_id);
+    if ( typeof second_level !== "undefined" ) {
+      scopes = DataTablesFilterMap[tab][first_level][second_level]
+    } else {
+      scopes = DataTablesFilterMap[tab][first_level]
+    }
+    return scopes
+  }
+
+  var setFilterCriteria = function(table_id, tab, first_level, second_level) {
+    $table = $('#'+table_id);
+    return {
+      tab: tab,
+      first_level: first_level,
+      second_level: second_level
+    }
+  }
+
+  function clickActiveFilter(table_id, $active_filter, filter_criteria, base_model) {
+    console.log(arguments);
+    $active_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(base_model),
+        filters: EnrollDataTableInitializer.setFiltersFromScopeMap(table_id, filter_criteria.tab, filter_criteria.first_level, filter_criteria.second_level)
+      });
+    });
+  }
+
   function moveInfo(table_id) {
     findTable(table_id)
     var $info = $table.closest('.module').find('.dataTables_info').detach();
@@ -53,7 +114,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   function initializeFilters(table_id) {
     findTable(table_id)
     var $filters_first_level = $table.closest('.module').find('.btn-group.first-level');
-    $filters_first_level.find('a:first').addClass('active');
+    $filters_first_level.find('> a:first').addClass('active');
     $filters_first_level.find('> a').on('click', function() {
       if ( !$(this).hasClass('active') ) {
         $('.btn-group-second').find('.active').removeClass('active');
@@ -70,6 +131,9 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
         $(this).addClass('active');
       });
     });
+    if ( $filters_first_level.find('> a:first').hasClass('second-level') ) {
+      $filters_first_level.find('> a:first').trigger('click');
+    }
     $('.dataTables_filter').addClass('vertically-aligned-row');
   }
 
@@ -88,8 +152,10 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
 
   function addSelectAll(table_id) {
     findTable(table_id)
-    $first_th = $table.find('thead>tr>th:first');
-    $first_th.html('<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" class="select-all" id="select-all" name="id[]" value=""><label for="select-all"><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>');
+    if ( $table.find('tbody tr').length >= 2 ) {
+      $first_th = $table.find('thead>tr>th:first');
+      $first_th.html('<span class="enroll-checkbox"><div class="checkbox"><label><input type="checkbox" class="select-all" id="select-all" name="id[]" value=""><label for="select-all"><i class="fa fa-check-square-o fa-2x"></i><i class="fa fa-square-o fa-2x"></i></label></label></div></span>');
+    }
   }
 
   function addBulkActions(table_id) {
@@ -141,6 +207,12 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.closest('.module').find('.datatable-header').append($search);
     $search.wrap('<div class="search text-right"></div>');
     $table.closest('.module').find('.datatable-header .search').prepend('<label>Search&nbsp;</label>')
+    if ( !$('#'+table_id+'-bulk-actions').length ) {
+      var $new_button = $table.closest('.module').find('.header .search + .col-xs-2').detach();
+      var $filters_parent = $table.closest('.module').find('.first-level').parent();
+      $filters_parent.addClass('vertically-aligned-row');
+      $filters_parent.append($new_button);
+    }
     $new_button.removeClass('hidden');
     $search.removeClass('hidden');
   }
@@ -163,13 +235,46 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.closest('.module').find('.input-group').wrap('<div class="input-no-pd"></div>');
   }
 
+  function attachModalsToLinks(table_id) {
+    findTable(table_id);
+    $table.find('.row-data .for-modal').each(function() {
+      var $new_link = $(this).find('a');
+      var $replace_for = $(this).attr('id').replace(/-/g, '_');
+      $(this).closest('tr').find('.row-actions a[href="replace_with_modal_'+$replace_for+'"]').replaceWith($new_link);
+    });
+  }
+
+  function replaceRowActionUrls(table_id) {
+    findTable(table_id);
+    $table.find('.row-data .for-remote-replace-url').each(function() {
+      var $new_url = $(this).data('replace-url');
+      var $replace_for = $(this).attr('id').replace(/-/g, '_');
+      // add data-method: post if present
+      if ( $(this).hasClass('disabled')) {
+        $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').addClass('disabled');
+      }
+      if ( $(this).data('method') == 'post' ) {
+        $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('data-method', 'post');
+      }
+      // add data-method: delete if present
+      if ( $(this).data('method') == 'delete' ) {
+        $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('data-method', 'delete');
+      }
+      $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('href', $new_url);
+    });
+  }
+
   function addRowIndexToRowFunctionLinks(table_id) {
     findTable(table_id);
-    $remote_links = $table.find('.row-actions .dropdown a[data-remote="true"]');
+    $remote_links = $table.find('.row-actions .dropdown a');
     $remote_links.each(function() {
       $row_index = $(this).closest('tr').find('td:first span').data('index');
       $existing_href = $(this).attr('href');
-      $(this).attr('href', $existing_href+"?row="+$row_index);
+      if ( $existing_href.indexOf('?') == 0 ) {
+        $(this).attr('href', $existing_href+"?row="+$row_index);
+      } else {
+        $(this).attr('href', $existing_href+"&row="+$row_index);
+      }
     });
   }
 
@@ -182,7 +287,10 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
           var data_attributes = [];
           $.each($(this).data(), function(k,v) {
             k = k.replace(/(?:^|\.?)([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "")
-            data_attributes.push(k+"="+v);
+            if ( k == "replace_url" ) {
+            } else {
+              data_attributes.push(k+"="+v);
+            }
           });
           $.each(data_attributes, function(index,value) {
             var $link = $row.find('.row-actions .dropdown a[data-remote="true"]').eq(index);
@@ -208,10 +316,28 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       additional_params[k] = v;
     });
     $table.data('dt_params', additional_params );
-    $table.DataTable().draw();
+    if (additional_params.hasOwnProperty('key')) {
+    } else {
+      $table.DataTable().draw();
+    }
+  }
+
+  function removeRow($thisObj) {
+    $thisObj.closest('tr').remove();
   }
 
   return {
+    removeRow: removeRow,
+    setTab: setTab,
+    setFirstLevel: setFirstLevel,
+    setSecondLevel: setSecondLevel,
+    clickActiveFilter: clickActiveFilter,
+    setBaseModel: setBaseModel,
+    setFilterCriteria: setFilterCriteria,
+    setFiltersFromScopeMap : setFiltersFromScopeMap,
+    setScopesFromFilters : setScopesFromFilters,
+    attachModalsToLinks : attachModalsToLinks,
+    replaceRowActionUrls : replaceRowActionUrls,
     addRowIndexToRowFunctionLinks : addRowIndexToRowFunctionLinks,
     wrapSearchInBootstrap : wrapSearchInBootstrap,
     moveInfo : moveInfo,

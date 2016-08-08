@@ -1,10 +1,8 @@
 class Exchanges::HbxProfilesController < ApplicationController
   include DataTablesAdapter
-  include SepAll
   include DataTablesSorts
-  include DataTablesSorts::VerificationsIndexSorts
   include DataTablesFilters
-  include DataTablesFilters::EmployerInvoicesIndexFilters
+
   before_action :check_hbx_staff_role, except: [:request_help, :show, :assister_index, :family_index]
   before_action :set_hbx_profile, only: [:edit, :update, :destroy]
   before_action :find_hbx_profile, only: [:employer_index, :broker_agency_index, :inbox, :configuration, :show, :binder_index]
@@ -257,14 +255,14 @@ class Exchanges::HbxProfilesController < ApplicationController
   def update_effective_date
     chooseMarket
     respond_to do |format|
-      format.js {} 
+      format.js {}
     end
   end
 
   def calculate_sep_dates
     calculateDates
     respond_to do |format|
-      format.js {} 
+      format.js {}
     end
   end
 
@@ -562,10 +560,10 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def chooseMarket
-    if params[:market] == 'ivl' 
+    if params[:market] == 'ivl'
       @qle = QualifyingLifeEventKind.individual_market_events_admin.detect{ |x| x.id.to_s == params[:id]}
     else
-      @qle = QualifyingLifeEventKind.shop_market_events_admin.detect{ |x| x.id.to_s == params[:id]}    
+      @qle = QualifyingLifeEventKind.shop_market_events_admin.detect{ |x| x.id.to_s == params[:id]}
     end
   end
 
