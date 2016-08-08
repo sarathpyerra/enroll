@@ -121,7 +121,7 @@ class Organization
   scope :all_employer_profiles,               ->{ unscoped.exists(employer_profile: true) }
   scope :employer_profile_plan_year_start_on, ->(begin_on){ where(:"employer_profile.plan_years.start_on" => begin_on) if begin_on.present? }
   scope :offset,                              ->(cursor = 0)      {skip(cursor) if cursor.present?}
-  scope :limit,                               ->(page_size = 25)  {limit(page_size) if page_size.present?}
+  scope :limit,                               ->(page_size = 25)  {limit(page_size) if page_size_present?}
   scope :invoice_view_all,                    ->{ unscoped.where(:"employer_profile.plan_years.aasm_state".in => EmployerProfile::INVOICE_VIEW_RENEWING + EmployerProfile::INVOICE_VIEW_INITIAL, :"employer_profile.plan_years.start_on".gte => TimeKeeper.date_of_record.next_month.beginning_of_month) }
   scope :employer_profile_renewing_coverage,  ->{ where(:"employer_profile.plan_years.aasm_state".in => EmployerProfile::INVOICE_VIEW_RENEWING) }
   scope :employer_profile_initial_coverage,   ->{ where(:"employer_profile.plan_years.aasm_state".nin => EmployerProfile::INVOICE_VIEW_RENEWING, :"employer_profile.plan_years.aasm_state".in => EmployerProfile::INVOICE_VIEW_INITIAL) }
