@@ -9,6 +9,7 @@ describe "shared/_data_table.html.erb" do
         directions: "Use this table to review verification documents.",
         processing_text: "",
         custom_handlers: [],
+        sibling_pages: [],
     	  filters: [
       		["all", "", true, []],
       		["some", "", true, [
@@ -122,6 +123,7 @@ describe "shared/_data_table.html.erb" do
         directions: "",
         processing_text: "",
         custom_handlers: [],
+        sibling_pages: [],
     	  filters: [
       		["all", "", true, []],
       		["some", "", true, [
@@ -187,7 +189,6 @@ describe "shared/_data_table.html.erb" do
       expect(rendered).not_to match(/addSelectAll/)
       expect(rendered).not_to match(/makeResponsiveTable/)
       expect(rendered).not_to match(/addBulkActions/)
-      expect(rendered).not_to match(/moveInfo/)
       expect(rendered).not_to match(/showPagination/)
     end
 
