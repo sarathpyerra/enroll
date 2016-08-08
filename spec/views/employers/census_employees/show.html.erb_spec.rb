@@ -20,7 +20,7 @@ RSpec.describe "employers/census_employees/show.html.erb" do
     plan: plan,
     benefit_group: benefit_group,
     hbx_enrollment_members: [hbx_enrollment_member],
-    coverage_kind: "health",
+    coverage_kind: "health")
     # external_enrollment: false )
   }
   let(:hbx_enrollment_two){ FactoryGirl.create(:hbx_enrollment,
@@ -28,7 +28,7 @@ RSpec.describe "employers/census_employees/show.html.erb" do
     plan: plan,
     benefit_group: benefit_group,
     hbx_enrollment_members: [hbx_enrollment_member],
-    coverage_kind: "dental",
+    coverage_kind: "dental")
     # external_enrollment: false )
   }
   # let(:hbx_enrollment_two) {double("HbxEnrollment2",waiver_reason: "this is reason", plan: double(name: "hbx enrollment plan name"), hbx_enrollment_members: [hbx_enrollment_member], coverage_kind: 'dental')}
