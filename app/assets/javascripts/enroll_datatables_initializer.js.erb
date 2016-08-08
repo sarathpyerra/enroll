@@ -62,6 +62,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   function clickActiveFilter(table_id, $active_filter, filter_criteria, base_model) {
+    console.log(arguments);
     $active_filter.on('click', function() {
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(base_model),
@@ -136,15 +137,15 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   function showSecondLevel($thisObj) {
-    var $button = $thisObj.attr('name');
-    var $second_level = $('.'+$button+'-second-level');
-    if ( $thisObj.hasClass('active') == false && $('.'+$button+'-second-level').is(':visible') ) {
-      $second_level.addClass('hidden');
-    }
-    $second_level.detach();
-    $('.btn-group.first-level').parent().after($second_level);
-    $second_level.wrap("<div></div>")
-    $second_level.removeClass('hidden');
+      var $button = $thisObj.attr('name');
+      var $second_level = $('.'+$button+'-second-level');
+      if ( $thisObj.hasClass('active') == false && $('.'+$button+'-second-level').is(':visible') ) {
+        $second_level.addClass('hidden');
+      }
+      $second_level.detach();
+      $('.btn-group.first-level').parent().after($second_level);
+      $second_level.wrap("<div></div>")
+      $second_level.removeClass('hidden');
   }
 
 
@@ -269,34 +270,34 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       $row_index = $(this).closest('tr').find('td:first span').data('index');
       $existing_href = $(this).attr('href');
       if ( $existing_href.indexOf('?') >= 0 ) {
-        $(this).attr('href', $existing_href+"?row="+$row_index);
-      } else {
         $(this).attr('href', $existing_href+"&row="+$row_index);
+      } else {
+        $(this).attr('href', $existing_href+"?row="+$row_index);
       }
     });
   }
 
   function addRowDataToParams(table_id) {
     findTable(table_id);
-    $table.find('.row-actions .dropdown a[data-remote="true"]').each(function() {
-      var $link = $(this);
-      var $row = $(this).closest('tr');
-      $row.find('.row-data span.for-remote').each(function(index, $link) {
-        var data_attributes = [];
-        $.each($(this).data(), function(k,v) {
-          k = k.replace(/(?:^|\.?)([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "")
-          if ( k == "replace_url" ) {
-          } else {
-            data_attributes.push(k+"="+v);
-          }
-        });
-        $.each(data_attributes, function(index,value) {
-          var $link = $row.find('.row-actions .dropdown a[data-remote="true"]').eq(index);
-          var $existing_href = $link.attr('href');
-          $link.attr('href', $existing_href+"&"+value);
+      $table.find('.row-actions .dropdown a[data-remote="true"]').each(function() {
+        var $link = $(this);
+        var $row = $(this).closest('tr');
+        $row.find('.row-data span.for-remote').each(function(index, $link) {
+          var data_attributes = [];
+          $.each($(this).data(), function(k,v) {
+            k = k.replace(/(?:^|\.?)([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "")
+            if ( k == "replace_url" ) {
+            } else {
+              data_attributes.push(k+"="+v);
+            }
+          });
+          $.each(data_attributes, function(index,value) {
+            var $link = $row.find('.row-actions .dropdown a[data-remote="true"]').eq(index);
+            var $existing_href = $link.attr('href');
+            $link.attr('href', $existing_href+"&"+value);
+          });
         });
       });
-    });
   }
 
   function attachPostDrawHandlers(table_id) {
