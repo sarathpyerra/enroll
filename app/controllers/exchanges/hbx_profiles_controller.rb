@@ -570,16 +570,13 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def calculateDates
-    if params[:person].present?
-      @family = Family.find(params[:person])
-      special_enrollment_period = @family.special_enrollment_periods.new(effective_on_kind: params[:effective_kind])
-      if params[:id].present?
-        qle = QualifyingLifeEventKind.find(params[:id])
-        special_enrollment_period.qualifying_life_event_kind = qle
-        special_enrollment_period.qle_on = Date.strptime(params[:eventDate], "%m/%d/%Y")
-      end
-    end
+    @family = Family.find(params[:person]) if params[:person].present?
+    special_enrollment_period = @family.special_enrollment_periods.new(effective_on_kind: params[:effective_kind])
+    qle = QualifyingLifeEventKind.find(params[:id]) if params[:id].present?
+    special_enrollment_period.qualifying_life_event_kind = qle
+    special_enrollment_period.qle_on = Date.strptime(params[:eventDate], "%m/%d/%Y")
     @start_on = special_enrollment_period.start_on
     @end_on = special_enrollment_period.end_on
+    @effective_on = special_enrollment_period.effective_on
   end
 end

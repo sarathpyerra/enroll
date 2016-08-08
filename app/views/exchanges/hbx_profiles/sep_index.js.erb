@@ -78,7 +78,8 @@ $(document).on('change','.admin_selected_sep_reason select',function(){
    idVal = getObj.data('id');
 
    init_datepicker_for_qle_date(getObj.data('pre-event-sep-in-days'), getObj.data('post-event-sep-in-days'), getDate())
-   self_attested == true ? $('#start_on, #end_on').addClass("disabled-input") : $('#start_on').removeClass("disabled-input");
+   //self_attested == true ? $('#start_on, #end_on').addClass("disabled-input") : $('#start_on').removeClass("disabled-input");
+   $('#start_on, #end_on').addClass("disabled-input")
    $('input.floatlabel').floatlabel({
       slideInput: false
    });
@@ -317,6 +318,7 @@ $('.sep_table tbody').on('click', 'span.add-control', function () {
 
       $('div.add_sep_datatable_slider', row.child()).slideDown();
       personID = $('#person').val();
+
 
       if(market == 'shop'){
         $('.admin_selected_sep_reason .selectric-hide-select select').html("<%= escape_javascript options_for_select([['SEP REASON', '']]) + options_for_select(@qualifying_life_events_shop.map{ |c| [c.title, c.id, data:{title: c.title, id: c.id.to_s, effective_on_kinds: c.effective_on_kinds, label: c.event_kind_label, post_event_sep_in_days: c.post_event_sep_in_days, pre_event_sep_in_days: c.pre_event_sep_in_days, date_hint: c.date_hint, is_self_attested: c.is_self_attested, current_date: TimeKeeper.date_of_record.strftime('%m/%d/%Y')}]  }) %>").selectric("refresh");
