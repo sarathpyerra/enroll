@@ -101,7 +101,7 @@ $(document).on('change','.admin_effective_on_kind_options select', function(){
       type: "GET",
       data:{eventDate: $('#event_date').val(), effective_kind: $('#effective_on_date').val(), id: idVal, person: $('#person').val()},
       url: "/exchanges/hbx_profiles/calculate_sep_dates"
-    });  
+    });
 });
 
 function set_effective_date(curObj, init_target, end_target){
@@ -165,8 +165,8 @@ $(document).on('change','.init_event_date input', function(){
       type: "GET",
       data:{id: idVal, market: market},
       url: "/exchanges/hbx_profiles/update_effective_date"
-    });    
-   
+    });
+
     $('.init_effective_date input').val("");
     //$('.start_end_date').show();
   }
@@ -199,7 +199,7 @@ $('#tab_datatables a[data-toggle="tab"]').on("click", function(){
   }
   switch($(this).attr('data-target')) {
     case '#ivl_shop_Table':
-      ivl_shop_Table = $('#sepAdmin').DataTable( {
+      ivl_shop_Table = $('#sepAdmin').EnrollDataTable( {
         destroy: true,
         columnDefs: columnVal,
          "language": {
@@ -223,7 +223,7 @@ $('#tab_datatables a[data-toggle="tab"]').on("click", function(){
         market = 'both';
         break;
     case '#ivlTable':
-      ivlTable = $('#sepAdmin1').DataTable( {
+      ivlTable = $('#sepAdmin1').EnrollDataTable( {
       destroy: true,
       columnDefs: columnVal,
       "language": {
@@ -248,7 +248,7 @@ $('#tab_datatables a[data-toggle="tab"]').on("click", function(){
       market = 'ivl';
       break;
     case '#shopTable':
-      shopTable = $('#sepAdmin2').DataTable( {
+      shopTable = $('#sepAdmin2').EnrollDataTable( {
       destroy: true,
       columnDefs: columnVal,
       "language": {

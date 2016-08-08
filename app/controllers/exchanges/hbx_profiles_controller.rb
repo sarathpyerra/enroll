@@ -1,4 +1,5 @@
 class Exchanges::HbxProfilesController < ApplicationController
+  include SepAll
   include DataTablesAdapter
   include DataTablesSorts
   include DataTablesFilters

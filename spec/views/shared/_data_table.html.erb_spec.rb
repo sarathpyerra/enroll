@@ -7,10 +7,8 @@ describe "shared/_data_table.html.erb" do
         page_header: ["Test Datatable", "url", ""],
         new_button: ["Add Datatable", "url", "request_type"],
         directions: "Use this table to review verification documents.",
-<<<<<<< HEAD
         processing_text: "Loading Stuff...",
-=======
->>>>>>> datatables_helper
+        sibling_pages: [],
     	  filters: [
       		["all", "", true, []],
       		["some", "", true, [
@@ -42,10 +40,7 @@ describe "shared/_data_table.html.erb" do
       		['Export CSV', 'url', 'request_type'],
       		['Print', 'url', 'request_type']
       	],
-<<<<<<< HEAD
         custom_handlers: [""],
-=======
->>>>>>> datatables_helper
         child_rows: [true, "datatables/child_row"],
         responsive: true,
       	checkboxes: true,
@@ -127,10 +122,8 @@ describe "shared/_data_table.html.erb" do
         page_header: "",
         new_button: "",
         directions: "",
-<<<<<<< HEAD
         processing_text: "Loading Stuff...",
-=======
->>>>>>> datatables_helper
+        sibling_pages: [],
     	  filters: [
       		["all", "", true, []],
       		["some", "", true, [
@@ -162,10 +155,7 @@ describe "shared/_data_table.html.erb" do
       		['Export CSV', 'url', 'request_type'],
       		['Print', 'url', 'request_type']
       	],
-<<<<<<< HEAD
         custom_handlers: [""],
-=======
->>>>>>> datatables_helper
         child_rows: [false, "datatables/child_row"],
         responsive: false,
       	checkboxes: false,
@@ -200,10 +190,6 @@ describe "shared/_data_table.html.erb" do
       expect(rendered).not_to match(/addSelectAll/)
       expect(rendered).not_to match(/makeResponsiveTable/)
       expect(rendered).not_to match(/addBulkActions/)
-<<<<<<< HEAD
-=======
-      expect(rendered).not_to match(/moveInfo/)
->>>>>>> datatables_helper
       expect(rendered).not_to match(/showPagination/)
     end
 
