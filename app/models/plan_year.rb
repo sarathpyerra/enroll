@@ -10,6 +10,10 @@ class PlanYear
   RENEWING  = %w(renewing_draft renewing_published renewing_enrolling renewing_enrolled)
   RENEWING_PUBLISHED_STATE = %w(renewing_published renewing_enrolling renewing_enrolled)
 
+  OPEN_ENROLLMENT_STATE   = %w(enrolling renewing_enrolling)
+  INITIAL_ENROLLING_STATE = %w(publish_pending eligibility_review published published_invalid enrolling enrolled)
+  INITIAL_ELIGIBLE_STATE  = %w(published enrolling enrolled)
+
   INELIGIBLE_FOR_EXPORT_STATES = %w(draft publish_pending eligibility_review published_invalid canceled renewing_draft suspended terminated ineligible expired)
 
   # Plan Year time period
@@ -542,7 +546,6 @@ class PlanYear
     end
   end
 
-
   aasm do
     state :draft, initial: true
 
@@ -552,8 +555,9 @@ class PlanYear
     state :published_invalid, :after_enter => :decline_application    # Non-compliant plan application was forced-published
 
     state :enrolling                                      # Published plan has entered open enrollment
-    state :enrolled, :after_enter => :ratify_enrollment   # Published plan open enrollment has ended and is eligible for coverage,
-                                                          #   but effective date is in future
+    state :enrolled, :after_enter => :ratify_enrollment   # Published plan open enrollment has ended and is eligible for coverage
+    state :invoice_generated                              # Invoice created for initial enrollment
+
     state :canceled                                       # Published plan open enrollment has ended and is ineligible for coverage
 
     state :active         # Published plan year is in-force

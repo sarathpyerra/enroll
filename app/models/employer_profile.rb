@@ -16,6 +16,8 @@ class EmployerProfile
   ACTIVE_STATES   = ["applicant", "registered", "eligible", "binder_paid", "enrolled"]
   INACTIVE_STATES = ["suspended", "ineligible"]
 
+  ENROLLED_STATE = %w(enrolled suspended)
+
   PROFILE_SOURCE_KINDS  = ["self_serve", "conversion"]
 
   INVOICE_VIEW_INITIAL  = %w(published enrolling enrolled active suspended)
@@ -74,7 +76,7 @@ class EmployerProfile
   scope :active,      ->{ any_in(aasm_state: ACTIVE_STATES) }
   scope :inactive,    ->{ any_in(aasm_state: INACTIVE_STATES) }
 
-  scope :all_renewing, ->{ Organization.all_employers_renewing }
+  scope :all_renewing, ->{ Organization.employer_profiles_renewing }
   scope :all_with_next_month_effective_date,  ->{ Organization.all_employers_by_plan_year_start_on(TimeKeeper.date_of_record.end_of_month + 1.day) }
 
   alias_method :is_active?, :is_active
@@ -575,7 +577,7 @@ class EmployerProfile
     state :binder_paid, :after_enter => :notify_binder_paid
     state :enrolled                   # Employer has completed eligible enrollment, paid the binder payment and plan year has begun
   # state :lapsed                     # Employer benefit coverage has reached end of term without renewal
-  state :suspended                  # Employer's benefit coverage has lapsed due to non-payment
+    state :suspended                  # Employer's benefit coverage has lapsed due to non-payment
     state :ineligible                 # Employer is unable to obtain coverage on the HBX per regulation or policy
 
     event :advance_date do
