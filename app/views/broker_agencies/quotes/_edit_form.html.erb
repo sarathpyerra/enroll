@@ -38,8 +38,7 @@
 				<div class="panel-body" id="quote-info">
 					<%= f.fields_for :quote_benefit_groups do |benefit_group| %>
 					<div class="row form-inline">
-						<div class="form-group col-sm-12">
-							Benefit Group: <%= benefit_group.text_field :title , {size: 40, placeholder: 'Enter Benefit Group Name'} %>
+						<div class="form-group col-sm-12">Benefit Group: <%= benefit_group.text_field :title , {size: 40, placeholder: 'Enter Benefit Group Name'} %>
 							<button type="button" data-quote-id="<%=@quote.id%>" data-benefit-group-id="<%=benefit_group.object.id%>" id="remove_benefit_group_button"  class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 						</div>
 						<div>&nbsp;</div>
@@ -81,12 +80,18 @@ var remove_member_handler = function(){
         type: "POST",
         url: "/broker_agencies/quotes/" + this.getAttribute("data-quote-id")  +"/delete_member/?member_id=" +this.getAttribute("data-member-id")+"&household_id="+this.getAttribute("data-household-id"),
         dataType: "js",
-        data: {"_method":"delete"},
-        complete: function(){
-          console.log("Deleted successfully id " + $quote_member_id.attr("data-member-id") );
-					$quote_member_id.parent().parent().remove();
-					// Remeve the rails generated hiddent field.
-					$('[type="hidden"][value="' + $quote_member_id.attr("data-member-id") + '"]').remove();
+        data: {"_method":"post"},
+        complete: function(data){
+					if (data.responseText != "false") {
+						console.log("Deleted successfully id " + $quote_member_id.attr("data-member-id") );
+						console.log(data)
+						$quote_member_id.parent().parent().remove();
+						// Remeve the rails generated hiddent field.
+						$('[type="hidden"][value="' + $quote_member_id.attr("data-member-id") + '"]').remove();
+					}
+					else {
+						console.log("User could not be deleted.")
+					}
         }
     });
 		}	else{
@@ -115,17 +120,22 @@ $('button#remove_household_button').click(remove_household_handler);
 
 
 var remove_benefit_group_handler = function(){
+	var $quote_benefit_group_id = $(this);
 	if(this.getAttribute("data-benefit-group-id") != undefined){
 	 $.ajax({
         type: "POST",
         url: "/broker_agencies/quotes/" + this.getAttribute("data-quote-id")  +"/delete_benefit_group/?quote_benefit_group_id=" +this.getAttribute("data-benefit-group-id"),
         dataType: "js",
-        data: {"_method":"delete"},
-        success: function(){
-          console.log("Deleted successfully");
+         complete: function(data){
+					if (data.responseText != "false") {
+          	console.log("Deleted successfully");
+						$quote_benefit_group_id.parent().parent().remove();
+					}
+					else {
+						console.log("Error deleting this quote benefit group");
+					}
         }
     });
-		console.log("Delete benefit group " + this.getAttribute("data-quote-id")+ " - " + this.getAttribute("data-benefit-group-id"));
 	  //$(this).parent().parent().remove();
 	}
 

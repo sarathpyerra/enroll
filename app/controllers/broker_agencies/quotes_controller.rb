@@ -339,6 +339,10 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def delete_member
+    if @quote.is_complete?
+      render :text => "false", :format => :js
+      return
+    end
     @qh = @quote.quote_households.find(params[:household_id])
     if @qh
       if @qh.quote_members.find(params[:member_id]).delete
@@ -350,6 +354,7 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def delete_household
+    #render :text => "false", :format => :js if @quote.is_complete?
     @qh = @quote.quote_households.find(params[:household_id])
     if @qh.destroy
       respond_to do |format|
@@ -360,7 +365,16 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def delete_benefit_group
 
-      respond_to do |format|
+    quote_benefit_group = QuoteBenefitGroup.find(params[:quote_benefit_group_id])
+
+    if quote_benefit_group.is_assigned?
+      render :text => "false", :format => :js
+      return
+    else
+      quote_benefit_group.destroy
+    end
+
+    respond_to do |format|
         format.js { render :nothing => true }
       end
   end

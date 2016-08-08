@@ -326,9 +326,9 @@ Rails.application.routes.draw do
       member do
         post :delete_quote
         post :download_employee_roster
-        delete :delete_member
+        post :delete_member
         delete :delete_household
-        delete :delete_benefit_group
+        post :delete_benefit_group
       end
 
       resources :quote_benefit_groups do

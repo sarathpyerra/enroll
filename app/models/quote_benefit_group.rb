@@ -220,7 +220,7 @@ class QuoteBenefitGroup
 
     def find(id)
       quotes = Quote.where("quote_benefit_groups._id" => BSON::ObjectId.from_string(id))
-      quotes.size > 0 ? quotes.first.quote_benefit_group : nil
+      quotes.size > 0 ? quotes.first.quote_benefit_groups.where("_id" => BSON::ObjectId.from_string(id)).first : nil
     rescue
       log("Can not find quote benefit group with id #{id}", {:severity => "error"})
       nil
