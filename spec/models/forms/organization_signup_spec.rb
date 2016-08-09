@@ -84,7 +84,7 @@ describe Forms::OrganizationSignup, "fein validation", :dbclean => :after_each d
                                               )
       expect(subject.valid?).to be_falsey
       expect(subject).to have_errors_on(:base)
-      expect(subject.errors[:base]).to eq(["organization has already been created."])
+      expect(subject.errors[:base]).to eq(["fein is already in use."])
     end
   end
 
