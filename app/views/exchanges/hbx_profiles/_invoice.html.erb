@@ -5,19 +5,29 @@
     new_button:  [],
     sibling_pages: [],
 	  filters:  [
-      ["All", "", true, []],
-      ["Initial", "", true, [
-        [TimeKeeper.date_of_record.next_month.beginning_of_month, "javascript:;", false],
-  			[TimeKeeper.date_of_record.next_month.beginning_of_month.next_month, "javascript:;", false],
-        [TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month, "javascript:;", false]
+      ["All", "javascript:;", true, []],
+      ["Enrolling", "", true, [
+        ["All", "javascript:;", false],
+        ["Initial Eligible", "javascript:;", false],
+        ["Renewing", "javascript:;", false],
+        ["Open Enrollment", "javascript:;", false],
+        ["Binder Pending", "javascript:;", false],
+        ["Binder Paid", "javascript:;", false],
+        # [TimeKeeper.date_of_record.next_month.beginning_of_month, "javascript:;", false],
+  			# [TimeKeeper.date_of_record.next_month.beginning_of_month.next_month, "javascript:;", false],
+        # [TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month, "javascript:;", false]
       ]],
-      ["Renewing", "", true, [
-        [TimeKeeper.date_of_record.next_month.beginning_of_month, "javascript:;", false],
-  			[TimeKeeper.date_of_record.next_month.beginning_of_month.next_month, "javascript:;", false],
-        [TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month, "javascript:;", false]
+      ["Enrolled", "", true, [
+        ["All", "javascript:;", false],
+        ["Suspended", "javascript:;", false]
       ]
+    ],
+    ["Applicants", "", true, [
+        ["All", "javascript:;", false],
+        ["Initial Ineligible", "javascript:;", false]
       ]
-  	],
+  	]
+    ],
   	bulk_actions:  [
   		["Generate Invoice", "javascript:;", false]
   	],
@@ -30,12 +40,16 @@
   		# ['Print', 'url', 'request_type']
   	],
     custom_handlers: [
-      "EmployerInvoicesDatatable.callInitialFirstMonthFilter",
-      "EmployerInvoicesDatatable.callInitialSecondMonthFilter",
-      "EmployerInvoicesDatatable.callInitialThirdMonthFilter",
-      "EmployerInvoicesDatatable.callRenewingFirstMonthFilter",
-      "EmployerInvoicesDatatable.callRenewingSecondMonthFilter",
-      "EmployerInvoicesDatatable.callRenewingThirdMonthFilter",
+      "EmployerInvoicesDatatable.callEnrollingAllFilter",
+      "EmployerInvoicesDatatable.callEnrollingInitialEligibleFilter",
+      "EmployerInvoicesDatatable.callEnrollingRenewingFilter",
+      "EmployerInvoicesDatatable.callEnrollingOpenEnrollmentFilter",
+      "EmployerInvoicesDatatable.callEnrollingBinderPendingFilter",
+      "EmployerInvoicesDatatable.callEnrollingBinderPaidFilter",
+      "EmployerInvoicesDatatable.callEnrolledAllFilter",
+      "EmployerInvoicesDatatable.callEnrolledSuspendedFilter",
+      "EmployerInvoicesDatatable.callApplicantsAllFilter",
+      "EmployerInvoicesDatatable.callApplicantsInitialIneligibleFilter",
       "EmployerInvoicesDatatable.generateInvoicesForSelection",
       "EmployerInvoicesDatatable.addScopesBeforeSorting",
       "EmployerInvoicesDatatable.callAllFilter"
