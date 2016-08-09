@@ -57,7 +57,7 @@ Then(/^the broker should see the data in the table$/) do
 end
 
 Then(/^the broker enters the quote effective date$/) do
-  select "#{Date.today.next_month.strftime("%B %Y")}", :from => "quote_start_on"
+  select "#{(Date.today+2.month).strftime("%B %Y")}", :from => "quote_start_on"
 end
 
 When(/^broker enters valid information$/) do
