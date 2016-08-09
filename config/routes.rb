@@ -300,10 +300,11 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :quotes do
+    resources :broker_roles do
+
+     resources :quotes do
       root 'quotes#index'
       collection do
-        get :my_quotes # soon to be the index view
         post :quotes_index_datatable
         get :upload_employee_roster
         post :build_employee_roster
@@ -321,7 +322,7 @@ Rails.application.routes.draw do
         get :export_to_pdf
         get :download_pdf
         get :dental_plans_data
-        get :delete_quote_modal
+        get :my_quotes
       end
       member do
         post :delete_quote
@@ -329,6 +330,7 @@ Rails.application.routes.draw do
         post :delete_member
         delete :delete_household
         post :delete_benefit_group
+        get :delete_quote_modal
       end
 
       resources :quote_benefit_groups do
@@ -337,7 +339,7 @@ Rails.application.routes.draw do
         post :update_benefits
         get :plan_comparison
       end
-
+    end
     end
   end
 

@@ -160,7 +160,7 @@ function addEmployeeRowToFamily(family, idx) {
 
 
 var duplicate_household = function() {
-	var url = '<%= Rails.application.routes.url_helpers.edit_broker_agencies_quote_path(@quote.id) %>';
+	var url = '<%= Rails.application.routes.url_helpers.edit_broker_agencies_broker_role_quote_path(@broker.id, @quote.id) %>';
 	if(confirm("Duplicate this family?")) {
 
 		url = url + "?duplicate_household=" + this.getAttribute("data-household-id") + "&num_of_dup=" + $(this).find("option").filter(":selected").text();

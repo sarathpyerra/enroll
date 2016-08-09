@@ -8,7 +8,7 @@
       <%= @quote.inspect %>
 
 
-      <%= link_to 'Back' , broker_agencies_quotes_root_path , class: "btn btn-primary" %>
+      <%= link_to "Back to Quotes", my_quotes_broker_agencies_broker_role_quotes_path(@broker), class: 'btn btn-primary', data: { no_turbolink: true } %>
 		</div>
 	</div>
 </div>
