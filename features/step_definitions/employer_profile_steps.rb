@@ -107,8 +107,11 @@ Given /(\w+) adds an EmployerStaffRole to (\w+)/ do |staff, new_staff|
   person = Person.where(first_name: new_staff).first
   click_link 'Add Employer Staff Role'
   fill_in 'first_name', with: person.first_name
+  find('#first_name').set(person.first_name)
   fill_in 'last_name', with: person.last_name
+  find('#last_name').set(person.last_name)
   fill_in  'dob', with: person.dob
+  find('#dob').set(person.dob)
   screenshot('add_existing_person_as_staff')
   find('.interaction-click-control-save').click
   step 'Point of Contact count is 2'
