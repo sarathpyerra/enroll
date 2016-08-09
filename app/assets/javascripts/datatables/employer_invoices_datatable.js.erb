@@ -12,56 +12,88 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
 
   function callAllFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $all_filter = $table.closest('.module').find('.first-level a:contains("All")');
+    var $all_filter = $table.closest('.module').find('.first-level a:first:contains("All")');
     $all_filter.on('click', function() {
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {});
       $table.DataTable().draw();
     });
   }
 
-  function callInitialFirstMonthFilter(table_id) {
+  function callEnrollingAllFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $active_filter = $table.closest('.module').find('.Initial-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month %>")');
+    var $active_filter = $table.closest('.module').find('.Enrolling-second-level a:contains("All")');
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
-  function callInitialSecondMonthFilter(table_id) {
+  function callEnrollingInitialEligibleFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $active_filter = $table.closest('.module').find('.Initial-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month %>")');
+    var $active_filter = $table.closest('.module').find('.Enrolling-second-level a:contains("Initial Eligible")');
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
-  function callInitialThirdMonthFilter(table_id) {
+  function callEnrollingRenewingFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $active_filter = $table.closest('.module').find('.Initial-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month %>")');
+    var $active_filter = $table.closest('.module').find('.Enrolling-second-level a:contains("Renewing")');
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
-  function callRenewingFirstMonthFilter(table_id) {
+  function callEnrollingOpenEnrollmentFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $active_filter = $table.closest('.module').find('.Renewing-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month %>")');
+    var $active_filter = $table.closest('.module').find('.Enrolling-second-level a:contains("Open Enrollment")');
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
-  function callRenewingSecondMonthFilter(table_id) {
+  function callEnrollingBinderPendingFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $active_filter = $table.closest('.module').find('.Renewing-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month %>")');
+    var $active_filter = $table.closest('.module').find('.Enrolling-second-level a:contains("Binder Pending")');
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
-  function callRenewingThirdMonthFilter(table_id) {
+  function callEnrollingBinderPaidFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $active_filter = $table.closest('.module').find('.Renewing-second-level a:contains("<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month %>")');
+    var $active_filter = $table.closest('.module').find('.Enrolling-second-level a:contains("Binder Paid")');
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
+  }
+
+  function callEnrolledAllFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Enrolled-second-level a:contains("All")');
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
+  }
+
+  function callEnrolledSuspendedFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Enrolled-second-level a:contains("Suspended")');
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
+  }
+
+  function callApplicantsAllFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Applicants-second-level a:contains("All")');
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
+  }
+
+  function callApplicantsInitialIneligibleFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Applicants-second-level a:contains("Initial Ineligible")');
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
@@ -103,12 +135,17 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
   }
 
   return {
-    callInitialFirstMonthFilter : callInitialFirstMonthFilter,
-    callInitialSecondMonthFilter : callInitialSecondMonthFilter,
-    callInitialThirdMonthFilter : callInitialThirdMonthFilter,
-    callRenewingFirstMonthFilter : callRenewingFirstMonthFilter,
-    callRenewingSecondMonthFilter : callRenewingSecondMonthFilter,
-    callRenewingThirdMonthFilter : callRenewingThirdMonthFilter,
+    callEnrollingAllFilter : callEnrollingAllFilter,
+    callEnrollingInitialEligibleFilter: callEnrollingInitialEligibleFilter,
+    callEnrollingRenewingFilter: callEnrollingRenewingFilter,
+    callEnrollingOpenEnrollmentFilter: callEnrollingOpenEnrollmentFilter,
+    callEnrollingBinderPendingFilter: callEnrollingBinderPendingFilter,
+    callEnrollingBinderPaidFilter: callEnrollingBinderPaidFilter,
+    callEnrolledAllFilter : callEnrolledAllFilter,
+    callEnrolledAllFilter: callEnrolledAllFilter,
+    callEnrolledSuspendedFilter: callEnrolledSuspendedFilter,
+    callApplicantsAllFilter : callApplicantsAllFilter,
+    callApplicantsInitialIneligibleFilter: callApplicantsInitialIneligibleFilter,
     generateInvoicesForSelection : generateInvoicesForSelection,
     addScopesBeforeSorting : addScopesBeforeSorting,
     callAllFilter: callAllFilter
