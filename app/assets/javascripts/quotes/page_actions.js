@@ -117,7 +117,7 @@ QuotePageLoad = (function() {
     $.ajax({
             type: 'GET',
             data: {quote_id: quote_id, broker_role_id: broker_role_id, benefit_group_id: benefit_group_id},
-            url: '/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/get_quote_info.js'
+            url: '/broker_agencies/broker_roles/' + broker_role_id +'/quotes/get_quote_info.js'
           }).done(function(response){
               relationship_benefits = response['relationship_benefits']
               roster_premiums = response['roster_premiums']
@@ -221,7 +221,7 @@ QuotePageLoad = (function() {
           quote_id = $("#quote_id").val()
           broker_role_id = $("#broker_role_id").val()
           benefit_group_id = $(this).val()
-          configure_benefit_group(quote_id, benefit_group_id)
+          configure_benefit_group(quote_id, broker_role_id, benefit_group_id)
       })
       $('#reset_selected').on('click', reset_selected_plans)
       $('#CostComparison').on('click', _get_health_cost_comparison)

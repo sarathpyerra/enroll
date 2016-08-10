@@ -118,7 +118,7 @@ var Quote = ( function() {
   }
   var show_benefit_group=function(quote_id, benefit_group_id){
     QuoteSliders.slider_listeners()
-    QuotePageLoad.configure_benefit_group(quote_id, benefit_group_id)
+    QuotePageLoad.configure_benefit_group(quote_id, $('#broker_role_id').val(),benefit_group_id)
     inject_plan_into_quote(quote_id, benefit_group_id)
     QuotePageLoad.page_load_listeners()
   }
