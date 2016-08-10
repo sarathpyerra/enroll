@@ -4,9 +4,8 @@ class BrokerAgencies::QuotesController < ApplicationController
   include DataTablesSorts
   include DataTablesFilters
 
-  before_action :validate_roles
+  before_action :validate_roles, :set_broker_role
   before_action :find_quote , :only => [:destroy ,:show, :delete_member, :delete_household, :publish_quote, :view_published_quote]
-  before_action :set_broker_role, :only => [:show, :my_quotes, :new, :update, :edit, :create, :build_employee_roster, :view_published_quote, :quotes_index_datatable, :export_to_pdf, :publish,:set_plan, :delete_quote_modal]
   before_action :format_date_params  , :only => [:update,:create]
   before_action :employee_relationship_map
   before_action :set_qhp_variables, :only => [:plan_comparison, :download_pdf]
@@ -229,7 +228,7 @@ class BrokerAgencies::QuotesController < ApplicationController
       render "new"  and return
     end
     if @quote.save
-      redirect_to  edit_broker_agencies_broker_role_quote_path(@quote),:flash => { :notice => "Successfully saved quote/employee roster." }
+      redirect_to  edit_broker_agencies_broker_role_quote_path(@broker.id, @quote),:flash => { :notice => "Successfully saved quote/employee roster." }
     else
       flash[:error]="Unable to save the employee roster : #{@quote.errors.full_messages.join(", ")}"
       render "new"
@@ -318,22 +317,22 @@ class BrokerAgencies::QuotesController < ApplicationController
       flash[:notice] = "Successfully deleted #{@quote.quote_name}."
       respond_to do |format|
         format.html {
-          redirect_to my_quotes_broker_agencies_quotes_path
+          redirect_to my_quotes_broker_agencies_broker_role_quotes_path(@broker)
         }
       end
     end
   end
 
-  def destroy
-    if @quote.destroy
-      flash[:notice] = "Successfully deleted #{@quote.quote_name}."
-      respond_to do |format|
-        format.html {
-          redirect_to broker_agencies_quotes_root_path
-        }
-      end
-    end
-  end
+  # def destroy
+  #   if @quote.destroy
+  #     flash[:notice] = "Successfully deleted #{@quote.quote_name}."
+  #     respond_to do |format|
+  #       format.html {
+  #         redirect_to broker_agencies_quotes_root_path
+  #       }
+  #     end
+  #   end
+  # end
 
   def delete_member
     if @quote.is_complete?
@@ -391,9 +390,7 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def get_quote_info
-
     bp_hash = {}
-
     quote = Quote.find(params[:quote_id])
     benefit_groups = quote.quote_benefit_groups
     bg = (params[:benefit_group_id] && quote.quote_benefit_groups.find(params[:benefit_group_id])) || benefit_groups.first
@@ -404,7 +401,11 @@ class BrokerAgencies::QuotesController < ApplicationController
      deductible_value: bg.deductible_for_ui,
     }
     bg.quote_relationship_benefits.each{|bp| bp_hash[bp.relationship] = bp.premium_pct}
-    render json: {'relationship_benefits' => bp_hash, 'roster_premiums' => bg.roster_cost_all_plans, 'criteria' => JSON.parse(bg.criteria_for_ui), summary: summary}
+    render json: {
+                  'relationship_benefits' => bp_hash,
+                  'roster_premiums' => bg.roster_cost_all_plans,
+                  'criteria' => JSON.parse(bg.criteria_for_ui),
+                  'summary' => summary}
   end
 
   def set_plan
@@ -460,9 +461,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def criteria
     benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
-
     return false if benefit_group.quote.is_complete?
-
     criteria_for_ui = params[:criteria_for_ui]
     deductible_for_ui = params[:deductible_for_ui]
     benefit_group.update_attributes!(criteria_for_ui: criteria_for_ui ) if criteria_for_ui
@@ -470,9 +469,9 @@ class BrokerAgencies::QuotesController < ApplicationController
     render json: JSON.parse(benefit_group.criteria_for_ui)
   end
 
-  def export_to_pdf
-    @pdf_url = "/broker_agencies/quotes/download_pdf?"
-  end
+  # def export_to_pdf
+  #   @pdf_url = "/broker_agencies/quotes/download_pdf?"
+  # end
 
   def download_pdf
     @standard_plans = []

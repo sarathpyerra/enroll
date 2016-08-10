@@ -59,10 +59,14 @@ var Quote = ( function() {
     })
   }
   var _compared_plans_export = function(){
-    $.get('/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/export_to_pdf');
-  }
-  var _compared_plans_export = function(){
-    $.get('/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/export_to_pdf');
+    var plans = selected_plans()
+    $.ajax({
+      type: "GET",
+      url: '/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/download_pdf',
+      data: {plans: plans},
+      success: function(response) {
+      }
+    })
   }
   var _export_compare_plans_listener = function(){
     $('#pdf_export_compare_plans').on('click', _compared_plans_export);

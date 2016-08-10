@@ -85,6 +85,6 @@
     </table>
   </div>
   <br>
-    <div id='pdf_export_compare_plans' class='btn btn-info'>Export to PDF</div>
+    <%= link_to "Export to PDF", download_pdf_broker_agencies_broker_role_quotes_path(@broker,:plans => params[:plans]), class: "btn btn-info", target: "_blank" %>
   <br><br>
 </div>

@@ -325,7 +325,7 @@ Rails.application.routes.draw do
         get :my_quotes
       end
       member do
-        post :delete_quote
+        delete :delete_quote
         post :download_employee_roster
         post :delete_member
         delete :delete_household
