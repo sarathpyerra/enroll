@@ -25,7 +25,7 @@ And(/^the broker is signed in$/) do
 end
 
 When(/^he visits the Roster Quoting tool$/) do
-  visit my_quotes_broker_agencies_quotes_path
+  visit my_quotes_broker_agencies_broker_role_quotes_path(broker.person.broker_role.id)
 end
 
 When(/^click on the New Quote button$/) do

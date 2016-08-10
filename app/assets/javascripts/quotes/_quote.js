@@ -47,7 +47,7 @@ var Quote = ( function() {
     }
     $.ajax({
       type: "GET",
-      url: "/broker_agencies/quotes/plan_comparison",
+      url: "/broker_agencies/broker_roles/"+$('#broker_role_id').val()+"/quotes/plan_comparison",
       data: {plans: plans, sort_by: sort_by.substring(0, sort_by.length-2)},
       success: function(response) {
         $('#plan_comparison_frame').html(response);
@@ -59,10 +59,14 @@ var Quote = ( function() {
     })
   }
   var _compared_plans_export = function(){
-    $.get('/broker_agencies/quotes/export_to_pdf');
-  }
-  var _compared_plans_export = function(){
-    $.get('/broker_agencies/quotes/export_to_pdf');
+    var plans = selected_plans()
+    $.ajax({
+      type: "GET",
+      url: '/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/download_pdf',
+      data: {plans: plans},
+      success: function(response) {
+      }
+    })
   }
   var _export_compare_plans_listener = function(){
     $('#pdf_export_compare_plans').on('click', _compared_plans_export);
@@ -88,7 +92,7 @@ var Quote = ( function() {
   var inject_plan_into_quote = function(quote_id, benefit_group_id, plan_id, elected) {
     $.ajax({
       type: "GET",
-      url: "/broker_agencies/quotes/set_plan",
+      url: "/broker_agencies/broker_roles/"+$('#broker_role_id').val()+"/quotes/set_plan",
       data: {quote_id: quote_id,
              benefit_group_id: benefit_group_id,
              plan_id: plan_id,
@@ -109,7 +113,7 @@ var Quote = ( function() {
         $.ajax({
           type: 'GET',
           data: {quote_id: quote_id, benefit_group_id: benefit_group_id},
-          url: '/broker_agencies/quotes/get_quote_info.js'
+          url: '/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/get_quote_info.js'
         }).done(function(response){
           _set_quote_toolbar(response['summary'])
         })
@@ -118,7 +122,7 @@ var Quote = ( function() {
   }
   var show_benefit_group=function(quote_id, benefit_group_id){
     QuoteSliders.slider_listeners()
-    QuotePageLoad.configure_benefit_group(quote_id, benefit_group_id)
+    QuotePageLoad.configure_benefit_group(quote_id, $('#broker_role_id').val(),benefit_group_id)
     inject_plan_into_quote(quote_id, benefit_group_id)
     QuotePageLoad.page_load_listeners()
   }

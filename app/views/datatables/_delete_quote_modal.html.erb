@@ -14,7 +14,7 @@
         <div class="vertically-aligned-row">
           <div class="text-right">
             <div class="btn btn-default" data-dismiss="modal">Close</div>
-            <%= link_to "Delete Quote", delete_quote_broker_agencies_quote_path(@quote.id), class: "btn btn-primary", data: { method: 'post', dismiss: "modal"} %>
+            <%= link_to "Delete Quote", delete_quote_broker_agencies_broker_role_quote_path(@broker, @quote.id), class: "btn btn-primary", data: { method: 'delete', dismiss: "modal"} %>
           </div>
         </div>
       </div>

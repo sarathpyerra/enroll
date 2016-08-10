@@ -4,11 +4,12 @@ class BrokerAgencies::QuotesController < ApplicationController
   include DataTablesSorts
   include DataTablesFilters
 
-
+  before_action :validate_roles, :set_broker_role
   before_action :find_quote , :only => [:destroy ,:show, :delete_member, :delete_household, :publish_quote, :view_published_quote]
   before_action :format_date_params  , :only => [:update,:create]
   before_action :employee_relationship_map
   before_action :set_qhp_variables, :only => [:plan_comparison, :download_pdf]
+
 
   def view_published_quote
 
@@ -25,21 +26,18 @@ class BrokerAgencies::QuotesController < ApplicationController
       @quote.claim_code = @quote.employer_claim_code
       @quote.publish!
     end
-
-    render "publish_quote" , :flash => {:notice => "Quote Published" }
-
+    flash[:notice] = "Quote Published" 
   end
 
   # displays index page of quotes
   def my_quotes
-    @all_quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
-    @broker = current_user.person.broker_role
+    @all_quotes = Quote.where("broker_role_id" => @broker.id)
   end
 
   def quotes_index_datatable
     dt_query = extract_datatable_parameters
     quotes = []
-    all_quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
+    all_quotes = Quote.where("broker_role_id" => @broker.id)
     if dt_query.search_string.blank?
       collection = all_quotes
     else
@@ -179,17 +177,15 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def new
     quote = Quote.new
-
     # Build Default Quote Benefit Group
     qbg = QuoteBenefitGroup.new
     qbg.title = "Default Benefit Package"
     quote.quote_benefit_groups << qbg
-
     # Assign new quote to current broker
-    quote.broker_role_id= current_user.person(:try).broker_role.id
+    quote.broker_role_id= @broker.id
 
     quote.save(validate: false)
-    redirect_to edit_broker_agencies_quote_path(quote.id)
+    redirect_to edit_broker_agencies_broker_role_quote_path(@broker.id, quote.id)
   end
 
   def update
@@ -217,10 +213,10 @@ class BrokerAgencies::QuotesController < ApplicationController
     end
 
     if (@quote.update_attributes(update_params) && @quote.update_attributes(insert_params))
-      redirect_to edit_broker_agencies_quote_path(@quote, scrollTo: scrollTo),  :flash => { :notice => notice_message }
+      redirect_to edit_broker_agencies_broker_role_quote_path(@broker.id, @quote, scrollTo: scrollTo),  :flash => { :notice => notice_message }
     else
       #render "edit" , :flash => {:error => "Unable to update the employee roster" }
-      redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :error => "Unable to update the employee roster." }
+      redirect_to edit_broker_agencies_broker_role_quote_path(@broker.id, @quote) ,  :flash => { :error => "Unable to update the employee roster." }
     end
   end
 
@@ -232,7 +228,7 @@ class BrokerAgencies::QuotesController < ApplicationController
       render "new"  and return
     end
     if @quote.save
-      redirect_to  edit_broker_agencies_quote_path(@quote),:flash => { :notice => "Successfully saved quote/employee roster." }
+      redirect_to  edit_broker_agencies_broker_role_quote_path(@broker.id, @quote),:flash => { :notice => "Successfully saved quote/employee roster." }
     else
       flash[:error]="Unable to save the employee roster : #{@quote.errors.full_messages.join(", ")}"
       render "new"
@@ -321,22 +317,22 @@ class BrokerAgencies::QuotesController < ApplicationController
       flash[:notice] = "Successfully deleted #{@quote.quote_name}."
       respond_to do |format|
         format.html {
-          redirect_to my_quotes_broker_agencies_quotes_path
+          redirect_to my_quotes_broker_agencies_broker_role_quotes_path(@broker)
         }
       end
     end
   end
 
-  def destroy
-    if @quote.destroy
-      flash[:notice] = "Successfully deleted #{@quote.quote_name}."
-      respond_to do |format|
-        format.html {
-          redirect_to broker_agencies_quotes_root_path
-        }
-      end
-    end
-  end
+  # def destroy
+  #   if @quote.destroy
+  #     flash[:notice] = "Successfully deleted #{@quote.quote_name}."
+  #     respond_to do |format|
+  #       format.html {
+  #         redirect_to broker_agencies_quotes_root_path
+  #       }
+  #     end
+  #   end
+  # end
 
   def delete_member
     if @quote.is_complete?
@@ -386,20 +382,15 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def update_benefits
-
     quote_benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
-
     return false if quote_benefit_group.quote.is_complete?
-
     benefits = params[:benefits]
     quote_benefit_group.quote_relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
     render json: {}
   end
 
   def get_quote_info
-
     bp_hash = {}
-
     quote = Quote.find(params[:quote_id])
     benefit_groups = quote.quote_benefit_groups
     bg = (params[:benefit_group_id] && quote.quote_benefit_groups.find(params[:benefit_group_id])) || benefit_groups.first
@@ -410,7 +401,11 @@ class BrokerAgencies::QuotesController < ApplicationController
      deductible_value: bg.deductible_for_ui,
     }
     bg.quote_relationship_benefits.each{|bp| bp_hash[bp.relationship] = bp.premium_pct}
-    render json: {'relationship_benefits' => bp_hash, 'roster_premiums' => bg.roster_cost_all_plans, 'criteria' => JSON.parse(bg.criteria_for_ui), summary: summary}
+    render json: {
+                  'relationship_benefits' => bp_hash,
+                  'roster_premiums' => bg.roster_cost_all_plans,
+                  'criteria' => JSON.parse(bg.criteria_for_ui),
+                  'summary' => summary}
   end
 
   def set_plan
@@ -466,9 +461,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def criteria
     benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
-
     return false if benefit_group.quote.is_complete?
-
     criteria_for_ui = params[:criteria_for_ui]
     deductible_for_ui = params[:deductible_for_ui]
     benefit_group.update_attributes!(criteria_for_ui: criteria_for_ui ) if criteria_for_ui
@@ -476,13 +469,13 @@ class BrokerAgencies::QuotesController < ApplicationController
     render json: JSON.parse(benefit_group.criteria_for_ui)
   end
 
-  def export_to_pdf
-    @pdf_url = "/broker_agencies/quotes/download_pdf?"
-  end
+  # def export_to_pdf
+  #   @pdf_url = "/broker_agencies/quotes/download_pdf?"
+  # end
 
   def download_pdf
     @standard_plans = []
-    params[:plans].each { |plan_key| @standard_plans << Plan.find(plan_key).hios_id }
+    params[:plans].each { |plan_key| @standard_plans << Plan.find(plan_key).hios_id } 
     @qhps = []
     @standard_plans.each { |plan_id| @qhps << Products::QhpCostShareVariance
                                                             .find_qhp_cost_share_variances([plan_id], Date.today.year, "Health") }
@@ -500,8 +493,12 @@ class BrokerAgencies::QuotesController < ApplicationController
 
 private
 
+  def set_broker_role
+    @broker = BrokerRole.find(params[:broker_role_id])
+  end
+
   def quote_download_link(quote)
-    return quote.published? ? view_context.link_to("Download PDF" , publish_broker_agencies_quotes_path(:format => :pdf,:quote_id => quote.id)) : ""
+    return quote.published? ? view_context.link_to("Download PDF" , publish_broker_agencies_broker_role_quotes(:format => :pdf,:quote_id => quote.id)) : ""
   end
 
   def employee_relationship_map
@@ -664,4 +661,9 @@ private
     @dental_plans = @dental_plans.by_dc_network(params[:dc_network]) if params[:dc_network].present? && params[:dc_network] != 'any'
     @dental_plans = @dental_plans.by_nationwide(params[:nationwide]) if params[:nationwide].present? && params[:nationwide] != 'any'
   end
+
+  def validate_roles
+    current_user.has_broker_role? || current_user.has_hbx_staff_role?
+  end
+
 end

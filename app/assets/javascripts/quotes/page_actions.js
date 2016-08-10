@@ -12,8 +12,8 @@ QuotePageLoad = (function() {
     $("[name~='" + relationship + "']").val(val)
     $.ajax({
       type: 'POST',
-      data: {benefits: relationship_benefits, quote_id: $('#quote_id').val(), benefit_id: $('#benefit_group_select option:selected').val() },
-      url: '/broker_agencies/quotes/update_benefits.js',
+      data: {benefits: relationship_benefits, quote_id: $('#quote_id').val(),benefit_id: $('#benefit_group_select option:selected').val() },
+      url: '/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/update_benefits.js',
     })
     Quote.set_plan_costs()
   }
@@ -75,10 +75,11 @@ QuotePageLoad = (function() {
       type: 'GET',
       data: {
         quote_id: $('#quote_id').val(),
+        broker_role_id: $('#broker_role_id').val(),
         benefit_id: $('#benefit_group_select option:selected').val(),
         criteria_for_ui: JSON.stringify(criteria),
         deductible_for_ui: deductible_value },
-      url: '/broker_agencies/quotes/criteria.js'
+      url: '/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/criteria.js'
     })
   }
   var reset_selected_plans =  function(){
@@ -112,11 +113,11 @@ QuotePageLoad = (function() {
       $('#dental_pct_domestic_partner').bootstrapSlider('setValue', relationship_benefits['domestic_partner']);
       $('#dental_pct_child_under_26').bootstrapSlider('setValue', relationship_benefits['child_under_26']);
   }
-  var configure_benefit_group = function(quote_id, benefit_group_id) {
+  var configure_benefit_group = function(quote_id, broker_role_id,benefit_group_id) {
     $.ajax({
             type: 'GET',
-            data: {quote_id: quote_id, benefit_group_id: benefit_group_id},
-            url: '/broker_agencies/quotes/get_quote_info.js'
+            data: {quote_id: quote_id, broker_role_id: broker_role_id, benefit_group_id: benefit_group_id},
+            url: '/broker_agencies/broker_roles/' + broker_role_id +'/quotes/get_quote_info.js'
           }).done(function(response){
               relationship_benefits = response['relationship_benefits']
               roster_premiums = response['roster_premiums']
@@ -139,10 +140,11 @@ QuotePageLoad = (function() {
      }
     $.ajax({
       type: "GET",
-      url: "/broker_agencies/quotes/health_cost_comparison",
+      url: "/broker_agencies/broker_roles/"+$('#broker_role_id').val()+"/quotes/health_cost_comparison",
       data: {
         plans: plans,
         quote_id: $('#quote_id').val(),
+        broker_role_id: $('#broker_role_id').val(),
         benefit_id: $('#benefit_group_select option:selected').val()
       },
       success: function(response) {
@@ -188,7 +190,7 @@ QuotePageLoad = (function() {
         dc_network = $('#dental-dc_in_network').find('div.active1').attr('id')
         nationwide = $('#dental-nationwide').find('div.active1').attr('id')
         quote = $('#quote').val()
-        $.get('/broker_agencies/quotes/dental_plans_data/',
+        $.get('/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/dental_plans_data/',
           {
             carrier_id: carrier_id,
             dental_level: dental_level,
@@ -217,8 +219,9 @@ QuotePageLoad = (function() {
       $('#benefit_group_select').on('change',
          function(){
           quote_id = $("#quote_id").val()
+          broker_role_id = $("#broker_role_id").val()
           benefit_group_id = $(this).val()
-          configure_benefit_group(quote_id, benefit_group_id)
+          configure_benefit_group(quote_id, broker_role_id, benefit_group_id)
       })
       $('#reset_selected').on('click', reset_selected_plans)
       $('#CostComparison').on('click', _get_health_cost_comparison)
