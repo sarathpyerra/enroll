@@ -1,4 +1,4 @@
-Capybara.ignore_hidden_elements = false
+#Capybara.ignore_hidden_elements = false
 
 module BrokerWorld
   def broker(*traits)
@@ -37,10 +37,12 @@ When(/^click on the Upload Employee Roster button$/) do
 end
 
 When(/^the broker clicks on the Select File to Upload button$/) do
+  Capybara.ignore_hidden_elements = false
   find(:xpath,"//*[@id='modal-wrapper']/div/form/label").trigger('click')
   within '.upload_csv' do
     attach_file('employee_roster_file', "#{Rails.root}/spec/test_data/employee_roster_import/Employee_Roster_sample.xlsx")
   end
+  Capybara.ignore_hidden_elements = true
 end
 
 Then(/^the broker clicks upload button$/) do

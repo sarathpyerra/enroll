@@ -306,7 +306,9 @@ And(/^.+ should be able to enter plan year, benefits, relationship benefits with
 
   # Benefit Group
   fill_in "plan_year[benefit_groups_attributes][0][title]", :with => "Silver PPO Group"
-  find(:xpath, "//div[contains(@class, 'selectric-interaction-choice-control-plan-year-benefit-groups-attributes-0-effective-on-offset')]//li[contains(@class, 'interaction-choice-control-plan-year-benefit-groups-attributes-0-effective-on-offset-1')]").trigger 'click'
+
+  find('.interaction-choice-control-plan-year-start-on').click
+  find('li.interaction-choice-control-plan-year-start-on-1').click
 
   fill_in "plan_year[benefit_groups_attributes][0][relationship_benefits_attributes][0][premium_pct]", :with => 50
   fill_in "plan_year[benefit_groups_attributes][0][relationship_benefits_attributes][1][premium_pct]", :with => 50
@@ -373,9 +375,7 @@ When(/^.+ clicks? on publish plan year$/) do
 end
 
 Then(/^.+ should see Publish Plan Year Modal with warnings$/) do
-  within("#publishPlanYear") do
-    expect(find('.modal-body')).to have_content('Number of full time equivalents (FTEs) exceeds maximum allowed')
-  end
+  expect(find('.modal-body')).to have_content('Number of full time equivalents (FTEs) exceeds maximum allowed')
 end
 
 Then(/^.+ clicks? on the Cancel button$/) do

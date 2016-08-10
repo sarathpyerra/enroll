@@ -75,15 +75,15 @@ Then(/Individual should see a form to enter personal information$/) do
   fill_in "person_addresses_attributes_0_address_1", :with => "4900 USAA BLVD"
   fill_in "person_addresses_attributes_0_address_2", :with => "212"
   fill_in "person_addresses_attributes_0_city", :with=> "Washington"
-  find(:xpath, "//p[@class='label'][. ='SELECT STATE ']").trigger('click')
-  find(:xpath, '//*[@id="address_info"]/div/div[3]/div[2]/div/div[3]/div/ul/li[10]').trigger('click')
+  find(:xpath, "//p[@class='label'][contains(., 'SELECT STATE')]").click
+  find(:xpath, '//*[@id="address_info"]/div/div[3]/div[2]/div/div[3]/div/ul/li[10]').click
   fill_in "person[addresses_attributes][0][zip]", :with => "20002"
   fill_in "person[phones_attributes][0][full_phone_number]", :with => "9999999999"
   screenshot("personal_form")
 end
 
 When(/Individual clicks on Save and Exit/) do
-  find(:xpath, '//*[@id="new_person_wrapper"]/div/div[2]/ul[2]/li[2]/a').trigger('click') #overlapping li element wat?
+  find('li a', text: 'SAVE & EXIT').trigger('click')
 end
 
 Then (/Individual resumes enrollment/) do
@@ -208,9 +208,7 @@ And(/I should see the individual home page/) do
 end
 
 Then(/^Individual edits a dependents address$/) do
-  within("#dependent_buttons") do
-    click_link 'Add Member'
-  end
+  click_link 'Add Member'
 end
 
 Then(/^Individual fills in the form$/) do
@@ -218,8 +216,8 @@ Then(/^Individual fills in the form$/) do
   fill_in 'dependent[last_name]', :with => (@u.last_name :last_name)
   fill_in 'jq_datepicker_ignore_dependent[dob]', :with => (@u.adult_dob :dob)
   fill_in 'dependent[ssn]', :with => (@u.ssn :ssn)
-  find('.house #naturalization_doc_type_select .selectric p.label').trigger 'click' 
-  find(:xpath, "//div[@class='selectric-scroll']/ul/li[contains(text(), 'Sibling')]").trigger('click')
+  find('.house .selectric p.label').trigger 'click'
+  find(:xpath, "//div[@class='selectric-scroll']/ul/li[contains(text(), 'Sibling')]").click
   find(:xpath, '//label[@for="radio_male"]').click
   find(:xpath, '//label[@for="dependent_us_citizen_true"]').click
   find(:xpath, '//label[@for="dependent_naturalized_citizen_false"]').click
@@ -231,8 +229,8 @@ Then(/^Individual ads address for dependent$/) do
   find(:xpath, '//label[@for="dependent_same_with_primary"]').click
   fill_in 'dependent[addresses][0][address_1]', :with => '36 Campus Lane'
   fill_in 'dependent[addresses][0][city]', :with => 'Washington'
-  first('div#address_info .selectric p.label').trigger 'click'
-  first(:xpath, "//div[@class='selectric-scroll']/ul/li[contains(text(), 'DC')]").click
+  find('#address_info .selectric p.label').trigger 'click'
+  find(:xpath, "//div[@class='selectric-scroll']/ul/li[contains(text(), 'DC')]").click
   fill_in 'dependent[addresses][0][zip]', :with => "20002"
   all(:css, ".mz").last.click
   find('#btn-continue').click
@@ -271,7 +269,7 @@ Then(/^Second user should see a form to enter personal information$/) do
 end
 
 Then(/Individual asks for help$/) do
-  find(:xpath, '/html/body/div[2]/div[2]/div/div[2]/div[2]').click
+  find('.container .row div div.btn', text: 'Help').click
   sleep 1
   click_link "Help from a Customer Service Representative"
   sleep 1

@@ -445,7 +445,7 @@ Then(/^.+ should see ((?:(?!the).)+) dependents*$/) do |n|
 end
 
 When(/^.+ clicks? Add Member$/) do
-  within("#dependent_buttons") do 
+  within("#dependent_buttons") do
     click_link "Add Member"
   end
 end
@@ -455,7 +455,7 @@ Then(/^.+ should see the new dependent form$/) do
   expect(page).to have_content('Confirm Member')
 end
 
-When(/^.+ enters? the dependent info of Sorens daughter$/) do 
+When(/^.+ enters? the dependent info of Sorens daughter$/) do
   fill_in 'dependent[first_name]', with: 'Cynthia'
   fill_in 'dependent[last_name]', with: 'White'
   fill_in 'jq_datepicker_ignore_dependent[dob]', with: '01/15/2011'
@@ -506,7 +506,7 @@ Then(/^.+ should see the plan shopping page with no dependent$/) do
 end
 
 Then(/^.+ should see the plan shopping page with one dependent$/) do
-  expect(page).to have_content("Soren White + 1 dependent")
+  expect(page).to have_content("Soren White + 1")
 end
 
 When(/^.+ clicks? continue on the plan shopping welcome page$/) do
