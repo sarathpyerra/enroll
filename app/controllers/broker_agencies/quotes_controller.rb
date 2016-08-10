@@ -222,7 +222,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def create
     @quote = Quote.new(quote_params)
-    @quote.broker_role_id= current_user.person(:try).broker_role.id
+    @quote.broker_role_id= @broker.id
     if @format_errors.present?
       flash[:error]= "#{@format_errors.join(', ')}"
       render "new"  and return
