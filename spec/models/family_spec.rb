@@ -607,25 +607,17 @@ end
 
 
 describe Family, "active family members" do
-  let(:ssn) { double }
   let(:dependent) {
-    double(:id => "123456", :ssn => ssn, :last_name => last_name, :first_name => first_name, :dob => dob)
+    double(:id => "123456", ssn: double :last_name => "A Last Name", :first_name => "A First Name", :dob => Date.new(2012,3,15))
   }
-  let(:last_name) { "A LAST NAME" }
-  let(:first_name) { "A FIRST NAME" }
-  let(:dob) { Date.new(2012,3,15) }
-  let(:criteria) { double(:ssn => ssn) }
   let(:primary_family_member) { FamilyMember.new(:is_active => true, :is_primary_applicant => true,  :person => dependent) }
-  let(:active_family_member) { FamilyMember.new(:is_active => true, :person => dependent) }
+  let(:dependent_family_member) { FamilyMember.new(:is_active => true, :person => dependent) }
 
-  subject { Family.new(family_members: [active_family_member,primary_family_member]) }
+  subject { Family.new(family_members: [dependent_family_member, primary_family_member]) }
   
-  describe "given search criteria for that member which does not match" do
-    let(:criteria) { double(:ssn => "123456789") }
 
-    it "should not find the member" do
-      expect(subject.active_family_members).to eq [primary_family_member, active_family_member]
-    end
+  it "should show family members in ordered way " do
+    expect(subject.active_family_members).to eq [primary_family_member, dependent_family_member]
   end
 end
 
