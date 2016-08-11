@@ -133,8 +133,6 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       }
       $filters_first_level.find('a').removeClass('active');
       $(this).addClass('active');
-      // var custom_date_href = $('.second-level-dropdown a:last').attr('href');
-      // $('.second-level-dropdown a:last').attr('href', custom_date_href+'?first_level='+$(this).text().toLowerCase());
       $('.second-level').on('click', function() {
         $(this).closest('.btn-group-second').find('a').removeClass('active');
         $(this).addClass('active');
@@ -147,28 +145,31 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   function showSecondLevel($thisObj) {
-      var $button = $thisObj.attr('name');
-      var $second_level = $('.'+$button+'-second-level');
-      if ( $second_level.find('.second-level-dropdown').length ) {
-        var $dropdown = $second_level.find('.second-level-dropdown').detach();
-      } else {
-        if ( $second_level.next().hasClass('dropdown') ) {
-          var $dropdown = $second_level.next().detach();
-        }
+    var $button = $thisObj.attr('name');
+    var $second_level = $('.'+$button+'-second-level');
+    if ( $second_level.find('.second-level-dropdown').length ) {
+      var $dropdown = $second_level.find('.second-level-dropdown').detach();
+    } else {
+      if ( $second_level.next().hasClass('dropdown') ) {
+        var $dropdown = $second_level.next().detach();
       }
-      if ( $thisObj.hasClass('active') == false && $('.'+$button+'-second-level').is(':visible') ) {
-        $second_level.addClass('hidden');
-      }
-      $second_level.detach();
-      $('.btn-group.first-level').parent().after($second_level);
-      if ( $dropdown != undefined ) {
-        $second_level.after($dropdown);
-        $second_level.next().andSelf().wrapAll("<div class='vertically-aligned-row' style='table-layout: fixed;'></div>");
-        $dropdown.removeClass('hidden');
-      } else {
-        $second_level.wrap("<div></div>");
-      }
-      $second_level.removeClass('hidden');
+    }
+    if ( $thisObj.hasClass('active') == false && $('.'+$button+'-second-level').is(':visible') ) {
+      $second_level.addClass('hidden');
+    }
+    $second_level.detach();
+    $('.btn-group.first-level').parent().after($second_level);
+    if ( $dropdown != undefined ) {
+      $second_level.after($dropdown);
+      $second_level.next().andSelf().wrapAll("<div class='vertically-aligned-row' style='table-layout: fixed;'></div>");
+      $dropdown.removeClass('hidden');
+    } else {
+      $second_level.wrap("<div></div>");
+    }
+    $second_level.removeClass('hidden');
+    $dropdown.find('a').on('click', function() {
+      $second_level.find('a.active').removeClass('active');
+    });
   }
 
   function addSelectAll(table_id) {
