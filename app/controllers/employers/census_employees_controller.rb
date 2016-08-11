@@ -1,6 +1,7 @@
 class Employers::CensusEmployeesController < ApplicationController
   before_action :find_employer
   before_action :find_census_employee, only: [:edit, :update, :show, :delink, :terminate, :rehire, :benefit_group, :assignment_benefit_group ]
+  before_action :updateable?, except: [:edit, :show, :benefit_group, :assignment_benefit_group]
   layout "two_column"
   def new
     @census_employee = build_census_employee
@@ -57,11 +58,11 @@ class Employers::CensusEmployeesController < ApplicationController
   end
 
   def update
-
     if benefit_group_id.present?
       benefit_group = BenefitGroup.find(BSON::ObjectId.from_string(benefit_group_id))
+
       if @census_employee.active_benefit_group_assignment.try(:benefit_group_id) != benefit_group.id
-        @census_employee.add_benefit_group_assignment(benefit_group, benefit_group.plan_year.start_on)
+        @census_employee.find_or_create_benefit_group_assignment(benefit_group)
       end
     end
 
@@ -181,8 +182,6 @@ class Employers::CensusEmployeesController < ApplicationController
   end
 
   def delink
-    authorize @census_employee, :delink?
-
     employee_role = @census_employee.employee_role
     if employee_role.present?
       employee_role.census_employee_id = nil
@@ -230,6 +229,10 @@ class Employers::CensusEmployeesController < ApplicationController
   end
 
   private
+
+  def updateable?
+    authorize ::EmployerProfile, :updateable?
+  end  
 
   def benefit_group_id
     params[:census_employee][:benefit_group_assignments_attributes]["0"][:benefit_group_id] rescue nil
