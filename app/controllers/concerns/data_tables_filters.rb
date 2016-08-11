@@ -12,7 +12,6 @@ module DataTablesFilters
       end_on = Date.strptime(params[:end_on], "%m/%d/%Y")
       custom_date_filter, other_filters = filters.partition {|filter| filter == filters.last}
       custom_date_filter = custom_date_filter.first
-      binding.pry
       filtered_collection = "#{base_model.capitalize}.#{other_filters.join(".")}.#{custom_date_filter}(start_on, end_on).offset(cursor).limit(limit)"
     else
       filtered_collection = "#{base_model.capitalize}.#{filters.join(".")}.offset(cursor).limit(limit)"
