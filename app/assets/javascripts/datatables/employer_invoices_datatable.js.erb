@@ -59,6 +59,30 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
+  function callEnrollingFirstMonthFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Enrolling-second-level').find("a:contains('<%="#{(TimeKeeper.date_of_record.next_month.beginning_of_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}" %>')");
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), '<%= "#{(TimeKeeper.date_of_record.next_month.beginning_of_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}" %>');
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
+  }
+
+  function callEnrollingSecondMonthFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Enrolling-second-level').find("a:contains('<%="#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}" %>')");
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), '<%= "#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}" %>');
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
+  }
+
+  function callEnrollingThirdMonthFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.Enrolling-second-level').find("a:contains('<%="#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}" %>')");
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), '<%= "#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}" %>');
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
+  }
+
   function callEnrollingBinderPaidFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
     var $active_filter = $table.closest('.module').find('.Enrolling-second-level a:contains("Binder Paid")');
@@ -141,6 +165,9 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     callEnrollingOpenEnrollmentFilter: callEnrollingOpenEnrollmentFilter,
     callEnrollingBinderPendingFilter: callEnrollingBinderPendingFilter,
     callEnrollingBinderPaidFilter: callEnrollingBinderPaidFilter,
+    callEnrollingFirstMonthFilter: callEnrollingFirstMonthFilter,
+    callEnrollingSecondMonthFilter: callEnrollingSecondMonthFilter,
+    callEnrollingThirdMonthFilter: callEnrollingThirdMonthFilter,
     callEnrolledAllFilter : callEnrolledAllFilter,
     callEnrolledAllFilter: callEnrolledAllFilter,
     callEnrolledSuspendedFilter: callEnrolledSuspendedFilter,

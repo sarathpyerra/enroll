@@ -21,7 +21,11 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   function setFirstLevel($active_tab) {
-    var first_level = $active_tab.data('children-of');
+    if ( $active_tab.hasClass('btn') ) {
+      var first_level = $active_tab.data('children-of');
+    } else {
+      var first_level = $active_tab.closest('.dropdown').data('children-of');
+    }
     return first_level;
   }
 
@@ -43,6 +47,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   function setFiltersFromScopeMap(table_id, tab, first_level, second_level) {
+    console.log(table_id, tab, first_level, second_level);
     findTable(table_id);
     if ( typeof second_level !== "undefined" ) {
       scopes = DataTablesFilterMap[tab][first_level][second_level]
@@ -62,7 +67,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   function clickActiveFilter(table_id, $active_filter, filter_criteria, base_model) {
-    console.log(arguments);
+    // console.log(arguments);
     $active_filter.on('click', function() {
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(base_model),
@@ -122,9 +127,14 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       var $active_second_level_name = $filters_first_level.find('a.active').attr('name');
       if ( !$(this).hasClass('active') && $('.'+$active_second_level_name+'-second-level').is(':visible') ) {
         $('.'+$active_second_level_name+'-second-level').addClass('hidden');
+        if ( $('.'+$active_second_level_name+'-second-level').next().hasClass('dropdown') ) {
+          $('.'+$active_second_level_name+'-second-level').next().addClass('hidden');
+        }
       }
       $filters_first_level.find('a').removeClass('active');
       $(this).addClass('active');
+      // var custom_date_href = $('.second-level-dropdown a:last').attr('href');
+      // $('.second-level-dropdown a:last').attr('href', custom_date_href+'?first_level='+$(this).text().toLowerCase());
       $('.second-level').on('click', function() {
         $(this).closest('.btn-group-second').find('a').removeClass('active');
         $(this).addClass('active');
@@ -139,15 +149,27 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   function showSecondLevel($thisObj) {
       var $button = $thisObj.attr('name');
       var $second_level = $('.'+$button+'-second-level');
+      if ( $second_level.find('.second-level-dropdown').length ) {
+        var $dropdown = $second_level.find('.second-level-dropdown').detach();
+      } else {
+        if ( $second_level.next().hasClass('dropdown') ) {
+          var $dropdown = $second_level.next().detach();
+        }
+      }
       if ( $thisObj.hasClass('active') == false && $('.'+$button+'-second-level').is(':visible') ) {
         $second_level.addClass('hidden');
       }
       $second_level.detach();
       $('.btn-group.first-level').parent().after($second_level);
-      $second_level.wrap("<div></div>")
+      if ( $dropdown != undefined ) {
+        $second_level.after($dropdown);
+        $second_level.next().andSelf().wrapAll("<div class='vertically-aligned-row' style='table-layout: fixed;'></div>");
+        $dropdown.removeClass('hidden');
+      } else {
+        $second_level.wrap("<div></div>");
+      }
       $second_level.removeClass('hidden');
   }
-
 
   function addSelectAll(table_id) {
     findTable(table_id)
@@ -308,6 +330,46 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     });
   }
 
+  function handleCustomDates(table_id) {
+    findTable(table_id);
+    var $from_datepicker = $table.closest('.module').find('.injected-custom-filter #custom-date-from');
+    var $to_datepicker = $table.closest('.module').find('.injected-custom-filter #custom-date-to');
+    $from_datepicker.on('change', function() {
+      var $to_datepicker = $table.closest('.module').find('.injected-custom-filter #custom-date-to');
+      if ($(this).val().length == 10 && $to_datepicker.val().length == 10) {
+        $(this).closest('div').find('.btn-primary').removeClass('disabled');
+        submitCustomDates(table_id, $(this).val(), $to_datepicker.val());
+      } else {
+        $(this).closest('div').find('.btn-primary').addClass('disabled');
+      }
+    });
+    $to_datepicker.on('change', function() {
+      var $from_datepicker = $table.closest('.module').find('.injected-custom-filter #custom-date-from');
+      if ($(this).val().length == 10 && $from_datepicker.val().length == 10) {
+        $(this).closest('div').find('.btn-primary').removeClass('disabled');
+        submitCustomDates(table_id, $(this).val(), $from_datepicker.val());
+      } else {
+        $(this).closest('div').find('.btn-primary').addClass('disabled');
+      }
+    });
+  }
+
+  function submitCustomDates(table_id, start_date, end_date) {
+    findTable(table_id);
+    $table.closest('.module').find('.custom-dates .btn-primary').on('click', function() {
+      var tab = $table.closest('.module').find('.first-level').data('tab');
+      var base_model = $table.closest('.module').find('.first-level').data('base-model');
+      var first_level = $table.closest('.module').find('.first-level a.active').text().toLowerCase();
+      var second_level = "custom_date";
+      AddParamsBeforeDraw(table_id, {
+        base_model: base_model,
+        filters: EnrollDataTableInitializer.setFiltersFromScopeMap(table_id, tab, first_level, second_level),
+        start_on: start_date,
+        end_on: end_date
+      })
+    })
+  }
+
   function AddParamsBeforeDraw(table_id, params) {
     findTable(table_id);
     var additional_params = {};
@@ -341,6 +403,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     wrapSearchInBootstrap : wrapSearchInBootstrap,
     moveInfo : moveInfo,
     findTable: findTable,
+    handleCustomDates: handleCustomDates,
     moveTableLength : moveTableLength,
     initializeFilters : initializeFilters,
     showSecondLevel : showSecondLevel,

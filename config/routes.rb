@@ -33,6 +33,7 @@ Rails.application.routes.draw do
         get :employer_invoice
         post :employer_invoice_datatable
         post :generate_invoice
+        get :custom_dates
         get :broker_agency_index
         get :general_agency_index
         get :issuer_index

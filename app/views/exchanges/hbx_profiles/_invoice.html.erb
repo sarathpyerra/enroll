@@ -4,8 +4,10 @@
     directions:  "",
     new_button:  [],
     sibling_pages: [],
+    base_model: "organization",
+    tab: "Employer",
 	  filters:  [
-      ["All", "javascript:;", true, []],
+      ["All", "javascript:;", true, [], []],
       ["Enrolling", "", true, [
         ["All", "javascript:;", false],
         ["Initial Eligible", "javascript:;", false],
@@ -13,19 +15,25 @@
         ["Open Enrollment", "javascript:;", false],
         ["Binder Pending", "javascript:;", false],
         ["Binder Paid", "javascript:;", false],
-        # [TimeKeeper.date_of_record.next_month.beginning_of_month, "javascript:;", false],
-  			# [TimeKeeper.date_of_record.next_month.beginning_of_month.next_month, "javascript:;", false],
-        # [TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month, "javascript:;", false]
-      ]],
+      ],
+      [
+        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}", "javascript:;", false],
+        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.year}", "javascript:;", false],
+        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month.year}", "javascript:;", false],
+        ["Custom Date", custom_dates_exchanges_hbx_profiles_path, true]
+      ]
+    ],
       ["Enrolled", "", true, [
         ["All", "javascript:;", false],
         ["Suspended", "javascript:;", false]
-      ]
+      ],
+      []
     ],
     ["Applicants", "", true, [
         ["All", "javascript:;", false],
-        ["Initial Ineligible", "javascript:;", false]
-      ]
+        ["Initial Ineligible", "javascript:;", false],
+      ],
+      []
   	]
     ],
   	bulk_actions:  [
@@ -46,6 +54,9 @@
       "EmployerInvoicesDatatable.callEnrollingOpenEnrollmentFilter",
       "EmployerInvoicesDatatable.callEnrollingBinderPendingFilter",
       "EmployerInvoicesDatatable.callEnrollingBinderPaidFilter",
+      "EmployerInvoicesDatatable.callEnrollingFirstMonthFilter",
+      "EmployerInvoicesDatatable.callEnrollingSecondMonthFilter",
+      "EmployerInvoicesDatatable.callEnrollingThirdMonthFilter",
       "EmployerInvoicesDatatable.callEnrolledAllFilter",
       "EmployerInvoicesDatatable.callEnrolledSuspendedFilter",
       "EmployerInvoicesDatatable.callApplicantsAllFilter",

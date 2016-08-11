@@ -28,14 +28,27 @@
   <% end %>
   <% if filters.present? %>
     <div>
-      <div class="btn-group first-level" role="group" aria-label="...">
-        <% filters.each do |filter_name, url, request_type, second_level| %>
+      <div class="btn-group first-level" role="group" aria-label="..." data-base-model="<%= base_model if base_model.present? %>" data-tab="<%= tab if tab.present? %>">
+        <% filters.each do |filter_name, url, request_type, second_level, dropdown_filters| %>
           <% if second_level.present? %>
               <div class="btn-group btn-group-second <%= filter_name.downcase %> <%=filter_name%>-second-level hidden">
-            <% second_level.each do |filter, url, request_type| %>
-              <%= link_to "#{filter}", "#{url}", remote: request_type, class: 'second-level btn btn-default', data: {'children-of': "#{filter_name.downcase}"}, name: "#{filter}" %>
-            <% end %>
-          </div>
+                <% second_level.each do |filter, url, request_type| %>
+                  <%= link_to "#{filter}", "#{url}", remote: request_type, class: 'second-level btn btn-default', data: {'children-of': "#{filter_name.downcase}"}, name: "#{filter}" %>
+                <% end %>
+                <% if dropdown_filters.present? %>
+                  <div class="dropdown hidden second-level-dropdown" data-children-of="<%= filter_name.downcase %>">
+                    <button aria-expanded="true" aria-haspopup="true" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="<%= table_id %>-dropdown-filters" type="button">
+                      Date Filters
+                      <span class="caret"></span>
+                    </button>
+                    <ul aria-labelledby="<%= table_id %>-date-filters" class="dropdown-menu">
+                      <% dropdown_filters.each do |filter, url, request_type | %>
+                      <li><%= link_to "#{filter}", "#{url}", remote: request_type %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+                <% end %>
+              </div>
           <%= link_to "#{filter_name}", "javascript:;", class: "second-level btn btn-default", onclick: 'EnrollDataTableInitializer.showSecondLevel($(this))', name: "#{filter_name}" %>
           <% else %>
             <%= link_to "#{filter_name}", "#{url}", remote: request_type, class: 'btn btn-default' %>
@@ -44,6 +57,8 @@
       </div>
     </div>
   <% end %>
+  <div class="injected-custom-filter">
+  </div>
   <% if bulk_actions.present? && checkboxes == true %>
     <div class="dropdown hidden">
       <button aria-expanded="true" aria-haspopup="true" class="btn btn-default dropdown-toggle disabled" data-toggle="dropdown" id="<%= table_id %>-bulk-actions" type="button">
