@@ -15,10 +15,6 @@ RSpec.describe Insured::FamiliesHelper, :type => :helper do
       expect(helper.plan_shopping_dependent_text(hbx_enrollment)).to eq "<span class='dependent-text'>John Smith1</span>"
     end
 
-    it "it should return subscribers and dependents modal" do
-      expect(helper.plan_shopping_dependent_text(hbx_enrollment)).to match "<span class='dependent-text'>John Smith1</span>"
-    end
-
   end
 
   describe "#generate_options_for_effective_on_kinds" do
