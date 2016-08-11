@@ -15,7 +15,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     var $all_filter = $table.closest('.module').find('.first-level a:contains("All")');
     $all_filter.on('click', function() {
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {});
-      $table.EnrollDataTable().draw();
+      $table.DataTable().draw();
     });
   }
 

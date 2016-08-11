@@ -7,7 +7,8 @@ describe "shared/_data_table.html.erb" do
         page_header: ["Test Datatable", "url", ""],
         new_button: ["Add Datatable", "url", "request_type"],
         directions: "Use this table to review verification documents.",
-        processing_text: "Loading Plans...",
+        processing_text: "",
+        custom_handlers: [],
         sibling_pages: [],
     	  filters: [
       		["all", "", true, []],
@@ -40,7 +41,6 @@ describe "shared/_data_table.html.erb" do
       		['Export CSV', 'url', 'request_type'],
       		['Print', 'url', 'request_type']
       	],
-        custom_handlers: [],
         child_rows: [true, "datatables/child_row"],
         responsive: true,
       	checkboxes: true,
@@ -97,7 +97,6 @@ describe "shared/_data_table.html.erb" do
       expect(rendered).to match(/addSelectAll/)
       expect(rendered).to match(/addBulkActions/)
       expect(rendered).to match(/addButtonsBelowTable/)
-      expect(rendered).to match(/moveInfo/)
       expect(rendered).to match(/showPagination/)
       expect(rendered).to match(/moveTableLength/)
     end
@@ -122,7 +121,8 @@ describe "shared/_data_table.html.erb" do
         page_header: "",
         new_button: "",
         directions: "",
-        processing_text: "Loading Plans...",
+        processing_text: "",
+        custom_handlers: [],
         sibling_pages: [],
     	  filters: [
       		["all", "", true, []],
@@ -155,7 +155,6 @@ describe "shared/_data_table.html.erb" do
       		['Export CSV', 'url', 'request_type'],
       		['Print', 'url', 'request_type']
       	],
-        custom_handlers: [],
         child_rows: [false, "datatables/child_row"],
         responsive: false,
       	checkboxes: false,

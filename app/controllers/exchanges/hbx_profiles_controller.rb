@@ -296,6 +296,8 @@ class Exchanges::HbxProfilesController < ApplicationController
 
     sort_direction = set_sort_direction
     families = sort_verifications_index_columns(families, sort_direction) if sort_direction.present?
+    filter = set_filter
+    employers = filter_employers(employers, filter) if filter.present?
 
     @draw = dt_query.draw
     @total_records = all_families.count

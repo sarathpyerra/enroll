@@ -3,6 +3,7 @@
     page_header:  ["Verifications", ""],
     directions:  "",
     new_button:  [],
+    sibling_pages: [],
 	  filters:  [
   		# ["all", "", true, []],
   		# ["some", "", true, [
@@ -30,8 +31,11 @@
   		# ['Export CSV', 'url', 'request_type'],
   		# ['Print', 'url', 'request_type']
   	],
+    custom_handlers: [
+    ],
     child_rows: [false, "datatables/child_row"],
     destroy: false,
+    processing_text: "Loading Verifications...",
     responsive: true,
   	checkboxes: true,
   	pagination: true,

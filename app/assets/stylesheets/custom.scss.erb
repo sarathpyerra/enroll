@@ -4719,6 +4719,7 @@ input:required:valid {
   }
   .footer-wrapper {
     display: none;
+    z-index: 100;
   }
 }
 
@@ -4796,6 +4797,20 @@ input:required:valid {
   width: 150px;
 }
 
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+{
+  .fa-phone.broker_media {
+    float:left;
+    display:none;
+  }
+  h4.broker_media {
+    font-size: 95% !important;
+    float:left;
+    white-space: nowrap;
+  }
+}
 .general-agency-info .checkbox label {
   font-size: 12px;
 }
