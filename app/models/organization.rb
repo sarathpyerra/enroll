@@ -149,6 +149,8 @@ class Organization
   scope :employer_profiles_suspended,         ->{ where(:"employer_profile.aasm_state" => "suspended") }
   scope :employer_profiles_ineligible,        ->{ where(:"employer_profile.aasm_state" => "ineligible") }
 
+  scope :employer_profiles_by_date_range,     ->( start_on, end_on ){ unscoped.where(:"employer_profile.plan_years.start_on".gte => start_on, :"employer_profile.plan_years.end_on".lte => end_on)  if start_on.present? && end_on.present? }
+
   def generate_hbx_id
     write_attribute(:hbx_id, HbxIdGenerator.generate_organization_id) if hbx_id.blank?
   end

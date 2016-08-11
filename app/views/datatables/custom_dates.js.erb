@@ -1,0 +1,3 @@
+
+$('.injected-custom-filter').html("<%= escape_javascript(render partial: 'datatables/custom_dates', locals: {base_model: 'Organization', tab: 'employer'}) %>");
+$('.injected-custom-filter').slideDown();

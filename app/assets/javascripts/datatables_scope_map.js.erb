@@ -9,7 +9,11 @@ var DataTablesFilterMap = ( function( window, undefined ) {
         "renewing": [ "employer_profiles_enrolling", "employer_profiles_renewing" ],
         "open enrollment": [ "employer_profiles_enrolling", "employer_profiles_open_enrollment" ],
         "binder pending": [ "employer_profiles_enrolling", "employer_profiles_binder_pending" ],
-        "binder paid": [ "employer_profiles_enrolling", "employer_profiles_binder_paid" ]
+        "binder paid": [ "employer_profiles_enrolling", "employer_profiles_binder_paid" ],
+        "<%= "#{(TimeKeeper.date_of_record.next_month.beginning_of_month).strftime('%B')} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}" %>": [ "employer_profiles_enrolling" ],
+        "<%= "#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month).strftime('%B')} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.year}" %>": [ "employer_profiles_enrolling" ],
+        "<%= "#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month).strftime('%B')} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month.year}" %>": [ "employer_profiles_enrolling" ],
+        "custom_date": ["employer_profiles_enrolling", "employer_profiles_by_date_range"]
       },
       enrolled: {
         "all": [ "employer_profiles_enrolled" ],
@@ -17,7 +21,7 @@ var DataTablesFilterMap = ( function( window, undefined ) {
       },
       applicants: {
         "all": [ "employer_profiles_applicants" ],
-        "initial ineligible": [ "employer_profiles_applicants", "employer_profiles_initial_ineligible" ]
+        "initial ineligible": [ "employer_profiles_applicants", "employer_profiles_ineligible" ]
       }
     }
   };

@@ -57,6 +57,12 @@ class Exchanges::HbxProfilesController < ApplicationController
     end
   end
 
+  def custom_dates
+    respond_to do |format|
+      format.js { render "datatables/custom_dates" }
+    end
+  end
+
   def employer_invoice_datatable
 
     dt_query = extract_datatable_parameters
