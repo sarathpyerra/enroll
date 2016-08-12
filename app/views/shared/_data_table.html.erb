@@ -1,3 +1,9 @@
+<% initial_column_set = [] %>
+<% columns.each_with_index do |column, index| %>
+  <% initial_column_set << column[1] %>
+<% end %>
+
+
 <div class="datatable">
   <div class="datatable-header vertically-aligned-row">
     <% if page_header.present? %>
@@ -75,13 +81,15 @@
   <table class="table table-striped table-hover table-condensed panel panel-default" id="<%= table_id %>"></table>
   <% if buttons_below_table.present? %>
     <span class="buttons-below-table hidden">
-      <% buttons_below_table.each do |button, url, request_type | %>
-          <%= link_to button, url, remote: request_type, class: 'btn btn-default' %>
+      <% buttons_below_table.each do |button, url, request_type, export_csv_boolean | %>
+        <%= link_to "#{button}", "#{url}", remote: request_type, class: 'btn btn-default' unless export_csv_boolean == true %>
+        <%= link_to "#{button}", "#{url}", remote: request_type, class: 'btn btn-default' if export_csv_boolean == true %>
       <% end %>
     </span>
   <% end %>
 </div>
 <script charset="utf-8" defer="defer" type="text/javascript">
+  initial_column_set = [<%= raw initial_column_set.to_json %>];
   $(document).ready(function () {
     var enroll_datatable = $('#<%= table_id %>').EnrollDataTable({
       "destroy": <%= destroy || false %>,
@@ -157,6 +165,7 @@
         EnrollDataTableInitializer.replaceRowActionUrls('<%= table_id %>');
         EnrollDataTableInitializer.moveInfo('<%= table_id %>');
         EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
+        EnrollDataTableInitializer.exportPageAsCSV('<%= table_id %>', enroll_datatable.data(), initial_column_set );
       },
       "columns": [
         <% if checkboxes == true %>
