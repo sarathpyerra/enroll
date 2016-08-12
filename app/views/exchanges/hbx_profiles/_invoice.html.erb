@@ -1,4 +1,4 @@
-<div class="module" data-generate-invoice-url="<%= generate_invoice_exchanges_hbx_profiles_path %>">
+<div class="module" data-generate-invoice-url="<%= generate_invoice_exchanges_hbx_profiles_path %>" data-export-csv-url="<%= export_csv_path %>">
   <%= render partial: "shared/data_table", locals:  {
     page_header:  ["Employers", ""],
     directions:  "",
@@ -37,14 +37,14 @@
   	]
     ],
   	bulk_actions:  [
-  		["Generate Invoice", "javascript:;", false]
+  		["Generate Invoice", "javascript:;", false, false],
+      ["Export CSV", "javascript:;", false, true]
   	],
   	row_functions:  true,
     row_actions:  [
       ["Send Secure Message", "replace_url_send_secure_message", true ]
     ],
   	buttons_below_table: [
-  		# ['Export CSV', 'url', 'request_type'],
   		# ['Print', 'url', 'request_type']
   	],
     custom_handlers: [

@@ -371,6 +371,55 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     })
   }
 
+  function exportPageAsCSV(table_id, table_data, [columns]) {
+    findTable(table_id);
+    thingy = table_data;
+    var $url = $table.closest('.module').data('export-csv-url');
+    var $export_csv_link = $('.dropdown-menu').find('a:contains("Export CSV")');
+    $export_csv_link.on('click', function() {
+      row_indexes_for_export = [];
+      rows_for_export = [];
+      $table.find('tbody .enroll-checkbox input:checked').closest('.enroll-checkbox').each( function() {
+        row_indexes_for_export.push($(this).data('index'));
+      })
+      $(row_indexes_for_export).each(function( index, element ) {
+        row = [];
+        $(columns).each(function(index, column) {
+          row.push(table_data[element][column]);
+        });
+        rows_for_export.push(row);
+      });
+      var myAjaxVariable = null;
+      console.log(columns);
+      $.ajax({
+        type: "POST",
+        url: $url,
+        data: {
+          rows: rows_for_export,
+          columns: columns,
+          format: 'csv',
+        },
+        async : false,
+        success : function(response) {
+            var csv = response;
+            if (csv == null) return;
+            filename = 'export.csv';
+            if (!csv.match(/^data:text\/csv/i)) {
+                csv = 'data:text/csv;charset=utf-8,' + csv;
+            }
+            data = encodeURI(csv);
+            link = document.createElement('a');
+            link.setAttribute('href', data);
+            link.setAttribute('download', filename);
+            link.click();
+        },
+        error : function (request, status, error) {
+          alert("CSV Export Failed...");
+        }
+      });
+    });
+  }
+
   function AddParamsBeforeDraw(table_id, params) {
     findTable(table_id);
     var additional_params = {};
@@ -391,6 +440,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   return {
     removeRow: removeRow,
     setTab: setTab,
+    exportPageAsCSV: exportPageAsCSV,
     setFirstLevel: setFirstLevel,
     setSecondLevel: setSecondLevel,
     clickActiveFilter: clickActiveFilter,
