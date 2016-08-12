@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   match "hbx_admin/edit_aptc_csr" => "hbx_admin#edit_aptc_csr", as: :edit_aptc_csr, via: [:get, :post], defaults: { format: 'js' }
   match "hbx_admin/calculate_aptc_csr" => "hbx_admin#calculate_aptc_csr", as: :calculate_aptc_csr, via: :get
   post 'show_hints' => 'welcome#show_hints', :constraints => { :only_ajax => true }
+  post 'export_csv', to: 'application#export_datatable_csv', as: :export_csv
 
   namespace :users do
     resources :orphans, only: [:index, :show, :destroy]
@@ -37,6 +38,7 @@ Rails.application.routes.draw do
         get :employer_invoice
         post :employer_invoice_datatable
         post :generate_invoice
+        get :custom_dates
         get :broker_agency_index
         get :general_agency_index
         get :issuer_index

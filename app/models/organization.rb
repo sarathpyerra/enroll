@@ -110,19 +110,15 @@ class Organization
   scope :er_invoice_data_table_order,         ->{ reorder(:"employer_profile.plan_years.start_on".asc, :"legal_name".asc) }
   scope :has_broker_agency_profile,           ->{ exists(broker_agency_profile: true) }
   scope :has_general_agency_profile,          ->{ exists(general_agency_profile: true) }
-  scope :er_invoice_data_table_order,         ->{ reorder(:"employer_profile.plan_years.start_on".asc, :"legal_name".asc) }
-  scope :all_employers_not_applicant,         ->{ unscoped.where(:"employer_profile.aasm_state".ne => "applicant") }
-  scope :all_employers_applicant,             ->{ unscoped.where(:"employer_profile.aasm_state" => "applicant") }
-  scope :with_published_and_renewing_plan_year_statuses, ->{ unscoped.where(:"employer_profile.plan_years" => {:$elemMatch => { :"aasm_state".in => PlanYear::PUBLISHED + PlanYear::RENEWING}}) }
-  scope :all_employers_renewing,              ->{ unscoped.any_in(:"employer_profile.plan_years.aasm_state" => PlanYear::RENEWING) }
   scope :all_employers_renewing_published,    ->{ unscoped.any_in(:"employer_profile.plan_years.aasm_state" => PlanYear::RENEWING_PUBLISHED_STATE) }
   scope :all_employers_non_renewing,          ->{ unscoped.any_in(:"employer_profile.plan_years.aasm_state" => PlanYear::PUBLISHED) }
-  scope :all_employers_enrolled,              ->{ unscoped.where(:"employer_profile.plan_years.aasm_state" => "enrolled") }
-  scope :all_employer_profiles,               ->{ unscoped.exists(employer_profile: true) }
   scope :employer_profile_plan_year_start_on, ->(begin_on){ where(:"employer_profile.plan_years.start_on" => begin_on) if begin_on.present? }
+
   scope :offset,                              ->(cursor = 0)      {skip(cursor) if cursor.present?}
-  scope :limit,                               ->(page_size = 25)  {limit(page_size) if page_size_present?}
+  scope :limit,                               ->(page_size = 25)  {limit(page_size) if page_size.present?}
+
   scope :invoice_view_all,                    ->{ unscoped.where(:"employer_profile.plan_years.aasm_state".in => EmployerProfile::INVOICE_VIEW_RENEWING + EmployerProfile::INVOICE_VIEW_INITIAL, :"employer_profile.plan_years.start_on".gte => TimeKeeper.date_of_record.next_month.beginning_of_month) }
+
   scope :employer_profile_renewing_coverage,  ->{ where(:"employer_profile.plan_years.aasm_state".in => EmployerProfile::INVOICE_VIEW_RENEWING) }
   scope :employer_profile_initial_coverage,   ->{ where(:"employer_profile.plan_years.aasm_state".nin => EmployerProfile::INVOICE_VIEW_RENEWING, :"employer_profile.plan_years.aasm_state".in => EmployerProfile::INVOICE_VIEW_INITIAL) }
   scope :all_employers_by_plan_year_start_on_and_valid_plan_year_statuses,   ->(start_on){
@@ -134,6 +130,25 @@ class Organization
         }
       })
   }
+
+  scope :future_plan_year_effective_date,   ->{ where(:"employer_profile.plan_years.start_on".gte => TimeKeeper.date_of_record.next_month.beginning_of_month) }
+
+  scope :all_employer_profiles,               ->{ exists(:employer_profile => true) }
+  scope :employer_profiles_enrolling,         ->{ where(:"employer_profile.plan_years.aasm_state".in => PlanYear::INITIAL_ENROLLING_STATE + PlanYear::RENEWING) }
+  scope :employer_profiles_enrolled,          ->{ where(:"employer_profile.aasm_state".in => EmployerProfile::ENROLLED_STATE) }
+  scope :employer_profiles_applicants,        ->{ where(:"employer_profile.aasm_state" => "applicant") }
+
+  scope :employer_profiles_initial_eligible,  ->{ where(:"employer_profile.aasm_state" => "registered") }
+  scope :employer_profiles_renewing,          ->{ where(:"employer_profile.plan_years.aasm_state".in => PlanYear::RENEWING) }
+  scope :employer_profiles_open_enrollment,   ->{ where(:"employer_profile.plan_years.aasm_state".in => PlanYear::OPEN_ENROLLMENT_STATE) }
+  scope :employer_profiles_invoice_pending,   ->{ where(:"employer_profile.plan_years.aasm_state" => "enrolled") }
+  scope :employer_profiles_binder_pending,    ->{ where(:"employer_profile.plan_years.aasm_state" => "invoice_generated") }
+  scope :employer_profiles_binder_paid,       ->{ where(:"employer_profile.aasm_state" => "binder_paid") }
+
+  scope :employer_profiles_suspended,         ->{ where(:"employer_profile.aasm_state" => "suspended") }
+  scope :employer_profiles_ineligible,        ->{ where(:"employer_profile.aasm_state" => "ineligible") }
+
+  scope :employer_profiles_by_date_range,     ->( start_on, end_on ){ unscoped.where(:"employer_profile.plan_years.start_on".gte => start_on, :"employer_profile.plan_years.end_on".lte => end_on)  if start_on.present? && end_on.present? }
 
   def generate_hbx_id
     write_attribute(:hbx_id, HbxIdGenerator.generate_organization_id) if hbx_id.blank?

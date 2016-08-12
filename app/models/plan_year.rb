@@ -10,7 +10,11 @@ class PlanYear
   RENEWING  = %w(renewing_draft renewing_published renewing_enrolling renewing_enrolled)
   RENEWING_PUBLISHED_STATE = %w(renewing_published renewing_enrolling renewing_enrolled)
 
-  INELIGIBLE_FOR_EXPORT_STATES = %w(draft publish_pending eligibility_review published_invalid canceled renewing_draft suspended terminated ineligible expired renewing_canceled)
+  OPEN_ENROLLMENT_STATE   = %w(enrolling renewing_enrolling)
+  INITIAL_ENROLLING_STATE = %w(publish_pending eligibility_review published published_invalid enrolling enrolled)
+  INITIAL_ELIGIBLE_STATE  = %w(published enrolling enrolled)
+
+  INELIGIBLE_FOR_EXPORT_STATES = %w(draft publish_pending eligibility_review published_invalid canceled renewing_draft suspended terminated ineligible expired)
 
   # Plan Year time period
   field :start_on, type: Date
@@ -542,7 +546,6 @@ class PlanYear
     end
   end
 
-
   aasm do
     state :draft, initial: true
 
@@ -551,9 +554,10 @@ class PlanYear
     state :published,         :after_enter => :accept_application     # Plan is finalized. Employees may view benefits, but not enroll
     state :published_invalid, :after_enter => :decline_application    # Non-compliant plan application was forced-published
 
-    state :enrolling, :after_enter => :send_employee_invites          # Published plan has entered open enrollment
-    state :enrolled, :after_enter => :ratify_enrollment   # Published plan open enrollment has ended and is eligible for coverage,
-                                                          #   but effective date is in future
+    state :enrolling                                      # Published plan has entered open enrollment
+    state :enrolled, :after_enter => :ratify_enrollment   # Published plan open enrollment has ended and is eligible for coverage
+    state :invoice_generated                              # Invoice created for initial enrollment
+
     state :canceled                                       # Published plan open enrollment has ended and is ineligible for coverage
 
     state :active         # Published plan year is in-force
@@ -863,11 +867,11 @@ private
     if open_enrollment_end_on < open_enrollment_start_on
       errors.add(:open_enrollment_end_on, "can't occur before open enrollment start date")
     end
-    
+
 
     if open_enrollment_start_on < (start_on - 2.months)
       errors.add(:open_enrollment_start_on, "can't occur before 60 days before start date")
-    end    
+    end
 
 
     if open_enrollment_start_on < (start_on - 2.months)

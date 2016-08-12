@@ -1,41 +1,66 @@
-<div class="module" data-generate-invoice-url="<%= generate_invoice_exchanges_hbx_profiles_path %>">
+<div class="module" data-generate-invoice-url="<%= generate_invoice_exchanges_hbx_profiles_path %>" data-export-csv-url="<%= export_csv_path %>">
   <%= render partial: "shared/data_table", locals:  {
     page_header:  ["Employers", ""],
     directions:  "",
     new_button:  [],
     sibling_pages: [],
+    base_model: "organization",
+    tab: "Employer",
 	  filters:  [
-      ["All", "", true, []],
-      ["Initial", "", true, [
-        [TimeKeeper.date_of_record.next_month.beginning_of_month, "javascript:;", false],
-  			[TimeKeeper.date_of_record.next_month.beginning_of_month.next_month, "javascript:;", false],
-        [TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month, "javascript:;", false]
-      ]],
-      ["Renewing", "", true, [
-        [TimeKeeper.date_of_record.next_month.beginning_of_month, "javascript:;", false],
-  			[TimeKeeper.date_of_record.next_month.beginning_of_month.next_month, "javascript:;", false],
-        [TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month, "javascript:;", false]
+      ["All", "javascript:;", true, [], []],
+      ["Enrolling", "", true, [
+        ["All", "javascript:;", false],
+        ["Initial Eligible", "javascript:;", false],
+        ["Renewing", "javascript:;", false],
+        ["Open Enrollment", "javascript:;", false],
+        ["Binder Pending", "javascript:;", false],
+        ["Binder Paid", "javascript:;", false],
+      ],
+      [
+        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}", "javascript:;", false],
+        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.year}", "javascript:;", false],
+        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month.year}", "javascript:;", false],
+        ["Custom Date", custom_dates_exchanges_hbx_profiles_path, true]
       ]
-      ]
-  	],
+    ],
+      ["Enrolled", "", true, [
+        ["All", "javascript:;", false],
+        ["Suspended", "javascript:;", false]
+      ],
+      []
+    ],
+    ["Applicants", "", true, [
+        ["All", "javascript:;", false],
+        ["Initial Ineligible", "javascript:;", false],
+      ],
+      []
+  	]
+    ],
   	bulk_actions:  [
-  		["Generate Invoice", "javascript:;", false]
+  		["Generate Invoice", "javascript:;", false, false],
+      ["Export CSV", "javascript:;", false, true]
   	],
   	row_functions:  true,
     row_actions:  [
       ["Send Secure Message", "replace_url_send_secure_message", true ]
     ],
   	buttons_below_table: [
-  		# ['Export CSV', 'url', 'request_type'],
   		# ['Print', 'url', 'request_type']
   	],
     custom_handlers: [
-      "EmployerInvoicesDatatable.callInitialFirstMonthFilter",
-      "EmployerInvoicesDatatable.callInitialSecondMonthFilter",
-      "EmployerInvoicesDatatable.callInitialThirdMonthFilter",
-      "EmployerInvoicesDatatable.callRenewingFirstMonthFilter",
-      "EmployerInvoicesDatatable.callRenewingSecondMonthFilter",
-      "EmployerInvoicesDatatable.callRenewingThirdMonthFilter",
+      "EmployerInvoicesDatatable.callEnrollingAllFilter",
+      "EmployerInvoicesDatatable.callEnrollingInitialEligibleFilter",
+      "EmployerInvoicesDatatable.callEnrollingRenewingFilter",
+      "EmployerInvoicesDatatable.callEnrollingOpenEnrollmentFilter",
+      "EmployerInvoicesDatatable.callEnrollingBinderPendingFilter",
+      "EmployerInvoicesDatatable.callEnrollingBinderPaidFilter",
+      "EmployerInvoicesDatatable.callEnrollingFirstMonthFilter",
+      "EmployerInvoicesDatatable.callEnrollingSecondMonthFilter",
+      "EmployerInvoicesDatatable.callEnrollingThirdMonthFilter",
+      "EmployerInvoicesDatatable.callEnrolledAllFilter",
+      "EmployerInvoicesDatatable.callEnrolledSuspendedFilter",
+      "EmployerInvoicesDatatable.callApplicantsAllFilter",
+      "EmployerInvoicesDatatable.callApplicantsInitialIneligibleFilter",
       "EmployerInvoicesDatatable.generateInvoicesForSelection",
       "EmployerInvoicesDatatable.addScopesBeforeSorting",
       "EmployerInvoicesDatatable.callAllFilter"
