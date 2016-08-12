@@ -12,7 +12,7 @@ RSpec.describe Insured::FamiliesHelper, :type => :helper do
 
     it "it should return subscribers full name in span with dependent-text class" do
       allow(hbx_enrollment).to receive(:family).and_return(family)
-      expect(helper.plan_shopping_dependent_text(hbx_enrollment)).to eq "<span class='dependent-text'>John Smith1</span>"
+      expect(helper.plan_shopping_dependent_text(hbx_enrollment)).to eq "<span class='dependent-text'>#{person.full_name}</span>"
     end
 
   end
