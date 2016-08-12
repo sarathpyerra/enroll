@@ -28,7 +28,7 @@ class QuoteHousehold
   end
 
   def children?
-    quote_members.where("employee_relationship" => "child_under_26").count > 1 ? true : false
+    quote_members.where("employee_relationship" => "child_under_26").count >= 1 ? true : false
   end
 
   def employee
