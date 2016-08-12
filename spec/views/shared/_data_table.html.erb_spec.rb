@@ -4,6 +4,8 @@ describe "shared/_data_table.html.erb" do
   context 'with all options on' do
     before :each do
       render partial: "shared/data_table.html.erb", locals: {
+        base_model: "",
+        tab: "",
         page_header: ["Test Datatable", "url", ""],
         new_button: ["Add Datatable", "url", "request_type"],
         directions: "Use this table to review verification documents.",
@@ -119,6 +121,8 @@ describe "shared/_data_table.html.erb" do
   context 'with checkboxes. page_header, new_button, directions, filters, row_actions, ect set to false' do
     before :each do
       render partial: "shared/data_table.html.erb", locals: {
+        base_model: "",
+        tab: "",
         page_header: "",
         new_button: "",
         directions: "",
