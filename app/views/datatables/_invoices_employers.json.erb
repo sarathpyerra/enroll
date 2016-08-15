@@ -3,19 +3,23 @@
 <% enrolled = plan_year.try(:enrolled).try(:count).to_i %>
 <% eligible_to_enroll_count = census_employees.try(:active).try(:count).to_i %>
 <% waived = census_employees.try(:waived).try(:count).to_i %>
-<% disabled = make_binder_checkbox_disabled(employer.employer_profile) || employer.employer_profile.can_transmit_xml? %>
+<% disabled = employer.employer_profile.can_transmit_xml? %>
 <% row_data = capture do %>
 	<span class="for-remote" data-employer-id="<%= employer._id %>"></span>
 	<span data-employer-profile-id="<%= employer.employer_profile.id %>"></span>
 	<span class="for-remote-replace-url" id="send-secure-message" data-replace-url="<%= new_employers_inbox_path(id: employer.employer_profile.id, profile_id: @profile._id, to: employer.legal_name)%>"></span>
 	<span class="click-row-data-link" id="transmit-xml">Transmit XML</span>
-	<span><%= link_to('Transmit XML', transmit_group_xml_exchanges_hbx_profile_path(employer.employer_profile), method: :post, class: "disabled" , data: { confirm: group_xml_transmitted_message(employer.employer_profile) }) %></span
+	<% if disabled %>
+		<span><%= link_to('Transmit XML', transmit_group_xml_exchanges_hbx_profile_path(employer.employer_profile), method: :post, class: "disabled" , data: { confirm: group_xml_transmitted_message(employer.employer_profile) }) %></span
+	<% else %>
+		<span><%= link_to('Transmit XML', transmit_group_xml_exchanges_hbx_profile_path(employer.employer_profile), method: :post, data: { confirm: group_xml_transmitted_message(employer.employer_profile) }) %></span
+	<% end %>
 <% end %>
 
 {
 "hbx_id": "<%= json_escape employer.id %>",
 "fein": "<%= json_escape number_to_obscured_fein(employer.fein) %>",
-"legal_name": <%= raw (link_to employer.legal_name.titleize, employers_employer_profile_path(employer.employer_profile)).to_json %>,
+"legal_name": <%= raw (link_to employer.legal_name.titleize, employers_employer_profile_path(employer.employer_profile, :tab=>'home')).to_json %>,
 "employer_status": "<%= json_escape employer.employer_profile.renewing_plan_year.present? ? "Renewing" : "New" %>",
 "eligibility_criteria": "<%= json_escape eligibility_criteria(employer.employer_profile) || "Eligible" %>",
 "broker": "<% if employer.employer_profile.broker_agency_profile.present? %><%= raw (employer.employer_profile.broker_agency_profile.organization.legal_name.titleize) %><% end %>",
