@@ -2,6 +2,8 @@
   <br/>
   <div class="module broker-quotes-table" data-broker-id="<%= @broker.id %>" data-current-user-person-id="<%= current_user.person.id %>">
     <%= render partial: "shared/data_table", locals:  {
+      base_model: "quote",
+      tab: "",
       page_header:  ["Quote Management", ""],
       directions:  "",
       new_button:  ["New Quote", new_broker_agencies_broker_role_quote_path(@broker.id), false],
