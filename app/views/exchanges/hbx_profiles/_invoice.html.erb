@@ -1,4 +1,4 @@
-<div class="module" data-generate-invoice-url="<%= generate_invoice_exchanges_hbx_profiles_path %>" data-export-csv-url="<%= export_csv_path %>">
+<div class="module" data-generate-invoice-url="<%= generate_invoice_exchanges_hbx_profiles_path %>" data-export-csv-url="<%= export_csv_path %>" data-binder-paid-url="<%= binder_paid_exchanges_hbx_profiles_path %>">
   <%= render partial: "shared/data_table", locals:  {
     page_header:  ["Employers", ""],
     directions:  "",
@@ -37,12 +37,14 @@
   	]
     ],
   	bulk_actions:  [
+      ["Mark Binder Paid", "javascript:;", false, false],
   		["Generate Invoice", "javascript:;", false, false],
       ["Export CSV", "javascript:;", false, true]
   	],
   	row_functions:  true,
     row_actions:  [
-      ["Send Secure Message", "replace_url_send_secure_message", true ]
+      ["Send Secure Message", "replace_url_send_secure_message", true ],
+      ["Transmit XML", "click_row_data_link", true ]
     ],
   	buttons_below_table: [
   		# ['Print', 'url', 'request_type']
@@ -63,7 +65,8 @@
       "EmployerInvoicesDatatable.callApplicantsInitialIneligibleFilter",
       "EmployerInvoicesDatatable.generateInvoicesForSelection",
       "EmployerInvoicesDatatable.addScopesBeforeSorting",
-      "EmployerInvoicesDatatable.callAllFilter"
+      "EmployerInvoicesDatatable.callAllFilter",
+      "EmployerInvoicesDatatable.markBinderPaid"
     ],
     child_rows: [false, "datatables/child_row"],
     destroy: true,
@@ -79,6 +82,8 @@
       ["Hbx Id", "hbx_id", "", [false, ""]],
       ["FEIN", "fein", "", [false, ""]],
       ["Legal name", "legal_name", "", [false, ""]],
+      ["Employer Status", "employer_status", "dt-center", [false, ""]],
+      ["Eligibility", "eligibility_criteria", "dt-center", [false, ""]],
       ["Broker", "broker", "", [false, ""]],
       ["CNVRSN?", "conversion", "dt-center", [false, ""]],
       ["Status", "status", "dt-center", [false, ""]],
@@ -87,7 +92,8 @@
   	  ["Enrolled/Waived", "enrolled_waived", "dt-center", [false, ""]],
   	  ["Pending", "pending", "dt-center", [false, ""]],
       ["Eligible", "eligible", "dt-center", [false, ""]],
-      ["PCT", "percentage", "dt-right", [false, ""]]
+      ["PCT", "percentage", "dt-right", [false, ""]],
+      ["Submitted At", "submitted_at", "dt-center", [false, ""]]
   	]
   } %>
 </div>

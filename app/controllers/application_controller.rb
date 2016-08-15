@@ -101,14 +101,7 @@ class ApplicationController < ActionController::Base
   def export_datatable_csv
     collection_for_csv = DataTablesCSV.new(params[:rows], params[:columns])
     respond_to do |format|
-      format.csv {
-        send_data(
-          collection_for_csv.to_csv,
-          :type => 'text/csv',
-          :filename => 'export.csv',
-          :disposition => 'attachment'
-        )
-      }
+      format.csv { send_data collection_for_csv.to_csv, filename: "users-#{Date.today}.csv" }
     end
   end
 

@@ -22,7 +22,12 @@ class Exchanges::HbxProfilesController < ApplicationController
   def binder_paid
     EmployerProfile.update_status_to_binder_paid(params[:employer_profile_ids])
     flash["notice"] = "Successfully submitted the selected employer(s) for binder paid."
-    redirect_to exchanges_hbx_profiles_root_path
+    respond_to do |format|
+      format.js {
+        flash.keep(:notice)
+        render js: "window.location = '#{exchanges_hbx_profiles_root_path}'"
+      }
+    end
   end
 
   def transmit_group_xml

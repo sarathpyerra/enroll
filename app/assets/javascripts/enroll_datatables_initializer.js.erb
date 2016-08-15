@@ -286,6 +286,20 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     });
   }
 
+  function clickRowDataLink(table_id) {
+    findTable(table_id);
+    $table.find('.row-actions .dropdown a[href="click_row_data_link"]').each(function() {
+      var $clicked_link_text = $(this).text();
+      var $row_data_link = $(this).closest('tr').find('.row-data a:contains('+$clicked_link_text+')');
+      if ( $row_data_link.hasClass('disabled') ) {
+        $(this).addClass('disabled');
+      }
+      $(this).on('click', function() {
+        $row_data_link.trigger('click');
+      });
+    });
+  }
+
   function addRowIndexToRowFunctionLinks(table_id) {
     findTable(table_id);
     $remote_links = $table.find('.row-actions .dropdown a');
@@ -391,12 +405,12 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       var myAjaxVariable = null;
       console.log(columns);
       $.ajax({
-        type: "POST",
-        url: $url,
+        type: "GET",
+        url: $url+".csv",
         data: {
           rows: rows_for_export,
           columns: columns["0"],
-          format: 'csv',
+          format: 'csv'
         },
         async : false,
         success : function(response) {
@@ -439,6 +453,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   return {
     removeRow: removeRow,
     setTab: setTab,
+    clickRowDataLink: clickRowDataLink,
     exportPageAsCSV: exportPageAsCSV,
     setFirstLevel: setFirstLevel,
     setSecondLevel: setSecondLevel,
