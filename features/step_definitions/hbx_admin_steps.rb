@@ -44,11 +44,12 @@ Given(/^I click the SEP link from the Admin DC Health Link login page$/) do
 end
 
 Then(/^the SEP page is displayed$/) do
-  expect(page).to have_content('SEP Dashboard')
+  expect(page).to have_content('SEP')
 end
 
 Then(/^a search box is displayed where I can search by name or ssn$/) do
-  expect(page).to have_content('Search')
+  binding.pry
+  expect(page).to have_selector('.interaction-click-control-search')
 end
 
 Then(/^the ALL, IVL and EE tabs appear above the display list$/) do
@@ -59,18 +60,21 @@ end
 
 Then(/^I see columns with headings HBX ID, Last Name, First Name, SSN, Consumer and Employee$/) do
   expect(page).to have_content('HBX ID')
-
-  expect(page).to have_content('Last Name')
-
-  expect(page).to have_content('First Name')
+  expect(page).to have_content('LAST NAME')
+  expect(page).to have_content('FIRST NAME')
   expect(page).to have_content('SSN')
-  expect(page).to have_content('Consumer?')
-  expect(page).to have_content('Employee?')
+  expect(page).to have_content('CONSUMER?')
+  expect(page).to have_content('EMPLOYEE?')
 
 end
 
-Then(/^I see the Add SEP and History buttons$/) do
-  expect(page).to have_content('SEP HISTORY')
+Then(/^I see the Add SEP and History links$/) do
+  click_link_or_button 'Actions'
+  expect(page).to have_content('Add SEP')
+  expect(page).to have_content('SEP History')
+  #expect(page).to have_selector('.dropdown-menu dropdown-menu-right')
+
+  
   #find('.nav-tabs').find('a', :text => "All").click
   #wait_for_ajax
   #screenshot("All Tab Display")
@@ -93,7 +97,7 @@ Given(/^I have a primary subscriber who is registered only as a consumer$/) do
 end
 
 When(/^I click the IVL tab$/) do
-  find('.nav-tabs').find('a', :text => "IVL").click
+  find('a', :text => "IVL").click
   wait_for_ajax
   screenshot("IVL Tab Display")
 end
@@ -151,13 +155,13 @@ Then(/^I should see (\d+) consumers only,  (\d+) employees only and (\d+) both s
 end
 
 When(/^I click the EE tab$/) do
-  find('.nav-tabs').find('a', :text => "EE").click
+  find('a', :text => "EE").click
   wait_for_ajax
   screenshot("EE Tab Display")
 end
 
 When(/^I click the All tab$/) do
-  find('.nav-tabs').find('a', :text => "All").click
+  find('a', :text => "All").click
   wait_for_ajax
   screenshot("All Tab Display")
 end
@@ -334,10 +338,12 @@ Given(/^Mark Jones is registered as All$/) do
   pending # Write code here that turns the phrase above into concrete actions
 end
 
-When(/^I click the history button$/) do
-  find('a', :text => "SEP HISTORY").click
+When(/^I click the history link$/) do
+  click_link_or_button 'Actions'
+  expect(page).to have_content('SEP History')
+  click_link_or_button 'SEP History'
 end
 
-Then(/^I see the Back button$/) do
-  expect(page).to have_content('BACK')
+Then(/^I see SEP History$/) do
+  expect(page).to have_content('SEP HISTORY')
 end

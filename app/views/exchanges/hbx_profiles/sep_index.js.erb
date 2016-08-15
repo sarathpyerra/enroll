@@ -5,8 +5,8 @@ set_tab_content("<%= j render partial: "shared/data_table", locals:  {
     sibling_pages: [],
     filters:  [
        ["All", "javascript:;", false, []],
-       ["Individual", "javascript:;", false, []],
-       ["Shop", "javascript:;", false, []]
+       ["IVL", "javascript:;", false, []],
+       ["EE", "javascript:;", false, []]
     ],
     bulk_actions:  [
       # ["Send Secure Message", "", true],
@@ -23,7 +23,8 @@ set_tab_content("<%= j render partial: "shared/data_table", locals:  {
     ],
     custom_handlers: [
       "SEPDatatable.callAllFilter",
-      "SEPDatatable.callIndividualFilter"
+      "SEPDatatable.callIVLFilter",
+      "SEPDatatable.callEEFilter",
     ],
     child_rows: [false, "datatables/child_row"],
     destroy: false,
@@ -41,6 +42,6 @@ set_tab_content("<%= j render partial: "shared/data_table", locals:  {
       ["First Name", "first_name", "", [false, ""]],
       ["SSN", "ssn", "", [false, ""]],
       ["Consumer?", "consumer", "", [false, ""]],
-      ["Employer?", "employer", "", [false, ""]]
+      ["Employee?", "employee", "", [false, ""]]
     ]
   } %>")

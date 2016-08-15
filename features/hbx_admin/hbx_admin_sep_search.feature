@@ -13,14 +13,14 @@ Feature: search IVL enrollment for SEP information
 		And a search box is displayed where I can search by name or ssn 
 		And the ALL, IVL and EE tabs appear above the display list
 		And I see columns with headings HBX ID, Last Name, First Name, SSN, Consumer and Employee
-		And I see the Add SEP and History buttons
+		And I see the Add SEP and History links
 	
 	#TODO create scenario to verify social security number appears in the form xxx-xx-1111
 
 
 	Scenario: successfully view history page
-		When I click the history button
-		Then I see the Back button
+		When I click the history link
+		Then I see SEP History
 
 	Scenario: primary subscriber is registered only as a consumer
 		Given I have a primary subscriber who is registered only as a consumer

@@ -19,9 +19,17 @@ var SEPDatatable = ( function( window, undefined ) {
     });
   }
 
-  function callIndividualFilter(table_id) {
+  function callIVLFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $active_filter = $table.closest('.module').find('.first-level a:contains("Individual")');
+    var $active_filter = $table.closest('.module').find('.first-level a:contains("IVL")');
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setSecondLevel($active_filter));
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
+  }
+
+  function callEEFilter(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $active_filter = $table.closest('.module').find('.first-level a:contains("EE")');
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
@@ -42,9 +50,10 @@ var SEPDatatable = ( function( window, undefined ) {
   }
 
   return {
-    callIndividualFilter : callIndividualFilter,
+    callIVLFilter : callIVLFilter,
     addScopesBeforeSorting : addScopesBeforeSorting,
-    callAllFilter: callAllFilter
+    callAllFilter: callAllFilter,
+    callEEFilter: callEEFilter,
   };
 
 } )( window );
