@@ -98,11 +98,6 @@
       "language": {
         "lengthMenu": "_MENU_"
       },
-      <% if description_text.present? %>
-      "language": {
-         "info": "Showing _START_ to _END_ of _TOTAL_ <%= description_text %>"
-      },
-      <% end %>
       "initComplete": function() {
         <% if responsive == true %>
           EnrollDataTableInitializer.makeResponsiveTable('<%= table_id %>');
