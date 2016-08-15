@@ -232,7 +232,6 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def sep_index
-    setEventKinds
     respond_to do |format|
       format.html { render "sep/approval/sep_index" }
       format.js {}
@@ -240,21 +239,48 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def sep_index_datatable
-    if Family.exists(special_enrollment_periods: true).present?
-      if(params[:q] == 'both')
-        includeBothMarkets
-      elsif(params[:q] == 'ivl')
-        includeIVL
-      else
-        includeShop
-      end
+    dt_query = extract_datatable_parameters
+    collection = []
+    all_families = Family.all
+    if dt_query.search_string.blank?
+      collection = all_families
+    else
+      person_ids = Person.search(dt_query.search_string).pluck(:id)
+      collection = all_families.where({
+      "family_members.person_id" => {"$in" => person_ids}
+      })
     end
-    setEventKinds
-    render
+    collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
+    @state = 'both'
+    @draw = dt_query.draw
+    @total_records = sortData(all_families, @state)
+    @records_filtered = sortData(collection, @state)
+    @dataArray = sortData(collection, @state, 'yes')
+    @families = @dataArray.slice(dt_query.skip.to_i, dt_query.take.to_i)
+    render "datatables/sep_index_datatable"
+    # if Family.exists(special_enrollment_periods: true).present?
+    #   if(params[:q] == 'both')
+    #     includeBothMarkets
+    #   elsif(params[:q] == 'ivl')
+    #     includeIVL
+    #   else
+    #     includeShop
+    #   end
+    # end
+    # setEventKinds
+    # render
+  end
+
+  def add_sep_form
+    getActionParams
+  end
+
+  def show_sep_history
+    getActionParams
   end
 
   def update_effective_date
-    chooseMarket
+    @qle = QualifyingLifeEventKind.find(params[:id])
     respond_to do |format|
       format.js {}
     end
@@ -553,29 +579,27 @@ class Exchanges::HbxProfilesController < ApplicationController
     "No match found for #{first_name} #{last_name}.  Please call Customer Service at: (855)532-5465 for assistance.<br/>"
   end
 
-  def setEventKinds
-    @event_kinds_all = ['first_of_next_month', '15th_day_rule'];
-    @event_kinds_default = ['first_of_next_month'];
-    @qualifying_life_events_shop = QualifyingLifeEventKind.shop_market_events_admin
-    @qualifying_life_events_individual = QualifyingLifeEventKind.individual_market_events_admin
-  end
-
-  def chooseMarket
-    if params[:market] == 'ivl'
-      @qle = QualifyingLifeEventKind.individual_market_events_admin.detect{ |x| x.id.to_s == params[:id]}
+  def sortData(families, state, returnData=nil)
+    init_arr = []
+    if (state == 'both')
+      families.each do|f| 
+        if f.primary_applicant.person.consumer_role.present? || f.primary_applicant.person.active_employee_roles.present?        
+          init_arr.push(f)
+        end
+      end
+    elsif (state == 'ivl')
+      families.each do|f|
+        if f.primary_applicant.person.consumer_role.present? 
+          init_arr.push(f)
+        end
+      end
     else
-      @qle = QualifyingLifeEventKind.shop_market_events_admin.detect{ |x| x.id.to_s == params[:id]}
+      families.each do|f|
+        if f.primary_applicant.person.active_employee_roles.present?
+          init_arr.push(f)
+        end
+      end
     end
-  end
-
-  def calculateDates
-    @family = Family.find(params[:person]) if params[:person].present?
-    special_enrollment_period = @family.special_enrollment_periods.new(effective_on_kind: params[:effective_kind])
-    qle = QualifyingLifeEventKind.find(params[:id]) if params[:id].present?
-    special_enrollment_period.qualifying_life_event_kind = qle
-    special_enrollment_period.qle_on = Date.strptime(params[:eventDate], "%m/%d/%Y")
-    @start_on = special_enrollment_period.start_on
-    @end_on = special_enrollment_period.end_on
-    @effective_on = special_enrollment_period.effective_on
+   returnData == 'yes' ? init_arr : init_arr.length;
   end
 end

@@ -52,6 +52,8 @@ Rails.application.routes.draw do
         post :verifications_index_datatable
         get :update_effective_date
         get :calculate_sep_dates
+        get :add_sep_form
+        get :show_sep_history
       end
 
       member do

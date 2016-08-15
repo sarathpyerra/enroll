@@ -34,9 +34,6 @@ class SpecialEnrollmentPeriod
   field :end_on, type: Date
 
   # Next Possible Event Date
-  field :next_poss_event_date, type: Date
-
-  # Next Possible Event Date
   field :next_poss_effective_date, type: Date
 
   # Date Option 1
@@ -47,6 +44,9 @@ class SpecialEnrollmentPeriod
 
   # Date Option 3
   field :option3_date, type: Date
+
+  # Date Options Array
+  field :optional_effective_on, type: Array, default: []
 
   # CSL#
   field :csl_num, type: String
