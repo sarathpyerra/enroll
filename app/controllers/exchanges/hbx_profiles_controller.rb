@@ -573,28 +573,5 @@ class Exchanges::HbxProfilesController < ApplicationController
   def call_customer_service(first_name, last_name)
     "No match found for #{first_name} #{last_name}.  Please call Customer Service at: (855)532-5465 for assistance.<br/>"
   end
-
-  def sortData(families, state, returnData=nil)
-    init_arr = []
-    if (state == 'both')
-      families.each do|f|
-        if f.primary_applicant.person.consumer_role.present? || f.primary_applicant.person.active_employee_roles.present?
-          init_arr.push(f)
-        end
-      end
-    elsif (state == 'ivl')
-      families.each do|f|
-        if f.primary_applicant.person.consumer_role.present?
-          init_arr.push(f)
-        end
-      end
-    else
-      families.each do|f|
-        if f.primary_applicant.person.active_employee_roles.present?
-          init_arr.push(f)
-        end
-      end
-    end
-   returnData == 'yes' ? init_arr : init_arr.length;
-  end
+  
 end
