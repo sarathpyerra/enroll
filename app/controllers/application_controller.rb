@@ -86,9 +86,9 @@ class ApplicationController < ActionController::Base
           data = [
             row.each do |row|
               if index+1 == column_count
-                row
+                row.last
               else
-                row+","
+                row.last+","
               end
             end
           ]

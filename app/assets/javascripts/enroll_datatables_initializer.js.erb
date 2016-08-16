@@ -389,6 +389,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     findTable(table_id);
     var $url = $table.closest('.module').data('export-csv-url');
     var $export_csv_link = $('.dropdown-menu').find('a:contains("Export CSV")');
+    $('#export-csv-injected-form').html("");
     $export_csv_link.on('click', function() {
       row_indexes_for_export = [];
       rows_for_export = [];
@@ -402,34 +403,17 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
         });
         rows_for_export.push(row);
       });
-      var myAjaxVariable = null;
-      console.log(columns);
-      $.ajax({
-        type: "GET",
-        url: $url+".csv",
-        data: {
-          rows: rows_for_export,
-          columns: columns["0"],
-          format: 'csv'
-        },
-        async : false,
-        success : function(response) {
-            // var csv = response;
-            // if (csv == null) return;
-            // filename = 'export.csv';
-            // if (!csv.match(/^data:text\/csv/i)) {
-            //     csv = 'data:text/csv;charset=utf-8,' + csv;
-            // }
-            // data = encodeURI(csv);
-            // link = document.createElement('a');
-            // link.setAttribute('href', data);
-            // link.setAttribute('download', filename);
-            // link.click();
-        },
-        error : function (request, status, error) {
-          alert("CSV Export Failed...");
-        }
+      $(rows_for_export).each(function(row_index, row) {
+        $(columns["0"]).each(function(index, column_name) {
+          $('#export-csv-injected-form').prepend('<input type="hidden" type="hidden" name="rows['+row_index+']['+column_name+']" value="'+escape(row[index])+'">');
+        });
       });
+      $(columns["0"]).each(function(index, column_name) {
+        $('#export-csv-injected-form').prepend('<input type="hidden" type="hidden" name="columns[]" value="'+escape(column_name)+'">');
+      });
+      var authenticity_token = $("meta[name='csrf-token']").attr("content");
+      $('#export-csv-injected-form').prepend('<input name="authenticity_token" type="hidden" value="'+authenticity_token+'">');
+      $('#export-csv-injected-form').submit();
     });
   }
 
