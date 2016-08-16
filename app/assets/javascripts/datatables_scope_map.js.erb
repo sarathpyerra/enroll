@@ -13,6 +13,16 @@ var DataTablesFilterMap = ( function( window, undefined ) {
         "<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month %>": [ "employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month)" ],
         "<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month %>": [ "employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month)" ]
       }
+    },
+    Families : {
+      all: {
+        "individual": [ "scope_one", "scope_two_if_you_want" ],
+        "employee": [ "scope_one" ],
+      },
+      active: {
+        "individual": [ "scope_one", "scope_two_if_you_want" ],
+        "employee": [ "scope_one" ]
+      }
     }
   };
 

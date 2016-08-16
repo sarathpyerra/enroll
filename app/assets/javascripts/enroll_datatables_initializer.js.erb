@@ -10,6 +10,26 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.wrap('<div class="table-responsive"></div>');
   }
 
+  function setBaseModel(model) {
+    var base_model = model;
+    return base_model;
+  }
+
+  function setTab(tab) {
+    var tab = tab;
+    return tab;
+  }
+
+  function setFirstLevel($active_tab) {
+    var first_level = $active_tab.data('children-of');
+    return first_level;
+  }
+
+  function setSecondLevel($active_tab) {
+    var second_level = $active_tab.text().toLowerCase();
+    return second_level;
+  }
+
   function setScopesFromFilters(table_id, tab) {
     findTable(table_id);
     $active_first_level_filter = $table.closest('.module').find('.first-level > a.active').text().toLowerCase();
@@ -22,6 +42,46 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     return scopes
   }
 
+  function setFiltersFromScopeMap(table_id, tab, first_level, second_level) {
+    findTable(table_id);
+    if ( typeof second_level !== "undefined" ) {
+      scopes = DataTablesFilterMap[tab][first_level][second_level]
+    } else {
+      scopes = DataTablesFilterMap[tab][first_level]
+    }
+    return scopes
+  }
+
+  var setFilterCriteria = function(table_id, tab, first_level, second_level) {
+    $table = $('#'+table_id);
+    return {
+      tab: tab,
+      first_level: first_level,
+      second_level: second_level
+    }
+  }
+
+  function clickActiveFilter(table_id, $active_filter, filter_criteria, base_model) {
+    console.log(arguments);
+    $active_filter.on('click', function() {
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(base_model),
+        filters: EnrollDataTableInitializer.setFiltersFromScopeMap(table_id, filter_criteria.tab, filter_criteria.first_level, filter_criteria.second_level)
+      });
+    });
+  }
+
+  function moveInfo(table_id) {
+    findTable(table_id)
+    var $info = $table.closest('.module').find('.dataTables_info').detach();
+    var $buttons_below_table = $table.closest('.module').find('.footer').find('.buttons-below-table');
+    if ( $buttons_below_table.length ) {
+      $table.closest('.module').find('.footer').find('.buttons-below-table').after($info);
+    } else {
+      $table.closest('.module').find('.footer .vertically-aligned-row').append($info);
+    }
+    $info.show();
+  }
 
   function showPagination(table_id) {
     findTable(table_id)
@@ -36,13 +96,17 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table_length = $table.closest('.dataTables_wrapper').find('.header .table-length').detach();
     $dataTables_info = $table.closest('.module').find('.dataTables_info');
     if ( $dataTables_info.length ) {
+      $dataTables_info_text = $dataTables_info.text();
       $dataTables_info.after($table_length);
+      $dataTables_info.remove();
+      $table_length.find('.dataTables_length').before($dataTables_info_text);
     } else {
       $table.closest('.module').find('.footer .vertically-aligned-row').append($table_length);
       $table_length.prepend('Showing ');
     }
-    $('.footer .vertically-aligned-row > *').css({"width": "100%"});
     $table.closest('.module').find('.table-length').css({'white-space': 'nowrap'});
+    $table_length.wrap('<div class="table-length-wrapper text-right"></div>')
+    // $table_length.closest('div').prepend("Showing");
     $table_length.removeClass('hidden');
     $table_length.closest('div').append("per page");
   }
@@ -74,15 +138,15 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   function showSecondLevel($thisObj) {
-    var $button = $thisObj.attr('name');
-    var $second_level = $('.'+$button+'-second-level');
-    if ( $thisObj.hasClass('active') == false && $('.'+$button+'-second-level').is(':visible') ) {
-      $second_level.addClass('hidden');
-    }
-    $second_level.detach();
-    $('.btn-group.first-level').parent().after($second_level);
-    $second_level.wrap("<div></div>")
-    $second_level.removeClass('hidden');
+      var $button = $thisObj.attr('name');
+      var $second_level = $('.'+$button+'-second-level');
+      if ( $thisObj.hasClass('active') == false && $('.'+$button+'-second-level').is(':visible') ) {
+        $second_level.addClass('hidden');
+      }
+      $second_level.detach();
+      $('.btn-group.first-level').parent().after($second_level);
+      $second_level.wrap("<div></div>")
+      $second_level.removeClass('hidden');
   }
 
 
@@ -216,25 +280,25 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
 
   function addRowDataToParams(table_id) {
     findTable(table_id);
-    $table.find('.row-actions .dropdown a[data-remote="true"]').each(function() {
-      var $link = $(this);
-      var $row = $(this).closest('tr');
-      $row.find('.row-data span.for-remote').each(function(index, $link) {
-        var data_attributes = [];
-        $.each($(this).data(), function(k,v) {
-          k = k.replace(/(?:^|\.?)([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "")
-          if ( k == "replace_url" ) {
-          } else {
-            data_attributes.push(k+"="+v);
-          }
-        });
-        $.each(data_attributes, function(index,value) {
-          var $link = $row.find('.row-actions .dropdown a[data-remote="true"]').eq(index);
-          var $existing_href = $link.attr('href');
-          $link.attr('href', $existing_href+"&"+value);
+      $table.find('.row-actions .dropdown a[data-remote="true"]').each(function() {
+        var $link = $(this);
+        var $row = $(this).closest('tr');
+        $row.find('.row-data span.for-remote').each(function(index, $link) {
+          var data_attributes = [];
+          $.each($(this).data(), function(k,v) {
+            k = k.replace(/(?:^|\.?)([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "")
+            if ( k == "replace_url" ) {
+            } else {
+              data_attributes.push(k+"="+v);
+            }
+          });
+          $.each(data_attributes, function(index,value) {
+            var $link = $row.find('.row-actions .dropdown a[data-remote="true"]').eq(index);
+            var $existing_href = $link.attr('href');
+            $link.attr('href', $existing_href+"&"+value);
+          });
         });
       });
-    });
   }
 
   function attachPostDrawHandlers(table_id) {
@@ -254,7 +318,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.data('dt_params', additional_params );
     if (additional_params.hasOwnProperty('key')) {
     } else {
-      $table.DataTable().draw( 'page' );
+      $table.DataTable().draw();
     }
   }
 
@@ -264,11 +328,19 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
 
   return {
     removeRow: removeRow,
+    setTab: setTab,
+    setFirstLevel: setFirstLevel,
+    setSecondLevel: setSecondLevel,
+    clickActiveFilter: clickActiveFilter,
+    setBaseModel: setBaseModel,
+    setFilterCriteria: setFilterCriteria,
+    setFiltersFromScopeMap : setFiltersFromScopeMap,
     setScopesFromFilters : setScopesFromFilters,
     attachModalsToLinks : attachModalsToLinks,
     replaceRowActionUrls : replaceRowActionUrls,
     addRowIndexToRowFunctionLinks : addRowIndexToRowFunctionLinks,
     wrapSearchInBootstrap : wrapSearchInBootstrap,
+    moveInfo : moveInfo,
     findTable: findTable,
     moveTableLength : moveTableLength,
     initializeFilters : initializeFilters,
@@ -281,7 +353,6 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     swapSearchAndNewButton : swapSearchAndNewButton,
     showButtonsBelow : showButtonsBelow,
     addRowDataToParams : addRowDataToParams,
-    attachPostDrawHandlers : attachPostDrawHandlers,
     addCheckboxHandlers : addCheckboxHandlers,
     attachPostDrawHandlers : attachPostDrawHandlers,
     AddParamsBeforeDraw : AddParamsBeforeDraw
