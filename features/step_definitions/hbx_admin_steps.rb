@@ -48,8 +48,7 @@ Then(/^the SEP page is displayed$/) do
 end
 
 Then(/^a search box is displayed where I can search by name or ssn$/) do
-  binding.pry
-  expect(page).to have_selector('.interaction-click-control-search')
+  expect(page).to have_selector('input.interaction-click-control-search')
 end
 
 Then(/^the ALL, IVL and EE tabs appear above the display list$/) do

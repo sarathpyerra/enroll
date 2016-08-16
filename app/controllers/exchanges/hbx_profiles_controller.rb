@@ -253,6 +253,8 @@ class Exchanges::HbxProfilesController < ApplicationController
     collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
     @state = 'both'
     @draw = dt_query.draw
+    @total_records = all_families.count
+    @records_filtered = all_families.count
     @total_records = sortData(all_families, @state)
     @records_filtered = sortData(collection, @state)
     @dataArray = sortData(collection, @state, 'yes')
