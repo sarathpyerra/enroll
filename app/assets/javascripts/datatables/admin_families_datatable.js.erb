@@ -1,5 +1,10 @@
 var AdminFamiliesDatatable = ( function( window, undefined ) {
 
+  function setTab() {
+    var tab = "Families";
+    return tab;
+  }
+
   function setBaseModel() {
     var base_model = "family";
     return base_model;
@@ -20,7 +25,6 @@ var AdminFamiliesDatatable = ( function( window, undefined ) {
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
-    });
   }
 
   function callAllEmployeeFilter(table_id) {
@@ -29,7 +33,6 @@ var AdminFamiliesDatatable = ( function( window, undefined ) {
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
-    });
   }
 
   function callActiveIndividualFilter(table_id) {
@@ -38,7 +41,6 @@ var AdminFamiliesDatatable = ( function( window, undefined ) {
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
-    });
   }
 
   function callActiveEmployeeFilter(table_id) {
@@ -47,16 +49,6 @@ var AdminFamiliesDatatable = ( function( window, undefined ) {
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
-    });
-  }
-
-  function callActiveEmployeeFilter(table_id) {
-    EnrollDataTableInitializer.findTable(table_id);
-    var $active_filter = $table.closest('.module').find('.Active-second-level a:contains("Employee")');
-    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
-    var base_model = setBaseModel();
-    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
-    });
   }
 
   return {

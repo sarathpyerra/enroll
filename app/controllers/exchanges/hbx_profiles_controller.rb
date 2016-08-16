@@ -226,7 +226,7 @@ class Exchanges::HbxProfilesController < ApplicationController
     end
     respond_to do |format|
       format.html { render "insured/families/index" }
-      format.js {}
+      format.js
     end
   end
 

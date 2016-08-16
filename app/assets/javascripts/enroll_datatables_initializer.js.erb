@@ -167,9 +167,11 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       $second_level.wrap("<div></div>");
     }
     $second_level.removeClass('hidden');
-    $dropdown.find('a').on('click', function() {
-      $second_level.find('a.active').removeClass('active');
-    });
+    if ( $dropdown != undefined ) {
+      $dropdown.find('a').on('click', function() {
+        $second_level.find('a.active').removeClass('active');
+      });
+    }
   }
 
   function addSelectAll(table_id) {
