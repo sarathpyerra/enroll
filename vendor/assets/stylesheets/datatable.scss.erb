@@ -3,7 +3,7 @@
     .datatable-header {
       &.vertically-aligned-row {
         h1 {
-          width: 25%;
+          width: 50%;
         }
         .search {
           width: 40%;
@@ -18,6 +18,28 @@
     }
     .btn-group-second {
       margin: 0 0 0.75%;
+      a.second-level {
+        font-size: 12px;
+      }
+    }
+    .second-level-dropdown button {
+      font-size: 12px;
+    }
+    .injected-custom-filter {
+      display: none;
+      .date-picker {
+        font-family: FontAwesome;
+        font-size: 14px !important;
+        color: #555555;
+        border: solid 1px #b7b7b7;
+        border-radius: 4px;
+      }
+      .btn-primary {
+        margin-top: -2px;
+      }
+      h4 {
+        margin-bottom: 0.675%;
+      }
     }
     .select-all {
       padding-left: 6px;
@@ -71,6 +93,9 @@
           }
         }
       }
+      &.child-row {
+        background-color: $primary-white;
+      }
     }
     .table > tbody > tr > td {
       vertical-align: middle;
@@ -82,6 +107,9 @@
       }
       &.dt-center {
         text-align: center;
+      }
+      .fa-info-circle {
+        cursor: pointer;
       }
     }
     .table > thead > tr > th {
@@ -173,8 +201,8 @@
     }
     .dataTables_length {
       background-color: $primary-white;
-      margin: 0 5%;
-      padding: 5%;
+      margin: 0 2.5%;
+      padding: 0.675%;
       border-radius: 4px;
       width: 100%;
     }

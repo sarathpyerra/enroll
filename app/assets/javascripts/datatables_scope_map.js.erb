@@ -2,16 +2,26 @@ var DataTablesFilterMap = ( function( window, undefined ) {
 
   return {
     Employer : {
-      all: [ "all_employer_profiles", "invoice_view_all" ],
-      initial: {
-        "<%= TimeKeeper.date_of_record.next_month.beginning_of_month %>": [ "employer_profile_initial_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month)" ],
-        "<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month %>": [ "employer_profile_initial_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month)" ],
-        "<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month %>": [ "employer_profile_initial_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month)" ]
+      all: [ "all_employer_profiles" ],
+      enrolling: {
+        "all": [ "employer_profiles_enrolling" ],
+        "initial eligible": [ "employer_profiles_enrolling", "employer_profiles_initial_eligible" ],
+        "renewing": [ "employer_profiles_enrolling", "employer_profiles_renewing" ],
+        "open enrollment": [ "employer_profiles_enrolling", "employer_profiles_open_enrollment" ],
+        "binder pending": [ "employer_profiles_enrolling", "employer_profiles_binder_pending" ],
+        "binder paid": [ "employer_profiles_enrolling", "employer_profiles_binder_paid" ],
+        "<%= "#{(TimeKeeper.date_of_record.next_month.beginning_of_month).strftime('%B')} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}" %>": [ "employer_profiles_enrolling" ],
+        "<%= "#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month).strftime('%B')} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.year}" %>": [ "employer_profiles_enrolling" ],
+        "<%= "#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month).strftime('%B')} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month.year}" %>": [ "employer_profiles_enrolling" ],
+        "custom_date": ["employer_profiles_enrolling", "employer_profiles_by_date_range"]
       },
-      renewing: {
-        "<%= TimeKeeper.date_of_record.next_month.beginning_of_month %>": [ "employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month)" ],
-        "<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month %>": [ "employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month)" ],
-        "<%= TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month %>": [ "employer_profile_renewing_starting_on(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month)" ]
+      enrolled: {
+        "all": [ "employer_profiles_enrolled" ],
+        "suspended": [ "employer_profiles_enrolled", "employer_profiles_suspended" ]
+      },
+      applicants: {
+        "all": [ "employer_profiles_applicants" ],
+        "initial ineligible": [ "employer_profiles_applicants", "employer_profiles_ineligible" ]
       }
     },
     Families : {

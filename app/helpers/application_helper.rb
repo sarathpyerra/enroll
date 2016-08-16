@@ -154,7 +154,7 @@ module ApplicationHelper
 
   # Uses a boolean value to return an HTML checked/unchecked glyph
   def boolean_to_glyph(test)
-    test ? content_tag(:span, "", class: "fui-checkbox-checked") : content_tag(:span, "", class: "fui-checkbox-unchecked")
+    test ? content_tag(:span, "", class: "fa fa-check-square-o aria-hidden='true'") : content_tag(:span, "", class: "fa fa-square-o aria-hidden='true'")
   end
 
   # Formats a number into a 9-digit US Social Security Number string (nnn-nn-nnnn)
@@ -579,7 +579,8 @@ module ApplicationHelper
       participation_rule_text = participation_rule(employer)
       non_owner_participation_rule_text = non_owner_participation_rule(employer)
       text = (@participation_count == 0 && @non_owner_participation_rule == true ? "Yes" : "No")
-      ("Criteria Met : #{text}" + "<br>" + participation_rule_text + "<br>" + non_owner_participation_rule_text).html_safe
+      eligibility_text = ("Criteria Met : #{text}" + "<br>" + participation_rule_text + "<br>" + non_owner_participation_rule_text).html_safe
+      "<i class='fa fa-info-circle' data-html='true' data-placement='top' aria-hidden='true' data-toggle='popover' title='Eligibility' data-content='#{eligibility_text}'></i>".html_safe
     end
   end
 
