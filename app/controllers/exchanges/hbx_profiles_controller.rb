@@ -239,9 +239,10 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def sep_index_datatable
+
     dt_query = extract_datatable_parameters
     collection = []
-    all_families = Family.all
+    all_families = Family.enrolled
     if dt_query.search_string.blank?
       collection = all_families
     else
@@ -250,27 +251,19 @@ class Exchanges::HbxProfilesController < ApplicationController
       "family_members.person_id" => {"$in" => person_ids}
       })
     end
+
     collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
-    @state = 'both'
+
     @draw = dt_query.draw
     @total_records = all_families.count
-    @records_filtered = all_families.count
-    @total_records = sortData(all_families, @state)
-    @records_filtered = sortData(collection, @state)
-    @dataArray = sortData(collection, @state, 'yes')
-    @families = @dataArray.slice(dt_query.skip.to_i, dt_query.take.to_i)
+    @records_filtered = collection.count
+    if collection.is_a? Array
+      @families = collection[dt_query.skip..@total_records]
+    else
+      @families = collection.skip(dt_query.skip).limit(dt_query.take)
+    end
     render "datatables/sep_index_datatable"
-    # if Family.exists(special_enrollment_periods: true).present?
-    #   if(params[:q] == 'both')
-    #     includeBothMarkets
-    #   elsif(params[:q] == 'ivl')
-    #     includeIVL
-    #   else
-    #     includeShop
-    #   end
-    # end
-    # setEventKinds
-    # render
+
   end
 
   def add_sep_form
@@ -584,14 +577,14 @@ class Exchanges::HbxProfilesController < ApplicationController
   def sortData(families, state, returnData=nil)
     init_arr = []
     if (state == 'both')
-      families.each do|f| 
-        if f.primary_applicant.person.consumer_role.present? || f.primary_applicant.person.active_employee_roles.present?        
+      families.each do|f|
+        if f.primary_applicant.person.consumer_role.present? || f.primary_applicant.person.active_employee_roles.present?
           init_arr.push(f)
         end
       end
     elsif (state == 'ivl')
       families.each do|f|
-        if f.primary_applicant.person.consumer_role.present? 
+        if f.primary_applicant.person.consumer_role.present?
           init_arr.push(f)
         end
       end
