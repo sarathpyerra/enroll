@@ -94,11 +94,6 @@
     var enroll_datatable = $('#<%= table_id %>').EnrollDataTable({
       "destroy": <%= destroy || false %>,
       "processing": true,
-      <% if processing_text.present? %>
-      "language": {
-         "processing": "<i class='fa fa-spinner fa-2x' aria-hidden='true'></i><h4><%= processing_text %></h4>"
-      },
-      <% end %>
       "serverSide": true,
       "ordering": <%= ordering || false %>,
       "paging": <%= pagination || false %>,
@@ -117,6 +112,9 @@
         [1, 'asc']
       ],
       "language": {
+        <% if processing_text.present? %>
+        "processing": "<div class='panel panel-default'><i class='fa fa-spinner fa-2x fa-spin' aria-hidden='true'></i><h4><%= processing_text %></h4></div>",
+        <% end %>
         "lengthMenu": "_MENU_"
       },
       "initComplete": function() {
@@ -155,6 +153,7 @@
         EnrollDataTableInitializer.addRowIndexToRowFunctionLinks('<%= table_id %>');
         EnrollDataTableInitializer.addRowDataToParams('<%= table_id %>');
         EnrollDataTableInitializer.attachPostDrawHandlers('<%= table_id %>');
+        EnrollDataTableInitializer.showProcessing('<%= table_id %>');
         <% if custom_handlers.present? %>
           <% custom_handlers.each do |custom_handler| %>
             <%= custom_handler %>('<%= table_id %>');

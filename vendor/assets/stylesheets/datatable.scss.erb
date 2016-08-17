@@ -13,6 +13,25 @@
         }
       }
     }
+    .dataTables_processing {
+      width: 100%;
+      text-align: center;
+      position: absolute;
+      display: none;
+      top: 40%;
+      border: none;
+      background-color: transparent;
+      z-index: 55555;
+      div {
+        background-color: $primary-white;
+        padding: 5%;
+        width: 50%;
+        margin: auto;
+      }
+      .fa {
+        color: $primary-blue;
+      }
+    }
     .first-level {
       margin: 0 0 0.675%;
     }
@@ -54,6 +73,9 @@
     .table {
       margin-top: 0.675%;
       margin-bottom: 0;
+    }
+    .table-responsive {
+      position: relative;
     }
     .table-responsive + .footer {
       margin-top: 1.5%;

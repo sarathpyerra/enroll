@@ -385,6 +385,28 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     })
   }
 
+  function showProcessing(table_id) {
+    findTable(table_id);
+    $table.closest('.module').find('.dataTables_processing').parent().removeClass('hidden');
+  }
+
+  // function addProcessingOverlay(table_id) {
+  //   findTable(table_id);
+  //   if ( !$table.closest('.module').find('.processing-overlay').length ) {
+  //   $table.on( 'processing.dt', function ( e, settings, processing ) {
+  //       $table.closest('.module').find('.table-responsive').append('<div class="processing-overlay"></div>');
+  //     })
+  //   }
+  // }
+  //
+  // function removeProcessingOverlay(table_id) {
+  //   findTable(table_id);
+  //   console.log($table.closest('.module').find('.processing-overlay').length);
+  //   console.log($('.processing-overlay').length);
+  //
+  //   $table.closest('.module').find('.processing-overlay').remove();
+  // }
+
   function exportPageAsCSV(table_id, table_data, columns) {
     findTable(table_id);
     var $url = $table.closest('.module').data('export-csv-url');
@@ -437,6 +459,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   return {
     removeRow: removeRow,
     setTab: setTab,
+    showProcessing: showProcessing,
     clickRowDataLink: clickRowDataLink,
     exportPageAsCSV: exportPageAsCSV,
     setFirstLevel: setFirstLevel,
