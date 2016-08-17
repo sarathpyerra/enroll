@@ -192,7 +192,6 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def sep_index
-    setEventKinds
     respond_to do |format|
       format.html { render "sep/approval/sep_index" }
       format.js {}
@@ -200,18 +199,53 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def sep_index_datatable
-    if Family.exists(special_enrollment_periods: true).present?
-      if(params[:q] == 'both')
-        includeBothMarkets
-      elsif(params[:q] == 'ivl')
-        includeIVL
-      else
-        includeShop
-      end
+
+    dt_query = extract_datatable_parameters
+    collection = []
+    all_families = Family.enrolled
+    if dt_query.search_string.blank?
+      collection = all_families
+    else
+      person_ids = Person.search(dt_query.search_string).pluck(:id)
+      collection = all_families.where({
+      "family_members.person_id" => {"$in" => person_ids}
+      })
     end
 
-    setEventKinds
-    render
+    collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
+
+    @draw = dt_query.draw
+    @total_records = all_families.count
+    @records_filtered = collection.count
+    if collection.is_a? Array
+      @families = collection[dt_query.skip..@total_records]
+    else
+      @families = collection.skip(dt_query.skip).limit(dt_query.take)
+    end
+    render "datatables/sep_index_datatable"
+
+  end
+
+  def add_sep_form
+    getActionParams
+  end
+
+  def show_sep_history
+    getActionParams
+  end
+
+  def update_effective_date
+    @qle = QualifyingLifeEventKind.find(params[:id])
+    respond_to do |format|
+      format.js {}
+    end
+  end
+
+  def calculate_sep_dates
+    calculateDates
+    respond_to do |format|
+      format.js {}
+    end
   end
 
   def broker_agency_index
@@ -604,10 +638,4 @@ class Exchanges::HbxProfilesController < ApplicationController
     "No match found for #{first_name} #{last_name}.  Please call Customer Service at: (855)532-5465 for assistance.<br/>"
   end
 
-  def setEventKinds
-    @event_kinds_all = ['first_of_next_month', '15th_day_rule'];
-    @event_kinds_default = ['first_of_next_month'];
-    @qualifying_life_events_shop = QualifyingLifeEventKind.shop_market_events
-    @qualifying_life_events_individual = QualifyingLifeEventKind.individual_market_events
-  end
 end

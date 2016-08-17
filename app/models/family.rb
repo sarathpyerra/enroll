@@ -72,7 +72,12 @@ class Family
   index({"households.hbx_enrollments.plan_id" => 1}, { sparse: true })
   index({"households.hbx_enrollments.writing_agent_id" => 1}, { sparse: true })
   index({"households.hbx_enrollments.hbx_id" => 1})
-  index({"households.hbx_enrollments.kind" => 1})
+
+  index({"households.hbx_enrollments.kind" => 1,
+         "households.hbx_enrollments.aasm_state" => 1,
+         "households.hbx_enrollments.created_at" => 1},
+         {name: "kind_and_state_and_created"})
+
   index({"households.hbx_enrollments.submitted_at" => 1})
   index({"households.hbx_enrollments.effective_on" => 1})
   index({"households.hbx_enrollments.terminated_on" => 1}, { sparse: true })
@@ -103,6 +108,11 @@ class Family
   after_initialize :build_household
   after_save :update_family_search_collection
   after_destroy :remove_family_search_record
+
+
+  scope :shop_market_enrolled,        ->{ where(:"households.hbx_enrollments" => {:$elemMatch => {:kind => "employer_sponsored", :aasm_state.in => HbxEnrollment::ENROLLED_STATUSES}}) }
+  scope :individual_market_enrolled,  ->{ where(:"households.hbx_enrollments" => {:$elemMatch => {:kind.in => %w(unassisted_qhp insurance_assisted_qhp individual), :aasm_state.in => HbxEnrollment::ENROLLED_STATUSES}}) }
+  scope :enrolled,                ->{ where(:"households.hbx_enrollments.aasm_state".in => HbxEnrollment::ENROLLED_STATUSES) }
 
   scope :with_enrollment_hbx_id, ->(enrollment_hbx_id) {
       where("households.hbx_enrollments.hbx_id" => enrollment_hbx_id)
