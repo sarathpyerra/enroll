@@ -363,7 +363,7 @@ Then(/^.+ should see the combined filter results$/) do
 end
 
 When(/^.+ go(?:es)? to the benefits tab$/) do
-  visit employers_employer_profile_path(employer.employer_profile) + "?tab=benefits"
+  find('.interaction-click-control-benefits').click
 end
 
 Then(/^.+ should see the plan year$/) do
@@ -449,6 +449,10 @@ end
 
 Then /^they should see that employee details$/ do
   expect(page).to have_content(employees.first.dob.strftime('%m/%d/%Y'))
+end
+
+When(/^the employer goes to benefits tab$/) do
+  visit employers_employer_profile_path(employer.employer_profile) + "?tab=benefits"
 end
 
 When(/^the employer clicks on claim quote$/) do
