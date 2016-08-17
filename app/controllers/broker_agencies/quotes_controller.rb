@@ -254,23 +254,6 @@ class BrokerAgencies::QuotesController < ApplicationController
     render partial: 'plan_comparision', layout: false, locals: {qhps: @qhps}
   end
 
-  def export_benefits_to_pdf
-    standard_component_ids = get_standard_component_ids
-    @qhps = Products::QhpCostShareVariance.find_qhp_cost_share_variances(standard_component_ids, @active_year, "Health")
-    if (plan_keys = params[:plan_keys]).present?
-      @standard_plans = []
-      plan_keys.split(',').each { |plan_key| @standard_plans << Plan.find(plan_key).hios_id }
-      @qhps = []
-      @standard_plans.each { |plan_id| @qhps << Products::QhpCostShareVariance
-                                                            .find_qhp_cost_share_variances([plan_id], active_year, "Health") }
-      @qhps.flatten!
-    end
-    render pdf: 'plan_comparison_export',
-          template: 'broker_agencies/quotes/_plan_comparison_export.html.erb',
-          disposition: 'attachment',
-          locals: { qhps: @qhps }
-  end
-
   def build_employee_roster
     @employee_roster = parse_employee_roster_file
     @quote= Quote.new
@@ -472,12 +455,8 @@ class BrokerAgencies::QuotesController < ApplicationController
   # end
 
   def download_pdf
-    @standard_plans = []
-    params[:plans].each { |plan_key| @standard_plans << Plan.find(plan_key).hios_id } 
-    @qhps = []
-    @standard_plans.each { |plan_id| @qhps << Products::QhpCostShareVariance
-                                                            .find_qhp_cost_share_variances([plan_id], Date.today.year, "Health") }
-    @qhps.flatten!
+    standard_component_ids = get_standard_component_ids
+    @qhps = Products::QhpCostShareVariance.find_qhp_cost_share_variances(standard_component_ids, @active_year, "Health")
     render pdf: 'plan_comparison_export',
            template: 'broker_agencies/quotes/_plan_comparison_export.html.erb',
            disposition: 'attachment',
