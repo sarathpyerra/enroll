@@ -338,6 +338,7 @@ Rails.application.routes.draw do
         get :get_quote_info
         post :update_benefits
         get :plan_comparison
+        get :export_benefits_to_pdf
       end
     end
     end
