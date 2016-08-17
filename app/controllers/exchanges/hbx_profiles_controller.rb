@@ -2,6 +2,7 @@ class Exchanges::HbxProfilesController < ApplicationController
   include DataTablesAdapter
   include DataTablesSorts
   include DataTablesFilters
+  include SepAll
 
   before_action :check_hbx_staff_role, except: [:request_help, :show, :assister_index, :family_index, :update_cancel_enrollment, :update_terminate_enrollment]
   before_action :set_hbx_profile, only: [:edit, :update, :destroy]
@@ -253,6 +254,35 @@ class Exchanges::HbxProfilesController < ApplicationController
       @families = families_dt.skip(dt_query.skip).limit(dt_query.take)
     end
     render "families_index_datatable"
+  end
+
+  def add_sep_form
+    getActionParams
+  end
+
+  def show_sep_history
+    getActionParams
+  end
+
+  def update_effective_date
+    @qle = QualifyingLifeEventKind.find(params[:id])
+    respond_to do |format|
+      format.js {}
+    end
+  end
+
+  def calculate_sep_dates
+    calculateDates
+    respond_to do |format|
+      format.js {}
+    end
+  end
+
+  def add_new_sep
+    if params[:qle_id].present?
+      createSep
+    end
+    redirect_to exchanges_hbx_profiles_root_path
   end
 
   def cancel_enrollment
