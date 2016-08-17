@@ -10,10 +10,12 @@ Given(/^I click the Families link from the hbx_profiles page$/) do
   person_all.employee_roles.first.census_employee = all_census_ee
   person_all.employee_roles.first.save!
   family_all = Family.find(family_all.id)
+  Caches::PlanDetails.load_record_cache!
 
-  visit "/exchanges/hbx_profiles/family_index"
-  #click_link 'HBX Portal'
-  #click_link 'Families'
+  visit '/'
+  #visit "/exchanges/hbx_profiles/family_index"
+  click_link 'HBX Portal'
+  click_link 'Families'
   screenshot("here")
 end
 
@@ -22,5 +24,6 @@ Then(/^I should see the Family Index page$/) do
 end
 
 Then(/^it should have a column with the heading "([^"]*)"$/) do |arg1|
+  screenshot("main view")
   expect(page).to have_content(arg1)
 end
