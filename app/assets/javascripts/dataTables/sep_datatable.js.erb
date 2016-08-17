@@ -1,7 +1,7 @@
 var SEPDatatable = ( function( window, undefined ) {
 
   function setTab() {
-    var tab = "Admin";
+    var tab = "Sep";
     return tab;
   }
 
@@ -19,17 +19,17 @@ var SEPDatatable = ( function( window, undefined ) {
     });
   }
 
-  function callIVLFilter(table_id) {
+  function callIndividualFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $active_filter = $table.closest('.module').find('.first-level a:contains("IVL")');
+    var $active_filter = $table.closest('.module').find('.first-level a:contains("Individual")');
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
-  function callEEFilter(table_id) {
+  function callEmployerSponsoredFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $active_filter = $table.closest('.module').find('.first-level a:contains("EE")');
+    var $active_filter = $table.closest('.module').find('.first-level a:contains("Employer Sponsored")');
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
@@ -50,10 +50,10 @@ var SEPDatatable = ( function( window, undefined ) {
   }
 
   return {
-    callIVLFilter : callIVLFilter,
-    addScopesBeforeSorting : addScopesBeforeSorting,
     callAllFilter: callAllFilter,
-    callEEFilter: callEEFilter,
+    callIndividualFilter : callIndividualFilter,
+    callEmployerSponsoredFilter: callEmployerSponsoredFilter,
+    addScopesBeforeSorting : addScopesBeforeSorting
   };
 
 } )( window );
