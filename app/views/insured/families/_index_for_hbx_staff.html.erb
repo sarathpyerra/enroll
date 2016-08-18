@@ -4,23 +4,30 @@
     tab: "admin",
     page_header:  ["Families", ""],
     directions:  "",
-    new_button:  ["Add Family", "url", ""],
+    new_button:  [],
     sibling_pages: [],
     processing_text: "",
     custom_handlers: [
-      "AdminFamiliesDatatable.callAllIndividualFilter"
+      "AdminFamiliesDatatable.callAllAllFilter",
+      "AdminFamiliesDatatable.callAllIndividualFilter",
+      "AdminFamiliesDatatable.callAllEmployeeFilter",
+      "AdminFamiliesDatatable.callActiveAllFilter",
+      "AdminFamiliesDatatable.callActiveIndividualFilter",
+      "AdminFamiliesDatatable.callActiveEmployeeFilter"
     ],
     filters:  [
-       ["All", "", true, [
-        ["Individual", "", ""],
-        ["Employee", "", ""]
+       ["All", "javascript:;", false, [
+        ["All", "javascript:;", false],
+        ["Individual", "javascript:;", false],
+        ["Employee Sponsored", "javascript:;", false]
         ]
       ],
-      ["Active", "", true, [
-       ["Individual", "", ""],
-       ["Employee", "", ""]
+      ["Active", "javascript:;", true, [
+        ["All", "javascript:;", false],
+        ["Individual", "javascript:;", false],
+        ["Employee Sponsored", "javascript:;", false]
        ]
-     ]
+     ],
      ],
     bulk_actions:  [
       ["Export to CSV", "", ""]
@@ -42,7 +49,7 @@
     ],
     row_data: true,
     child_rows:  [false, "datatables/child_row"],
-    destroy: false,
+    destroy: true,
     responsive:  true,
     checkboxes:  true,
     pagination:  true,
@@ -52,13 +59,13 @@
     data_url: families_index_datatable_exchanges_hbx_profiles_path(:format => :json),
     columns:  [
       ["Name", "name", "", [false, ""]],
-      ["SSN", "ssn", "", [false, ""]],
-      ["DOB", "dob", "", [false, ""]],
-      ["HBX ID", "hbx_id", "", [false, ""]],
-      ["Family Count", "family_ct", "", [false, ""]],
-  	  ["Registered?", "registered", "", [false, ""]],
-  	  ["Consumer?", "consumer", "", [false, ""]],
-  	  ["Employee?", "employee", "", [false, ""]]
+      ["SSN", "ssn", "dt-center", [false, ""]],
+      ["DOB", "dob", "dt-center", [false, ""]],
+      ["HBX ID", "hbx_id", "dt-center", [false, ""]],
+      ["Family Count", "family_ct", "dt-center", [false, ""]],
+  	  ["Registered?", "registered", "dt-center", [false, ""]],
+  	  ["Consumer?", "consumer", "dt-center", [false, ""]],
+  	  ["Employee?", "employee", "dt-center", [false, ""]]
   	]
   } %>
 </div>

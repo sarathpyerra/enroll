@@ -26,12 +26,14 @@ var DataTablesFilterMap = ( function( window, undefined ) {
     },
     Families : {
       all: {
-        "individual": [ "scope_one", "scope_two_if_you_want" ],
-        "employee": [ "scope_one" ],
+        "all": [],
+        "individual": [ "individual_market" ],
+        "employee sponsored": [ "shop_market" ],
       },
       active: {
-        "individual": [ "scope_one", "scope_two_if_you_want" ],
-        "employee": [ "scope_one" ]
+        "all": ["enrolled"],
+        "individual": [ "enrolled", "individual_market" ],
+        "employee sponsored": [ "enrolled", "shop_market" ]
       }
     }
   };
