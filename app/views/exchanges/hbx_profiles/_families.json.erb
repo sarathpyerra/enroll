@@ -1,13 +1,18 @@
 <% row_data = capture do %>
-	<% if family.enrollments.present? %>
-	<% active_health_enrollment = family.enrollments.detect{|enrollment| enrollment.coverage_kind = "health"} %>
+
+	<%
+	active_health_enrollment = family.enrollments.detect{|enrollment| enrollment.coverage_kind == "health" && enrollment.aasm_state != "coverage_canceled"}
+	if family.enrollments.present? && active_health_enrollment
+
+	%>
+
 		<span class="for-remote-replace-url" id="cancel" data-replace-url="<%= cancel_enrollment_exchanges_hbx_profiles_path(hbx_id: active_health_enrollment._id) %>"></span>
 		<span class="for-remote-replace-url" id="terminate" data-replace-url="<%= terminate_enrollment_exchanges_hbx_profiles_path(hbx_id: active_health_enrollment._id) %>"></span>
 	<% else %>
 		<span class="for-remote-replace-url disabled" id="cancel" data-replace-url=""></span>
 		<span class="for-remote-replace-url disabled" id="terminate" data-replace-url=""></span>
 	<% end %>
-	
+
 	<span class="for-remote-replace-url" id="add-sep-form" data-replace-url="<%= add_sep_form_exchanges_hbx_profiles_path(family: family.id)%>"></span>
   <span class="for-remote-replace-url" id="show-sep-history" data-replace-url="<%= show_sep_history_exchanges_hbx_profiles_path(family: family.id)%>"></span>
 <% end %>

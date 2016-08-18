@@ -312,6 +312,7 @@ class Exchanges::HbxProfilesController < ApplicationController
 
   def update_terminate_enrollment
     @hbx_enrollment = HbxEnrollment.find(params[:hbx_id])
+    # new terminate method
     redirect_to exchanges_hbx_profiles_path, :flash => { :success => "Termination Successful" }
   end
 
