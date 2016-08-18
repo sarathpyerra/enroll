@@ -1,6 +1,6 @@
 class Employers::CensusEmployeesController < ApplicationController
   before_action :find_employer
-  before_action :find_census_employee, only: [:edit, :update, :show, :delink, :terminate, :rehire, :benefit_group, :assignment_benefit_group ]
+  before_action :find_census_employee, only: [:edit, :update, :show, :delink, :terminate, :rehire, :benefit_group, :assignment_benefit_group, :cobra ,:cobra_reinstate]
   before_action :updateable?, except: [:edit, :show, :benefit_group, :assignment_benefit_group]
   layout "two_column"
   def new
@@ -170,6 +170,33 @@ class Employers::CensusEmployeesController < ApplicationController
     end
   end
 
+  def cobra
+    cobra_date = params["cobra_date"]
+    if cobra_date.present?
+      @cobra_date = DateTime.strptime(cobra_date, '%m/%d/%Y').try(:to_date)
+    else
+      @cobra_date = ""
+    end
+
+    if @cobra_date.present? && @census_employee.can_elect_cobra?
+      if @census_employee.update_for_cobra(@cobra_date)
+        flash[:notice] = "Successfully update Census Employee."
+      else
+        flash[:error] = "Please check cobra date."
+      end
+    else
+      flash[:error] = "Please enter cobra date."
+    end
+  end
+
+  def cobra_reinstate
+    if @census_employee.reinstate_eligibility!
+      flash[:notice] = "Successfully update Census Employee."
+    else
+      flash[:error] = "Unable to update Census Employee."
+    end
+  end
+
   def show
     if @benefit_group_assignment = @census_employee.active_benefit_group_assignment
       @hbx_enrollments = @benefit_group_assignment.hbx_enrollments
@@ -263,7 +290,7 @@ class Employers::CensusEmployeesController < ApplicationController
 =end
 
     params.require(:census_employee).permit(:id, :employer_profile_id,
-        :id, :first_name, :middle_name, :last_name, :name_sfx, :dob, :ssn, :gender, :hired_on, :employment_terminated_on, :is_business_owner,
+        :id, :first_name, :middle_name, :last_name, :name_sfx, :dob, :ssn, :gender, :hired_on, :employment_terminated_on, :is_business_owner, :existing_cobra, :cobra_begin_date,
         :address_attributes => [ :id, :kind, :address_1, :address_2, :city, :state, :zip ],
         :email_attributes => [:id, :kind, :address],
       :census_dependents_attributes => [

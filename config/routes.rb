@@ -262,6 +262,8 @@ Rails.application.routes.draw do
         get :delink
         get :terminate
         get :rehire
+        get :cobra
+        get :cobra_reinstate
         get :benefit_group, on: :member
         patch :assignment_benefit_group, on: :member
       end
