@@ -171,6 +171,51 @@ class Organization
     office_locations.detect(&:is_primary?)
   end
 
+  def employer_profile_aasm
+    employer_profile.aasm_state
+  end
+
+  def enrolled_waived_count
+    plan_year = employer_profile.latest_plan_year
+    census_employees = plan_year.find_census_employees if plan_year.present?
+    enrolled = plan_year.try(:enrolled).try(:count).to_i || 0
+    waived = census_employees.try(:waived).try(:count).to_i || 0
+    return "#{enrolled}/#{waived}"
+  end
+
+  def enrolled_as_percentage
+    plan_year = employer_profile.latest_plan_year
+    census_employees = plan_year.find_census_employees if plan_year.present?
+    enrolled = plan_year.try(:enrolled).try(:count).to_i || 0
+    eligible_to_enroll_count = census_employees.try(:active).try(:count)
+    eligible_to_enroll_count = 0.0 if eligible_to_enroll_count == nil
+    (enrolled / eligible_to_enroll_count * 100).to_s
+  end
+
+  def employer_xml_transmitted_at
+    if employer_profile.xml_transmitted_timestamp.present?
+      employer_profile.xml_transmitted_timestamp
+    else
+      Date.new
+    end
+  end
+
+  def latest_plan_year_effective_date
+    if employer_profile.latest_plan_year.present?
+      employer_profile.latest_plan_year.effective_date
+    else
+      Date.new
+    end
+  end
+
+  def broker_agency_profile_legal_name
+    if employer_profile.broker_agency_profile.present?
+      employer_profile.broker_agency_profile.organization.legal_name
+    else
+      ""
+    end
+  end
+
   def self.search_by_general_agency(search_content)
     Organization.has_general_agency_profile.or({legal_name: /#{search_content}/i}, {"fein" => /#{search_content}/i})
   end

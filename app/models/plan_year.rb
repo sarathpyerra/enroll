@@ -554,8 +554,8 @@ class PlanYear
     state :published,         :after_enter => :accept_application     # Plan is finalized. Employees may view benefits, but not enroll
     state :published_invalid, :after_enter => :decline_application    # Non-compliant plan application was forced-published
 
-    state :enrolling                                      # Published plan has entered open enrollment
-    state :enrolled, :after_enter => :ratify_enrollment   # Published plan open enrollment has ended and is eligible for coverage
+    state :enrolling, :after_enter => :send_employee_invites          # Published plan has entered open enrollment
+    state :enrolled, :after_enter => :ratify_enrollment   # Published plan open enrollment has ended and is eligible for coverage,
     state :invoice_generated                              # Invoice created for initial enrollment
 
     state :canceled                                       # Published plan open enrollment has ended and is ineligible for coverage
@@ -876,12 +876,6 @@ private
     if open_enrollment_end_on < open_enrollment_start_on
       errors.add(:open_enrollment_end_on, "can't occur before open enrollment start date")
     end
-
-
-    if open_enrollment_start_on < (start_on - 2.months)
-      errors.add(:open_enrollment_start_on, "can't occur before 60 days before start date")
-    end
-
 
     if open_enrollment_start_on < (start_on - 2.months)
       errors.add(:open_enrollment_start_on, "can't occur before 60 days before start date")
