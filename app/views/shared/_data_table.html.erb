@@ -170,6 +170,7 @@
         EnrollDataTableInitializer.moveInfo('<%= table_id %>');
         EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
         EnrollDataTableInitializer.exportPageAsCSV('<%= table_id %>', enroll_datatable.data(), initial_column_set );
+        Freebies.popover();
       },
       "columns": [
         <% if checkboxes == true %>
