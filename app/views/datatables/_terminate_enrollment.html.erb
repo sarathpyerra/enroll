@@ -16,17 +16,18 @@
     <%= @hbx_enrollment.effective_on %>
   </div>
   <!-- Cancel date set to start date -->
+
+  <!-- EDI Transmission to Carrier -->
+  <!-- EDI Transmisison checkbox -->
+
+  <%= form_for @hbx_enrollment, :url => { :action => "update_terminate_enrollment"}, :method => :post, :html => { :class => 'vertically-aligned-row' } do |f| %>
   <div>
     <label>
       <strong> Termination Date </strong>
     </label>
     <br/>
-    <%= @hbx_enrollment.effective_on %>
+    <%= text_field_tag "termination_date", nil, placeholder: TimeKeeper.date_of_record, class: "form-control date-field date-picker" %>
   </div>
-  <!-- EDI Transmission to Carrier -->
-  <!-- EDI Transmisison checkbox -->
-
-  <%= form_for @hbx_enrollment, :url => { :action => "update_terminate_enrollment"}, :method => :post, :html => { :class => 'vertically-aligned-row' } do |f| %>
   <div class="enroll-checkbox">
     <div class="checkbox">
       <label>
