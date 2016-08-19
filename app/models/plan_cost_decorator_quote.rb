@@ -1,6 +1,5 @@
 class PlanCostDecoratorQuote < PlanCostDecorator
 
-
   def add_premiums(combined_family, reference_date)
     roster_premium = Hash.new{|h,k| h[k]=0.00}
     combined_family.keys.each {|member|
@@ -15,7 +14,6 @@ class PlanCostDecoratorQuote < PlanCostDecorator
      members.each {|member|
        combined_family[member] = member.age_on(benefit_group.quote.start_on) if large_family_factor(member) > 0.0 
      }
-
   end
 
   class << self

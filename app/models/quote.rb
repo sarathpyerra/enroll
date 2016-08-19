@@ -61,14 +61,6 @@ class Quote
     }
   end
 
-  def published_employee_cost
-    plan && roster_employee_cost(plan.id, plan.id)
-  end
-
-  def published_employer_cost
-    plan && roster_employer_contribution(plan.id, plan.id)
-  end
-
   def can_quote_be_published?
     all_households_have_benefit_groups? && all_benefit_groups_have_plans?
   end
