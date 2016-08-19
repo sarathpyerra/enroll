@@ -202,10 +202,11 @@ class Employers::CensusEmployeesController < ApplicationController
       @hbx_enrollments = @benefit_group_assignment.hbx_enrollments
       @benefit_group = @benefit_group_assignment.benefit_group
     end
-    @census_employee.build_address unless @census_employee.address.present?
-    @census_employee.build_email unless @census_employee.email.present?
-    @census_employee.benefit_group_assignments.build unless @census_employee.benefit_group_assignments.present?
-    @census_employee.census_dependents.build unless @census_employee.census_dependents.present?
+    # TEMP FOR COBRA
+    # @census_employee.build_address unless @census_employee.address.present?
+    # @census_employee.build_email unless @census_employee.email.present?
+    # @census_employee.benefit_group_assignments.build unless @census_employee.benefit_group_assignments.present?
+    # @census_employee.census_dependents.build unless @census_employee.census_dependents.present?
     @family = @census_employee.employee_role.person.primary_family if @census_employee.employee_role.present?
     # PlanCostDecorator.new(@hbx_enrollment.plan, @hbx_enrollment, @benefit_group, reference_plan) if @hbx_enrollment.present? and @benefit_group.present? and reference_plan.present?
   end
@@ -261,7 +262,7 @@ class Employers::CensusEmployeesController < ApplicationController
 
   def updateable?
     authorize ::EmployerProfile, :updateable?
-  end  
+  end
 
   def benefit_group_id
     params[:census_employee][:benefit_group_assignments_attributes]["0"][:benefit_group_id] rescue nil
