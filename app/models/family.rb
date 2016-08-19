@@ -113,11 +113,13 @@ class Family
       where("households.hbx_enrollments.hbx_id" => enrollment_hbx_id)
     }
 
-  scope :shop_market,        ->{ where(:"households.hbx_enrollments" => {:$elemMatch => {:kind => "employer_sponsored"}}) }
-  scope :individual_market,  ->{ where(:"households.hbx_enrollments" => {:$elemMatch => {:kind.in => %w(unassisted_qhp insurance_assisted_qhp individual)}}) }
+  scope :shop_market,        ->{ where(:"households.hbx_enrollments" => {:$elemMatch => {:kind => "employer_sponsored" }}) }
+  scope :individual_market,  ->{ where(:"households.hbx_enrollments" => {:$elemMatch => {:kind.in => %w(unassisted_qhp insurance_assisted_qhp individual) }}) }
   scope :enrolled,           ->{ where(:"households.hbx_enrollments.aasm_state".in => HbxEnrollment::ENROLLED_STATUSES) }
 
   # scope :individual_market_enrolled,  ->{ where(:"households.hbx_enrollments" => {:$elemMatch => {:kind.in => %w(unassisted_qhp insurance_assisted_qhp individual), :aasm_state.in => HbxEnrollment::ENROLLED_STATUSE}}) }
+  # scope :shop_market_enrolled,        ->{ where(:"households.hbx_enrollments" => {:$elemMatch => {:kind => "employer_sponsored", :aasm_state.in => HbxEnrollment::ENROLLED_STATUSES}}) }
+  # scope :individual_market_enrolled,  ->{ where(:"households.hbx_enrollments" => {:$elemMatch => {:kind.in => %w(unassisted_qhp insurance_assisted_qhp individual), :aasm_state.in => HbxEnrollment::ENROLLED_STATUSES}}) }
 
   scope :all_with_single_family_member,       ->{ exists({:'family_members.1' => false}) }
   scope :all_with_multiple_family_members,    ->{ exists({:'family_members.1' => true})  }
