@@ -304,7 +304,8 @@ describe User do
         expect(User.orphans).to eq []
       end
     end
-    context "when some users does NOT have person associated" do
+
+    context "when some users does NOT have person associated", dbclean: :after_each do
       before do
         user_with_person = FactoryGirl.create :user
         user_with_person.person = FactoryGirl.create :person
