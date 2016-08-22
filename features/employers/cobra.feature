@@ -76,13 +76,13 @@ Feature: COBRA basic
     Then Employer should see the status of Employment terminated
     When Employer cobra one employee
     Then Employer should see cobra successful msg
-    When Employer click all employee filter
-    Then Employer should only see the status of Cobra Linked
-    Then Employer logs out
+#    When Employer click all employee filter
+#    Then Employer should only see the status of Cobra Linked
+#    Then Employer logs out
 
-    When Jack Employee visits the employee portal
-    And Jack Employee login in for employee
-    Then Jack Employee should see my account page
-    Then Jack Employee should see cobra enrollment on my account page
-    Then Set Date back to two months ago
-    Then Employee logs out
+#    When Jack Employee visits the employee portal
+#    And Jack Employee login in for employee
+#    Then Jack Employee should see my account page
+#    Then Jack Employee should see cobra enrollment on my account page
+#    Then Set Date back to two months ago
+#    Then Employee logs out
