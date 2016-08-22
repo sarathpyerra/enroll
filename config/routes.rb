@@ -265,7 +265,6 @@ Rails.application.routes.draw do
         get :cobra
         get :cobra_reinstate
         get :benefit_group, on: :member
-        patch :assignment_benefit_group, on: :member
       end
     end
   end
