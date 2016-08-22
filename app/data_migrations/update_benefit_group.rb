@@ -21,4 +21,3 @@ class UpdateBenefitGroup < MongoidMigrationTask
     end
   end
 end
-
