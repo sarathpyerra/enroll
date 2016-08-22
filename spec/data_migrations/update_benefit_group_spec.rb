@@ -16,7 +16,7 @@ describe UpdateBenefitGroup do
       before :each do
         DatabaseCleaner.clean
       end
-      let(:organization) { FactoryGirl.create(:organization, employer_profile: employer_profile, fein: "123456789")}
+      let(:organization) { FactoryGirl.create(:organization, employer_profile: employer_profile)}
       let(:employer_profile) { FactoryGirl.create(:employer_profile)}
       let(:active_plan_year) { FactoryGirl.create(:plan_year, employer_profile: employer_profile, aasm_state: "active")}
       let(:renewal_plan_year) { FactoryGirl.create(:renewing_plan_year, employer_profile: employer_profile, benefit_groups: [benefit_group], aasm_state: "renewing_enrolling")}
