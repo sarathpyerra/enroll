@@ -12,9 +12,9 @@
       <input type="hidden" id="broker_role_id" value="<%= @broker.id %>">
 
 
-      <%= render partial: 'my_features' if @q.can_edit? %>
+      <%= render partial: 'broker_agencies/quotes/panels/my_features' if @q.can_edit? %>
 
-      <%= render partial: 'my_plans' if @q.can_edit? %>
+      <%= render partial: 'broker_agencies/quotes/panels/my_plans' if @q.can_edit? %>
 
       <% end %>
       <%= render partial: 'broker_agencies/quotes/panels/dental'  if @q.can_edit? %>

@@ -304,17 +304,6 @@ class BrokerAgencies::QuotesController < ApplicationController
     end
   end
 
-  # def destroy
-  #   if @quote.destroy
-  #     flash[:notice] = "Successfully deleted #{@quote.quote_name}."
-  #     respond_to do |format|
-  #       format.html {
-  #         redirect_to broker_agencies_quotes_root_path
-  #       }
-  #     end
-  #   end
-  # end
-
   def delete_member
     if @quote.is_complete?
       render :text => "false", :format => :js
@@ -355,7 +344,6 @@ class BrokerAgencies::QuotesController < ApplicationController
         format.js { render :nothing => true }
       end
   end
-
 
   def new_household
     @quote = Quote.new
@@ -449,10 +437,6 @@ class BrokerAgencies::QuotesController < ApplicationController
     benefit_group.update_attributes(deductible_for_ui: deductible_for_ui) if deductible_for_ui
     render json: JSON.parse(benefit_group.criteria_for_ui)
   end
-
-  # def export_to_pdf
-  #   @pdf_url = "/broker_agencies/quotes/download_pdf?"
-  # end
 
   def download_pdf
     standard_component_ids = get_standard_component_ids

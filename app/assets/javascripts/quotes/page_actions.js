@@ -132,7 +132,7 @@ QuotePageLoad = (function() {
   }
 
   var _get_health_cost_comparison =function(){
-    var plans = Quote.selected_plans();
+    var plans = Quote.selected_plans('health');
     if(plans.length == 0) {
       alert('Please select one or more plans for comparison');
       return;
@@ -153,7 +153,7 @@ QuotePageLoad = (function() {
     })
   }
   var _get_dental_cost_comparison= function() {
-    plans = selected_plans();
+    plans = Quote.selected_plans('dental');
     quote_id=$('#quote').val();
     if(plans.length == 0) {
       alert('Please select one or more plans for comparison');
@@ -161,7 +161,7 @@ QuotePageLoad = (function() {
      }
     $.ajax({
       type: "GET",
-      url: "/broker_agencies/quotes/dental_cost_comparison",
+      url: "/broker_agencies/broker_roles/"+$('#broker_role_id').val()+"/quotes/dental_cost_comparison",
       data: {plans: plans, quote: quote_id},
       success: function(response) {
         $('#dental_plan_comparison_frame').html(response);
