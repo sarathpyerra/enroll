@@ -62,9 +62,7 @@ class PlanCostDecoratorQuote < PlanCostDecorator
       low = bounds[:metal_low][up_metal] - employer_cost
       high = bounds[:metal_high][up_metal] - employer_cost
       low_dollar = low < 0 ? "-$#{-low.ceil}" : "$#{low.ceil}"
-      buy_up = "Buy #{up_metal.capitalize} for #{low_dollar} to $#{high.ceil}"
-      puts buy_up
-      buy_up
+      "Buy #{up_metal.capitalize} for #{low_dollar} to $#{high.ceil}"
     end
   end
 end

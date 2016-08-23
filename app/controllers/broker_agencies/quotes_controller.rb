@@ -107,7 +107,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
           employer_cost = @q.roster_employer_contribution(p,p)
           @quote_results[p.name] = {:detail => detailCost,
-            :total_employee_cost => @q.roster_employee_cost(p,p),
+            :total_employee_cost => @q.roster_employee_cost(p),
             :total_employer_cost => employer_cost,
             plan_id: plan_id,
             buy_up: PlanCostDecoratorQuote.buy_up(employer_cost, p.metal_level, @roster_elected_plan_bounds)

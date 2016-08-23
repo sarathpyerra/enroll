@@ -118,15 +118,23 @@ class QuoteBenefitGroup
     end
   end
 
-  def roster_employee_cost(plan_id, reference_plan_id)
+  def roster_employee_cost(plan_id)
     p = Plan.find(plan_id)
-    reference_plan = Plan.find(reference_plan_id)
     cost = 0
     quote.quote_households.each do |hh|
-      pcd = PlanCostDecorator.new(p, hh, self, reference_plan)
+      pcd = PlanCostDecorator.new(p, hh, self, p)
       cost = cost + pcd.total_employee_cost.round(2)
     end
     cost.round(2)
+  end
+
+  def employee_cost_min_max
+    cost = []
+    quote.quote_households.each do |hh|
+      pcd = PlanCostDecorator.new(plan, hh, self, plan)
+      cost << pcd.total_employee_cost.round(2)
+    end
+    cost.minmax
   end
 
   def roster_cost_all_plans(quote_type = 'health')
@@ -142,11 +150,8 @@ class QuoteBenefitGroup
   def roster_premium(plan, combined_family)
     roster_premium = Hash.new{|h,k| h[k]=0.00}
     pcd = PlanCostDecoratorQuote.new(plan, nil, self, plan)
-    #TODOJF 
     reference_date = pcd.plan_year_start_on
-    puts reference_date
     pcd.add_premiums(combined_family, reference_date)
-
   end
 
   def flat_roster_for_premiums
