@@ -125,7 +125,6 @@ QuotePageLoad = (function() {
               deductible_value = parseInt(response['summary']['deductible_value'])
               $('#ex1').bootstrapSlider('setValue', deductible_value)
               $('#ex1_input').val(deductible_value)
-              console.log('deductible', deductible_value)
               toggle_plans(response['criteria'])
               _set_benefits()
               Quote.set_plan_costs()

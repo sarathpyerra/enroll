@@ -128,10 +128,11 @@ class QuoteBenefitGroup
     cost.round(2)
   end
 
-  def employee_cost_min_max
+  def employee_cost_min_max(coverage_kind = 'health')
     cost = []
+    p = coverage_kind == 'health' ? plan : dental_plan
     quote.quote_households.each do |hh|
-      pcd = PlanCostDecorator.new(plan, hh, self, plan)
+      pcd = PlanCostDecorator.new(p, hh, self, p)
       cost << pcd.total_employee_cost.round(2)
     end
     cost.minmax

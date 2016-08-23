@@ -83,12 +83,6 @@ var Quote = ( function() {
     $('[aria-controls="publish-quote"]').attr('aria-expanded', true)
     $('#publish-quote').addClass('in')
   }
-  var _set_quote_toolbar =  function(summary) {
-    $('#quote-name').html(summary['name'])
-    $('#quote-status').html(summary['status'])
-    $('#quote-plan-name').html(summary['plan_name'])
-    $('#quote-dental-plan-name').html(summary['dental_plan_name'])
-  }
   var inject_plan_into_quote = function(quote_id, benefit_group_id, plan_id, elected) {
     $.ajax({
       type: "GET",
@@ -114,8 +108,6 @@ var Quote = ( function() {
           type: 'GET',
           data: {quote_id: quote_id, benefit_group_id: benefit_group_id},
           url: '/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/get_quote_info.js'
-        }).done(function(response){
-          _set_quote_toolbar(response['summary'])
         })
         _open_quote()
     })
