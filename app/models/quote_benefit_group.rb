@@ -118,7 +118,6 @@ class QuoteBenefitGroup
     end
   end
 
-
   def roster_employee_cost(plan_id, reference_plan_id)
     p = Plan.find(plan_id)
     reference_plan = Plan.find(reference_plan_id)
@@ -143,16 +142,17 @@ class QuoteBenefitGroup
   def roster_premium(plan, combined_family)
     roster_premium = Hash.new{|h,k| h[k]=0.00}
     pcd = PlanCostDecoratorQuote.new(plan, nil, self, plan)
+    #TODOJF 
     reference_date = pcd.plan_year_start_on
+    puts reference_date
     pcd.add_premiums(combined_family, reference_date)
 
   end
 
   def flat_roster_for_premiums
-    p = $quote_shop_health_plans[0]  #any plan
     combined_family = Hash.new{|h,k| h[k] = 0}
     self.quote_households.each do |hh|
-      pcd = PlanCostDecoratorQuote.new(p, hh, self, p)
+      pcd = PlanCostDecoratorQuote.new(nil, hh, self, nil)
       pcd.add_members(combined_family)
     end
     combined_family
@@ -167,41 +167,6 @@ class QuoteBenefitGroup
       cost = cost + pcd.total_employer_contribution.round(2)
     end
     cost.round(2)
-  end
-
-
-  def cost_by_offerings(plan)
-    plan_costs_by_offerings = Hash.new
-    PLAN_OPTION_KINDS.map { |offering| plan_costs_by_offerings[offering] = bounding_cost_plans(plan, offering.to_s) }
-    plan_costs_by_offerings.merge({"reference_plan_cost" => roster_employer_contribution(plan.id, plan.id)})
-  end
-
-  def plan_by_offerings(reference_plan, plan_option_kind)
-    if plan_option_kind == "single_plan" || plan_option_kind == "Single Plan"
-      plans = [reference_plan]
-    else
-      if plan_option_kind == "single_carrier" || plan_option_kind == "Single Carrier"
-        plans = Plan.shop_health_by_active_year(reference_plan.active_year).by_carrier_profile(reference_plan.carrier_profile)
-      else
-        plans = Plan.shop_health_by_active_year(reference_plan.active_year).by_health_metal_levels([reference_plan.metal_level])
-      end
-    end
-  end
-
-  def cost_for_plans(plans, reference_plan)
-    cost = plans.map { |p| {"plan_name" => p.name, "metal_level"=> p.metal_level, "plan_id" => p.id.to_s, "employer_cost" => roster_employer_contribution(p.id,reference_plan), "employee_cost" => roster_employee_cost(p.id,reference_plan)}}
-  end
-
-  def bounding_cost_plans (reference_plan, plan_option_kind)
-
-    plans = plan_by_offerings(reference_plan, plan_option_kind)
-
-      if plans.size > 0
-        plans_by_cost = plans.sort_by { |plan| plan.premium_tables.first.cost }
-        {"lowest_cost_plan_cost" => roster_employer_contribution(plans_by_cost.first.id, reference_plan.id), "highest_cost_plan_cost" => roster_employer_contribution(plans_by_cost.last.id, reference_plan.id)}
-      else
-        {}
-      end
   end
 
   def published_employer_cost
