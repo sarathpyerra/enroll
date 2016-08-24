@@ -87,7 +87,6 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def health_cost_comparison
-      #@q =  Quote.find(params[:quote])
       @q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id]) # NEW
       @quote_results = Hash.new
       @quote_results_summary = Hash.new
@@ -98,13 +97,11 @@ class BrokerAgencies::QuotesController < ApplicationController
           @q.quote_relationship_benefits, roster_premiums)
         params['plans'].each do |plan_id|
           p = $quote_shop_health_plans.detect{|plan| plan.id.to_s == plan_id}
-
           detailCost = Array.new
           @q.quote_households.each do |hh|
             pcd = PlanCostDecorator.new(p, hh, @q, p)
             detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employee_contribution]] }
           end
-
           employer_cost = @q.roster_employer_contribution(p,p)
           @quote_results[p.name] = {:detail => detailCost,
             :total_employee_cost => @q.roster_employee_cost(p),
@@ -119,6 +116,29 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def dental_cost_comparison
+    @q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
+    @quote_results = Hash.new
+    @quote_results_summary = Hash.new
+    @health_plans = $quote_shop_dental_plans
+    @roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds(
+      @health_plans,
+      @q.quote_dental_relationship_benefits,
+      @q.roster_cost_all_plans('dental'))
+    params['plans'].each do |plan_id|
+      p = @health_plans.detect{|plan| plan.id.to_s == plan_id}
+      detailCost = Array.new
+      @q.quote_households.each do |hh|
+        pcd = PlanCostDecorator.new(p, hh, @q, p)
+        detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employee_contribution]] }
+      end
+      employer_cost = @q.roster_employer_contribution(p,p)
+      @quote_results[p.name] = {:detail => detailCost,
+        :total_employee_cost => @q.roster_employee_cost(p),
+        :total_employer_cost => employer_cost,
+        plan_id: plan_id,
+      }
+    end
+    @quote_results = @quote_results.sort_by { |k, v| v[:total_employer_cost] }.to_h
     render partial: 'dental_cost_comparison', layout: false
   end
 

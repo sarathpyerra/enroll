@@ -162,7 +162,11 @@ QuotePageLoad = (function() {
     $.ajax({
       type: "GET",
       url: "/broker_agencies/broker_roles/"+$('#broker_role_id').val()+"/quotes/dental_cost_comparison",
-      data: {plans: plans, quote: quote_id},
+      data: {
+        plans: plans,
+        quote_id: $('#quote_id').val(),
+        benefit_id: $('#benefit_group_select option:selected').val(),
+      },
       success: function(response) {
         $('#dental_plan_comparison_frame').html(response);
       }
