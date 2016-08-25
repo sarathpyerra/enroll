@@ -109,11 +109,6 @@ var Quote = ( function() {
         benefit_group_id = $('#benefit_group_select').val()
         elected=td.index()
         inject_plan_into_quote(quote_id, benefit_group_id, plan_id, elected)
-        $.ajax({
-          type: 'GET',
-          data: {quote_id: quote_id, benefit_group_id: benefit_group_id},
-          url: '/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/get_quote_info.js'
-        })
         _open_quote()
     })
   }

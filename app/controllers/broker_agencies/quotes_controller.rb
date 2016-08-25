@@ -367,15 +367,17 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def update_benefits
-    quote_benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
-    return false if quote_benefit_group.quote.is_complete?
+    benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
+    return false if benefit_group.quote.is_complete?
     benefits = params[:benefits]
-    quote_benefit_group.quote_relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
+    relationship_benefits = params[:coverage_kind] != 'dental' ?  benefit_group.quote_relationship_benefits : benefit_group.quote_dental_relationship_benefits
+    relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
     render json: {}
   end
 
   def get_quote_info
     bp_hash = {}
+    bp_dental_hash = {}
     quote = Quote.find(params[:quote_id])
     benefit_groups = quote.quote_benefit_groups
     bg = (params[:benefit_group_id] && quote.quote_benefit_groups.find(params[:benefit_group_id])) || benefit_groups.first
@@ -386,9 +388,12 @@ class BrokerAgencies::QuotesController < ApplicationController
      deductible_value: bg.deductible_for_ui,
     }
     bg.quote_relationship_benefits.each{|bp| bp_hash[bp.relationship] = bp.premium_pct}
+    bg.quote_dental_relationship_benefits.each{|bp| bp_dental_hash[bp.relationship] = bp.premium_pct}
     render json: {
                   'relationship_benefits' => bp_hash,
+                  'dental_relationship_benefits' => bp_dental_hash,
                   'roster_premiums' => bg.roster_cost_all_plans,
+                  'dental_roster_premiums' => bg.roster_cost_all_plans('dental'),
                   'criteria' => JSON.parse(bg.criteria_for_ui),
                   'summary' => summary}
   end

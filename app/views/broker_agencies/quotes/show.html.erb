@@ -31,8 +31,5 @@ $(document).on('ready page:load', function () {
     QuotePageLoad.set_select_health_plans(<%=raw @health_plan_quote_criteria %>)
     Quote.show_benefit_group("<%= @q.id%>", "<%= @quote_on_page.id%>")
 
-    window.dental_relationship_benefits =  <%= raw @benefit_pcts_json %>
-    window.dental_roster_premiums = <%= raw @dental_roster_premiums %>
-
 });
 </script>

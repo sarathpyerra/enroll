@@ -135,16 +135,15 @@ var QuoteSliders = (function() {
       })
       $('#dental_pct_domestic_partner').on('slideStop', function() {
             val =$('#dental_pct_domestic_partner').bootstrapSlider('getValue')
-            QuotePageLoad.set_relationship_pct('domestic_partner', val)
+            QuotePageLoad.set_dental_relationship_pct('domestic_partner', val)
       });
       $('#dental_pct_child_under_26').on('slideStop', function() {
             val =$('#dental_pct_child_under_26').bootstrapSlider('getValue')
-            _set_relationship_pct('child_under_26', val)
+            QuotePageLoad.set_dental_relationship_pct('child_under_26', val)
       });
       $('#employee_slide_input').on('keyup', function() {
         setTimeout(function () {
-          val =$('#pct_employee').bootstrapSlider('getValue')
-          QuotePageLoad.set_relationship_pct('employee', val)
+          QuotePageLoad.set_relationship_pct('employee', $('#employee_slide_input').val())
         }, 700);
       });
       $('#pct_spouse').on('slideStop', function() {
@@ -177,9 +176,6 @@ var QuoteSliders = (function() {
          QuotePageLoad.set_relationship_pct('child_under_26', val)
        }, 700);
      });
-      $('#employees_on_roster').on('slideStop', function(){
-         $('#employee_count').val($('#employees_on_roster').bootstrapSlider('getValue'))
-      })
   }
   return {
     slider_listeners: slider_listeners,
