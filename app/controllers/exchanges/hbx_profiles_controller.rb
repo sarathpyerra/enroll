@@ -74,12 +74,12 @@ class Exchanges::HbxProfilesController < ApplicationController
     dt_query = extract_datatable_parameters
     collection = []
     all_employers = Organization.all_employer_profiles
-    collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
-
 
     if dt_query.search_string.blank?
       collection = all_employers
+      collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
     else
+      collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
       organization_ids = Organization.search(dt_query.search_string).pluck(:id)
       collection = all_employers.where({
         "id" => {"$in" => organization_ids}
