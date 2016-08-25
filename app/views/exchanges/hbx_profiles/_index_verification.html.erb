@@ -2,6 +2,8 @@
   <%= render partial: "shared/data_table", locals:  {
     page_header:  ["Verifications", ""],
     directions:  "",
+    processing_text: "Loading Documents...",
+    sibling_pages: [],
     new_button:  [],
 	  filters:  [
   		# ["all", "", true, []],
@@ -30,6 +32,7 @@
   		# ['Export CSV', 'url', 'request_type'],
   		# ['Print', 'url', 'request_type']
   	],
+    custom_handlers: [],
     child_rows: [false, "datatables/child_row"],
     destroy: false,
     responsive: true,
