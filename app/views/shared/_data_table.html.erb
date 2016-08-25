@@ -158,6 +158,8 @@
         EnrollDataTableInitializer.addRowDataToParams('<%= table_id %>');
         EnrollDataTableInitializer.attachPostDrawHandlers('<%= table_id %>');
         EnrollDataTableInitializer.showProcessing('<%= table_id %>');
+        EnrollDataTableInitializer.addClearSearch('<%= table_id %>');
+        EnrollDataTableInitializer.addSubmitSearch('<%= table_id %>');
         <% if custom_handlers.present? %>
           <% custom_handlers.each do |custom_handler| %>
             <%= custom_handler %>('<%= table_id %>');
@@ -171,6 +173,8 @@
         EnrollDataTableInitializer.moveInfo('<%= table_id %>');
         EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
         EnrollDataTableInitializer.exportPageAsCSV('<%= table_id %>', enroll_datatable.data(), initial_column_set );
+        EnrollDataTableInitializer.addClearSearch('<%= table_id %>');
+        EnrollDataTableInitializer.addSubmitSearch('<%= table_id %>');
         Freebies.popover();
       },
       "columns": [

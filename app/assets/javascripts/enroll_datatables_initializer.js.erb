@@ -480,6 +480,22 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     }
   }
 
+  function addClearSearch(table_id) {
+    findTable(table_id);
+    $table.closest('.module').find('.glyphicon-remove').on('click', function() {
+      $table.closest('.module').find('.search .form-control[type="search"]').val('').trigger('keyup');
+    });
+  }
+
+  function addSubmitSearch(table_id) {
+    findTable(table_id);
+    $table.closest('.module').find('.search input[type="submit"]').on('click', function(){
+      if ( $table.closest('.module').find('.search .form-control[type="search"]').val().length ) {
+        $table.EnrollDataTable().draw();        
+      }
+    });
+  }
+
   function AddParamsBeforeDraw(table_id, params, $active_filter) {
     findTable(table_id);
     var additional_params = {};
@@ -508,6 +524,8 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   return {
+    addClearSearch: addClearSearch,
+    addSubmitSearch: addSubmitSearch,
     removeRow: removeRow,
     setTab: setTab,
     showProcessing: showProcessing,
