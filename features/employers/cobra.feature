@@ -74,8 +74,9 @@ Feature: COBRA basic
     Then Employer should see terminate successful msg
     When Employer click all employee filter
     Then Employer should see the status of Employment terminated
-    When Employer cobra one employee
-    Then Employer should see cobra successful msg
+# TEMP COBRA COMMENTED OUT FOR UI REWORK
+#    When Employer cobra one employee
+#    Then Employer should see cobra successful msg
 #    When Employer click all employee filter
 #    Then Employer should only see the status of Cobra Linked
 #    Then Employer logs out

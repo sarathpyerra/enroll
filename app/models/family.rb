@@ -586,6 +586,12 @@ class Family
     Family.where("special_enrollment_periods._id" => special_enrollment_period_id)
   end
 
+  def all_enrollments
+    if self.active_household.present?
+      active_household.hbx_enrollments
+    end
+  end
+
   def enrollments_for_display
 
 

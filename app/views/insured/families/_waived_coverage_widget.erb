@@ -1,15 +1,15 @@
 <div class="module hbx-enrollment-panel waived-coverage panel panel-default">
   <div class="panel-heading vertically-aligned-row">
     <h3 class="no-buffer">
-      <%= hbx_enrollment.coverage_kind %> Coverage <span class="separator"><%= hbx_enrollment.kind == 'employer_sponsored'? hbx_enrollment.employer_profile.legal_name : 'Individual & Family' %></span>
+      <%= hbx_enrollment.coverage_kind %> Coverage
+      <span class="separator"><%= hbx_enrollment.kind == 'employer_sponsored'? hbx_enrollment.employer_profile.legal_name : 'Individual & Family' %></span>
     </h3>
     <div class="text-right">
-      <span class="label label-success <%= hbx_enrollment.aasm_state %>">
-        <%= hbx_enrollment.aasm_state.titleize %>
+      <span class="label label-success">
+        Waived
       </span>
     </div>
   </div>
-
   <div class="panel-body">
     <h4>
       You have selected to waive your employer
@@ -21,7 +21,8 @@
       <strong>
         Waived Date:
       </strong>
-      <%= format_policy_waived_date(hbx_enrollment) %> (<%= format_policy_waived_time(hbx_enrollment) %>)
+      <%= format_policy_waived_date(hbx_enrollment) %>
+      (<%= format_policy_waived_time(hbx_enrollment) %>)
     </div>
     <div class="enrollment-reason-waived info">
       <strong>

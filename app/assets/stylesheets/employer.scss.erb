@@ -24,6 +24,9 @@
   }
 }
 .census-employee {
+  .injected-edit-status {
+    display: none;
+  }
   .vertically-aligned-row:first-of-type {
     .vertically-aligned-row {
       h4, h5 {
@@ -33,6 +36,9 @@
   }
   .census-employee-aasm {
     font-size: 100%;
+    .fa {
+      cursor: pointer;
+    }
   }
   .module {
     .panel-body {
@@ -130,6 +136,18 @@
           vertical-align: top;
         }
       }
+    }
+  }
+  &.change-employee-status  {
+    .form-control, h4 {
+      display: inline-block;
+    }
+    .form-control {
+      width: 50%;
+      margin-left: 2.5%;
+    }
+    .btn-primary {
+      width: 100%;
     }
   }
   &.home-tab {

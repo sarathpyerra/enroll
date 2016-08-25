@@ -1246,6 +1246,7 @@ class HbxEnrollment
       self.update(coverage_kind: plan.coverage_kind)
     end
   end
+
   private
 
   # NOTE - Mongoid::Timestamps does not generate created_at time stamps.

@@ -25,6 +25,7 @@
 //= require floatlabels
 //= require jq_datepicker
 //= require date
+//= require formhelpers
 //= require insured
 //= require qle
 //= require modal_actions
@@ -54,6 +55,7 @@
 var disableSelectric = false;
 
 $(document).on('ready page:load', function () {
+	Freebies.fadeElement($("body"));
 	Freebies.allFreebies();
 	Responsive.setSizeListeners();
 });

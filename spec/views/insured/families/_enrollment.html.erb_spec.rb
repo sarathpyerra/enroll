@@ -2,9 +2,10 @@ require 'rails_helper'
 
 RSpec.describe "insured/families/_enrollment.html.erb" do
   let(:person) { double(id: '31111113') }
-  let(:family) { double(is_eligible_to_enroll?: true) }
+  let(:family) { double(is_eligible_to_enroll?: true, updateable?: true, list_enrollments?: true) }
 
   before(:each) do
+    allow(view).to receive(:policy_helper).and_return(family)
     @family = family
     @person = person
   end
@@ -55,7 +56,6 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
       allow(hbx_enrollment).to receive(:consumer_role_id).and_return(false)
       allow(census_employee.employee_role).to receive(:is_under_open_enrollment?).and_return(true)
       allow(hbx_enrollment).to receive(:is_shop?).and_return(false)
-      allow(view).to receive(:policy_helper).and_return(double("FamilyPolicy", updateable?: true))
       render partial: "insured/families/enrollment", collection: [hbx_enrollment], as: :hbx_enrollment, locals: { read_only: false }
     end
     it "should open the sbc pdf" do
@@ -104,7 +104,6 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
       it "should disable the Make Changes button" do
         expect(rendered).to have_selector('.cna')
       end
-
     end
 
     it "should display the effective date" do
@@ -141,7 +140,6 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
       allow(hbx_enrollment).to receive(:consumer_role_id).and_return(person.id)
       allow(census_employee.employee_role).to receive(:is_under_open_enrollment?).and_return(true)
       allow(hbx_enrollment).to receive(:is_shop?).and_return(false)
-      allow(view).to receive(:policy_helper).and_return(double("FamilyPolicy", updateable?: true))
       render partial: "insured/families/enrollment", collection: [hbx_enrollment], as: :hbx_enrollment, locals: { read_only: false }
     end
 
@@ -183,8 +181,6 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
       allow(hbx_enrollment).to receive(:consumer_role_id).and_return(person.id)
       allow(census_employee.employee_role).to receive(:is_under_open_enrollment?).and_return(true)
       allow(hbx_enrollment).to receive(:is_shop?).and_return(false)
-
-      allow(view).to receive(:policy_helper).and_return(double("FamilyPolicy", updateable?: true))
       render partial: "insured/families/enrollment", collection: [hbx_enrollment], as: :hbx_enrollment, locals: { read_only: false }
     end
 

@@ -99,6 +99,69 @@
       }
     }
   }
+  &.past-enrollments {
+    th, td {
+      vertical-align: middle;
+    }
+  }
+  &.hbx-panel {
+    .panel-heading {
+      background-color: transparent;
+      background-image: none;
+      h3 {
+        color: $primary-green;
+        font-weight: $primary-bold;
+        text-transform: uppercase;
+        font-size: 18px;
+      }
+    }
+  }
+  &.hbx-enrollment-panel {
+    .panel-heading {
+      background-color: transparent;
+      background-image: none;
+      h3 {
+        color: $primary-green;
+        font-weight: $primary-bold;
+        text-transform: uppercase;
+        font-size: 18px;
+      }
+    }
+    .panel-body {
+      padding-bottom: 0;
+      .vertically-aligned-row:first-of-type {
+        margin-bottom: 2.5%;
+        table-layout: auto;
+        vertical-align: middle;
+        div {
+          img {
+          }
+        }
+        h3 {
+          width: 77.5%;
+          line-height: 1.2;
+        }
+      }
+      .vertically-aligned-row {
+        table-layout: fixed;
+        vertical-align: top;
+      }
+      .table {
+        margin-bottom: 0;
+      }
+    }
+    .panel-footer {
+      padding-top: 0;
+      background-color: transparent;
+      border-top: 0;
+      > .vertically-aligned-row {
+        table-layout: fixed;
+      }
+      a {
+        padding: 3%;
+      }
+    }
+  }
   &.inbox {
     .fa {
       color: $primary-blue;

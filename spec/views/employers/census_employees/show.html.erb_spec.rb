@@ -20,16 +20,14 @@ RSpec.describe "employers/census_employees/show.html.erb" do
     plan: plan,
     benefit_group: benefit_group,
     hbx_enrollment_members: [hbx_enrollment_member],
-    coverage_kind: "health")
-    # external_enrollment: false )
+    coverage_kind: "health" )
   }
   let(:hbx_enrollment_two){ FactoryGirl.create(:hbx_enrollment,
     household: household,
     plan: plan,
     benefit_group: benefit_group,
     hbx_enrollment_members: [hbx_enrollment_member],
-    coverage_kind: "dental")
-    # external_enrollment: false )
+    coverage_kind: "dental" )
   }
   # let(:hbx_enrollment_two) {double("HbxEnrollment2",waiver_reason: "this is reason", plan: double(name: "hbx enrollment plan name"), hbx_enrollment_members: [hbx_enrollment_member], coverage_kind: 'dental')}
   # let(:plan) {double(total_premium: 10, total_employer_contribution: 20, total_employee_cost:30)}
@@ -38,6 +36,7 @@ RSpec.describe "employers/census_employees/show.html.erb" do
 
   before(:each) do
     sign_in user
+    allow(view).to receive(:policy_helper).and_return(double("EmployerProfilePolicy", updateable?: true, list_enrollments?: true))
     assign(:employer_profile, employer_profile)
     assign(:census_employee, census_employee)
     assign(:benefit_group_assignment, benefit_group_assignment)
@@ -45,6 +44,7 @@ RSpec.describe "employers/census_employees/show.html.erb" do
     assign(:hbx_enrollments, [hbx_enrollment])
     assign(:benefit_group, benefit_group)
     assign(:plan, plan)
+    assign(:status, "terminated")
     assign(:active_benefit_group_assignment, benefit_group_assignment)
     allow(hbx_enrollment_member).to receive(:person).and_return(person)
     allow(hbx_enrollment_member).to receive(:primary_relationship).and_return("self")
@@ -53,7 +53,6 @@ RSpec.describe "employers/census_employees/show.html.erb" do
     allow(hbx_enrollment).to receive(:total_premium).and_return(hbx_enrollment)
     allow(hbx_enrollment).to receive(:total_employer_contribution).and_return(hbx_enrollment)
     allow(hbx_enrollment).to receive(:total_employee_cost).and_return(hbx_enrollment)
-    allow(view).to receive(:policy_helper).and_return(double('EmployerProfile', updateable?: true, list_enrollments?: true))
   end
 
   it "should show the address of census employee" do
@@ -73,37 +72,20 @@ RSpec.describe "employers/census_employees/show.html.erb" do
     expect(rendered).to_not match /Plan/
     expect(rendered).to_not have_selector('p', text: 'Benefit Group: plan name')
   end
-#TEMP DISABLE FOR MERGE OF 7386
-  # it "should show waiver" do
-  #   hbx_enrollment.update_attributes(:aasm_state => 'inactive', )
-  #   allow(benefit_group_assignment).to receive(:hbx_enrollments).and_return([hbx_enrollment])
-  #   allow(hbx_enrollment).to receive(:plan).and_return(nil)
-  #   render template: "employers/census_employees/show.html.erb"
-  #   expect(rendered).to match /Waived Date/i
-  #   expect(rendered).to match /#{hbx_enrollment.waiver_reason}/
-  # end
-#TEMP DISABLE FOR MERGE OF 7386
-  # it "should show plan name" do
-  #   allow(benefit_group_assignment).to receive(:hbx_enrollments).and_return([hbx_enrollment])
-  #   render template: "employers/census_employees/show.html.erb"
-  #   expect(rendered).to match /#{hbx_enrollment.plan.name}/
-  # end
+  it "should show waiver" do
+    hbx_enrollment.update_attributes(:aasm_state => 'inactive', )
+    allow(benefit_group_assignment).to receive(:hbx_enrollments).and_return([hbx_enrollment])
+    allow(hbx_enrollment).to receive(:plan).and_return(nil)
+    render template: "employers/census_employees/show.html.erb"
+    expect(rendered).to match /Waived Date/i
+    expect(rendered).to match /#{hbx_enrollment.waiver_reason}/
+  end
 
-  # it "should not show the health plan if it is external enrollment" do
-  #   hbx_enrollment.update_attributes(:external_enrollment => true, coverage_kind: "health")
-  #   allow(benefit_group_assignment).to receive(:hbx_enrollments).and_return([hbx_enrollment])
-  #   render template: "employers/census_employees/show.html.erb"
-  #   expect(rendered).to_not match /Plan/
-  #   expect(rendered).to_not have_selector('p', text: 'Benefit Group: plan name')
-  # end
-
-  # it "should not show the dental plan if it is external enrollment" do
-  #   hbx_enrollment.update_attributes(:external_enrollment => true, coverage_kind: "dental" )
-  #   allow(benefit_group_assignment).to receive(:hbx_enrollments).and_return([hbx_enrollment])
-  #   render template: "employers/census_employees/show.html.erb"
-  #   expect(rendered).to_not match /Plan/
-  #   expect(rendered).to_not have_selector('p', text: 'Benefit Group: plan name')
-  # end
+  it "should show plan name" do
+    allow(benefit_group_assignment).to receive(:hbx_enrollments).and_return([hbx_enrollment])
+    render template: "employers/census_employees/show.html.erb"
+    expect(rendered).to match /#{hbx_enrollment.plan.name}/
+  end
 
   it "should show plan cost" do
     allow(benefit_group_assignment).to receive(:hbx_enrollments).and_return([hbx_enrollment])
@@ -157,63 +139,59 @@ RSpec.describe "employers/census_employees/show.html.erb" do
       render template: "employers/census_employees/show.html.erb"
       expect(rendered).to match /Owner?/i
     end
-
   end
 
-  context 'with coverage_terminated_on present' do
-
-    before do
-      allow(census_employee).to receive(:aasm_state).and_return("employment_terminated")
-      render template: 'employers/census_employees/show.html.erb'
-    end
-#TEMP DISABLE FOR MERGE OF 7386
-    # it "doesn't show the waived coverage" do
-    #   expect(rendered).to match(/Employment Terminated/i)
-    # end
-  end
-
-  context 'coverage_terminated_on' do
-    before :each do
-      allow(census_employee).to receive(:coverage_terminated_on).and_return TimeKeeper.date_of_record
-    end
-
-    it "should have plan end date" do
-      render template: "employers/census_employees/show.html.erb"
-      expect(rendered).to match /Plan End Date:/
-    end
-
-    it "should have employee terminate date" do
-      render template: "employers/census_employees/show.html.erb"
-      expect(rendered).to match /Employee Termination Date:/
-    end
-  end
-
-  context "for cobra" do
-    context "when terminated" do
+  context "with health, dental, and past enrollments" do
+    let(:dental_plan){ FactoryGirl.create(:plan,
+      name: "Some plan name",
+      carrier_profile_id: carrier_profile._id,
+      active_year: TimeKeeper.date_of_record.year,
+      metal_level: "dental",
+      dental_level: "high",
+      coverage_kind: 'dental'
+    )}
+    let(:dental_hbx_enrollment){ FactoryGirl.create(:hbx_enrollment,
+      household: household,
+      plan: dental_plan,
+      benefit_group: benefit_group,
+      coverage_kind: 'dental'
+    )}
+    let(:carrier_profile) { FactoryGirl.build_stubbed(:carrier_profile) }
+    let(:past_enrollments) { FactoryGirl.build_stubbed(:hbx_enrollment, aasm_state: 'coverage_terminated' ) }
       before :each do
-        allow(census_employee).to receive(:aasm_state).and_return 'employment_terminated'
-        allow(census_employee).to receive(:employment_terminated_on).and_return TimeKeeper.date_of_record
+      assign(:past_enrollments, [past_enrollments])
+      allow(census_employee).to receive_message_chain("active_benefit_group_assignment.hbx_enrollments").and_return([hbx_enrollment, dental_hbx_enrollment])
+    end
+
+    it "should display past enrollments" do
+      render template: "employers/census_employees/show.html.erb"
+      expect(rendered).to match /#{hbx_enrollment.coverage_year} health Coverage/i
+      expect(rendered).to match /#{hbx_enrollment.coverage_year} dental Coverage/i
+      expect(rendered).to match /Past Enrollments/i
+    end
+
+    context "with not health, but dental and past enrollments" do
+      before :each do
+        allow(census_employee).to receive_message_chain("active_benefit_group_assignment.hbx_enrollments").and_return([dental_hbx_enrollment])
+      end
+      it "should display past enrollments" do
         render template: "employers/census_employees/show.html.erb"
+        expect(rendered).not_to match /#{hbx_enrollment.coverage_year} health Coverage/i
+        expect(rendered).to match /#{hbx_enrollment.coverage_year} dental Coverage/i
+        expect(rendered).to match /Past Enrollments/i
       end
+    end
 
-      it "should have cobra button" do
-        expect(rendered).to have_selector('span', text: 'COBRA')
+    context "with health and dental, but no past enrollments" do
+      before :each do
+        assign(:past_enrollments, [])
+        allow(census_employee).to receive_message_chain("active_benefit_group_assignment.hbx_enrollments").and_return([hbx_enrollment, dental_hbx_enrollment])
       end
-
-      it "should have cobra confirm area" do
-        expect(rendered).to have_selector('div.cobra_confirm')
-        expect(rendered).to match /Employment Termination Date/
-        expect(rendered).to have_selector('a.cobra_confirm_submit')
-        expect(rendered).to have_selector('span.confirm-cobra-wrapper')
-      end
-
-      it "should have rehire button" do
-        expect(rendered).to have_selector('span', text: 'Rehire')
-      end
-
-      it "should have rehire area" do
-        expect(rendered).to have_selector('div.confirm-terminate-wrapper')
-        expect(rendered).to have_selector('a.rehire_confirm')
+      it "should display past enrollments" do
+        render template: "employers/census_employees/show.html.erb"
+        expect(rendered).to match /#{hbx_enrollment.coverage_year} health Coverage/i
+        expect(rendered).to match /#{hbx_enrollment.coverage_year} dental Coverage/i
+        expect(rendered).not_to match /Past Enrollments/i
       end
     end
   end

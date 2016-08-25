@@ -1,5 +1,5 @@
 <div class="<%= @existing_sep.blank? ? 'module hidden' : 'module' %>" id="qle-details" >
-  <div class="hbx-enrollment-panel panel panel-default">
+  <div class="hbx-enrollment-panel panel panel-default module">
     <div class="panel-heading">
       <div class="vertically-aligned-row">
         <h3 class="no-buffer">REPORT LIFE CHANGES</h3>
@@ -38,7 +38,6 @@
               </div>
             </div>
           </div>
-
           <div id="qle_reason">
           </div>
           <div id="qle_message">
@@ -53,7 +52,7 @@
               </div>
               <div class="spec_reasons">
               </div>
-              <div class="text-center <%=pundit_class Family,:updateable?%>">
+              <div class="text-center <%= pundit_class Family,:updateable? %>">
                 <%= submit_tag 'Continue', class: 'btn btn-primary' %>
                 <br/>
                 <br/>
