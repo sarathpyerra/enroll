@@ -82,7 +82,7 @@ class Insured::FamiliesController < FamiliesController
     @next_ivl_open_enrollment_date = HbxProfile.current_hbx.try(:benefit_sponsorship).try(:renewal_benefit_coverage_period).try(:open_enrollment_start_on)
 
     @market_kind = (params[:employee_role_id].present? && params[:employee_role_id] != 'None') ? 'shop' : 'individual'
-
+    @existing_sep = @family.special_enrollment_periods.where(:end_on.gte => Date.today).first unless params.key?(:shop_for_plan)
     render :layout => 'application'
   end
 
