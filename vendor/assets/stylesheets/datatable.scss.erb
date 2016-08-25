@@ -143,10 +143,14 @@
         cursor: pointer;
       }
     }
+    .table > thead > tr > th:first-of-type {
+      font-size: inherit;
+    }
     .table > thead > tr > th {
       vertical-align: middle;
       text-transform: uppercase;
       text-align: center;
+      font-size: 12px;
       &:focus {
         outline-color: transparent;
         outline-style: none;
@@ -184,6 +188,11 @@
       }
       &.dt-center {
         text-align: center;
+      }
+      .vertically-aligned-row {
+        div:first-of-type {
+          padding-right: 5px;
+        }
       }
     }
     .vertically-aligned-row > .vertically-aligned-row {
