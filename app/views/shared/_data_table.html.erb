@@ -51,8 +51,8 @@
                       <span class="caret"></span>
                     </button>
                     <ul aria-labelledby="<%= table_id %>-date-filters" class="dropdown-menu">
-                      <% dropdown_filters.each do |filter, url, request_type | %>
-                      <li><%= link_to "#{filter}", "#{url}", remote: request_type %></li>
+                      <% dropdown_filters.each do |filter, url, request_type, class_name | %>
+                      <li><%= link_to "#{filter}", "#{url}", class: class_name, remote: request_type %></li>
                       <% end %>
                     </ul>
                   </div>

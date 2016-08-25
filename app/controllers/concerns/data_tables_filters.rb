@@ -14,7 +14,19 @@ module DataTablesFilters
       custom_date_filter = custom_date_filter.first
       filtered_collection = "#{base_model.capitalize}.#{other_filters.join(".")}.#{custom_date_filter}(start_on, end_on).offset(cursor).limit(limit)"
     else
-      filtered_collection = "#{base_model.capitalize}.#{filters.join(".")}.offset(cursor).limit(limit)"
+      if params[:month_filter] == "true"
+        month_filters, regular_filters = filters.partition {|filter| filter =~ /\d/ }
+        new_month_filters = []
+        month_filters.each do |filter|
+          begin_params = (filter.index('(')) - 1
+          filter = "#{filter[0..begin_params]}"+"(Date.strptime('#{filter.to_date.to_s}', '%d/%m/%Y'))"
+          new_month_filters << filter
+        end
+        filters = regular_filters + new_month_filters
+        filtered_collection = "#{base_model.capitalize}.#{filters.join(".")}.offset(cursor).limit(limit)"
+      else
+        filtered_collection = "#{base_model.capitalize}.#{filters.join(".")}.offset(cursor).limit(limit)"
+      end
     end
     collection = eval(filtered_collection)
     return collection

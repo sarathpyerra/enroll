@@ -133,7 +133,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         custom_sort: true,
         boolean_sort: true,
         order_by: "current_month_invoice.present?",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
@@ -147,7 +148,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         order_by: "employer_profile_aasm",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
@@ -161,7 +163,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         order_by: "id",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
@@ -175,7 +178,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         order_by: "fein",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
@@ -189,7 +193,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         order_by: "legal_name",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
@@ -204,7 +209,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         custom_sort: true,
         boolean_sort: true,
         order_by: "employer_profile.renewing_plan_year.present?",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
@@ -219,7 +225,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         custom_sort: true,
         boolean_sort: true,
         order_by: "employer_profile.show_plan_year.present?",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
@@ -233,7 +240,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         order_by: "broker_agency_profile_legal_name",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
@@ -248,7 +256,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         custom_sort: true,
         boolean_sort: true,
         order_by: "employer_profile.is_conversion?",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
@@ -262,7 +271,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         order_by: "latest_plan_year_effective_date",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
@@ -276,7 +286,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         order_by: "enrolled_waived_count",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
@@ -290,7 +301,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         order_by: "enrolled_as_percentage",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
@@ -304,7 +316,8 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         order_by: "employer_xml_transmitted_at",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab)
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
   }
