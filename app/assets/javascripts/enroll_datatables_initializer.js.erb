@@ -49,7 +49,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       scopes = DataTablesFilterMap[tab][$active_first_level_filter][$active_second_level_filter]
     } else {
       if ( $table.closest('.module').find('.btn-group-second').is(':visible') && !$table.closest('.module').find('.btn-group-second > a.active').length ) {
-        if ( typeof filters != 'undefined' ) {
+        if ( typeof filters != 'undefined' && $.inArray("employer_profiles_by_date_range", filters) == -1 ) {
           scopes = filters;
         } else {
           scopes = DataTablesFilterMap[tab]["all"];
@@ -491,7 +491,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     findTable(table_id);
     $table.closest('.module').find('.search input[type="submit"]').on('click', function(){
       if ( $table.closest('.module').find('.search .form-control[type="search"]').val().length ) {
-        $table.EnrollDataTable().draw();        
+        $table.EnrollDataTable().draw();
       }
     });
   }
@@ -507,7 +507,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       additional_params["end_on"] = $('#custom-date-to').val() || null;
       additional_params["scopes"] = filters || null;
     }
-    if ( $($active_filter).hasClass('second-level') ) {
+    if ( $($active_filter).hasClass('second-level') && $($active_filter).is('[data-children-of]') ) {
       additional_params["start_on"] = "";
       additional_params["end_on"] = "";
       additional_params["scopes"] = "";

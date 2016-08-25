@@ -156,7 +156,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
 
   function addHbxIdScopesBeforeSorting(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $sort_column = $table.closest('.module').find('.sorting_asc .vertically-aligned-row').find('div:contains("Hbx Id")');
+    var $sort_column = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("Hbx Id")');
     $sort_column.on('click', function() {
       var tab = setTab();
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
@@ -186,7 +186,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
 
   function addLegalNameScopesBeforeSorting(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $sort_column = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("Legal name")');
+    var $sort_column = $table.closest('.module').find('.sorting_asc .vertically-aligned-row').find('div:contains("Legal name")');
     $sort_column.on('click', function() {
       var tab = setTab();
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
