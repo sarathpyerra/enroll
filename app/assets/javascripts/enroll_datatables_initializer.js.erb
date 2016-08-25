@@ -119,11 +119,14 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     if ( $dataTables_info.length ) {
       $dataTables_info_text = $dataTables_info.text();
       $dataTables_info.after($table_length);
-      $dataTables_info.remove();
-      $table_length.find('.dataTables_length').before($dataTables_info_text);
+      $dataTables_info.hide();
+      $table_length.find('.dataTables_length').before('<span class="shown">'+$dataTables_info_text+'</span>');
     } else {
       $table.closest('.module').find('.footer .vertically-aligned-row').append($table_length);
       $table_length.prepend('Showing ');
+    }
+    if ( $('span.shown').length ) {
+      $('span.shown').html($('.dataTables_info').text());
     }
     $table.closest('.module').find('.table-length').css({'white-space': 'nowrap'});
     $table_length.wrap('<div class="table-length-wrapper text-right"></div>')

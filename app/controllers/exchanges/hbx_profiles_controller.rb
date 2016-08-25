@@ -74,6 +74,8 @@ class Exchanges::HbxProfilesController < ApplicationController
     dt_query = extract_datatable_parameters
     collection = []
     all_employers = Organization.all_employer_profiles
+    collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
+
 
     if dt_query.search_string.blank?
       collection = all_employers
@@ -83,8 +85,6 @@ class Exchanges::HbxProfilesController < ApplicationController
         "id" => {"$in" => organization_ids}
       })
     end
-
-    collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
 
     @draw = dt_query.draw
     @total_records = all_employers.count
