@@ -56,6 +56,10 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def show #index (old index)
+    $quote_shop_health_selectors = Plan.build_plan_selectors unless $quote_shop_health_selectors
+    $quote_shop_health_plan_features = Plan.build_plan_features unless $quote_shop_health_plan_features
+    $quote_shop_dental_selectors = Plan.build_plan_selectors('shop', 'dental') unless $quote_shop_dental_selectors
+    $quote_shop_dental_plan_features = Plan.build_plan_features('shop', 'dental') unless $quote_shop_dental_plan_features
     @q = Quote.find(params[:id])
     @benefit_groups = @q.quote_benefit_groups
     @quote_on_page = (params[:benefit_group_id] && @q.quote_benefit_groups.find(params[:benefit_group_id])) || @benefit_groups.first

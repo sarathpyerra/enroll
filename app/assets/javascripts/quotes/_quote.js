@@ -95,9 +95,8 @@ var Quote = ( function() {
       data: {quote_id: quote_id,
              benefit_group_id: benefit_group_id,
              plan_id: plan_id,
-             elected: elected},
-             coverage_kind: coverage_kind,
-             elected_plans_list: elected_plans_list,
+             elected: elected,
+             },
       success: function(response){
         $('#publish-quote').html(response);
       }
