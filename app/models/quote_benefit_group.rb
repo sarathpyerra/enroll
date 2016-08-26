@@ -33,6 +33,7 @@ class QuoteBenefitGroup
   field :published_lowest_cost_plan, type: BSON::ObjectId
   field :published_highest_cost_plan, type: BSON::ObjectId
   field :published_dental_reference_plan, type: BSON::ObjectId
+  field :elected_dental_plan_ids, type: Array, default: []
 
   associated_with_one :plan, :published_reference_plan, "Plan"
   associated_with_one :lowest_cost_plan, :published_lowest_cost_plan, "Plan"
@@ -121,7 +122,7 @@ class QuoteBenefitGroup
   def roster_employee_cost(plan_id)
     p = Plan.find(plan_id)
     cost = 0
-    quote.quote_households.each do |hh|
+    self.quote_households.each do |hh|
       pcd = PlanCostDecorator.new(p, hh, self, p)
       cost = cost + pcd.total_employee_cost.round(2)
     end
@@ -131,7 +132,7 @@ class QuoteBenefitGroup
   def employee_cost_min_max(coverage_kind = 'health')
     cost = []
     p = coverage_kind == 'health' ? plan : dental_plan
-    quote.quote_households.each do |hh|
+    self.quote_households.each do |hh|
       pcd = PlanCostDecorator.new(p, hh, self, p)
       cost << pcd.total_employee_cost.round(2)
     end
