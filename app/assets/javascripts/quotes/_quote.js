@@ -88,7 +88,7 @@ var Quote = ( function() {
     $('[aria-controls="publish-quote"]').attr('aria-expanded', true)
     $('#publish-quote').addClass('in')
   }
-  var inject_plan_into_quote = function(quote_id, benefit_group_id, plan_id, elected, coverage_kind='health', elected_plans_list=[]) {
+  var inject_plan_into_quote = function(quote_id, benefit_group_id, plan_id, elected) {
     $.ajax({
       type: "GET",
       url: "/broker_agencies/broker_roles/"+$('#broker_role_id').val()+"/quotes/set_plan",
