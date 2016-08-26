@@ -49,7 +49,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       scopes = DataTablesFilterMap[tab][$active_first_level_filter][$active_second_level_filter]
     } else {
       if ( $table.closest('.module').find('.btn-group-second').is(':visible') && !$table.closest('.module').find('.btn-group-second > a.active').length ) {
-        if ( typeof filters != 'undefined' && $.inArray("employer_profiles_by_date_range", filters) == -1 ) {
+        if ( typeof filters != 'undefined' ) {
           scopes = filters;
         } else {
           scopes = DataTablesFilterMap[tab]["all"];
@@ -156,9 +156,13 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
         $('.custom-dates').remove();
         $(this).closest('.btn-group-second').find('a').removeClass('active');
         $(this).addClass('active');
-        $('.second-level-dropdown a.active').removeClass('active');
+        if ( $(this).is('[data-children-of]') == true ) {
+          $('.second-level-dropdown a.active').removeClass('active');
+        }
       });
-      $('.second-level-dropdown a.active').removeClass('active');
+      if ( $(this).hasClass('second-level') == false ) {
+        $('.second-level-dropdown a.active').removeClass('active');
+      }
     });
     if ( $filters_first_level.find('> a:first').hasClass('second-level') ) {
       $filters_first_level.find('> a:first').trigger('click');
@@ -407,6 +411,8 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       var base_model = $table.closest('.module').find('.first-level').data('base-model');
       var first_level = $table.closest('.module').find('.first-level a.active').text().toLowerCase();
       var second_level = "custom_date";
+      start_on = start_date;
+      end_on = end_date;
       filters = EnrollDataTableInitializer.setFiltersFromScopeMap(table_id, tab, first_level, second_level);
       AddParamsBeforeDraw(table_id, {
         base_model: base_model,
@@ -508,9 +514,15 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       additional_params["scopes"] = filters || null;
     }
     if ( $($active_filter).hasClass('second-level') && $($active_filter).is('[data-children-of]') ) {
-      additional_params["start_on"] = "";
-      additional_params["end_on"] = "";
-      additional_params["scopes"] = "";
+      additional_params["start_on"] = undefined;
+      additional_params["end_on"] = undefined;
+      additional_params["scopes"] = undefined;
+    }
+    if ( scopes != undefined && $table.data('dt_params') != undefined ) {
+      if ( $.inArray( "employer_profiles_by_date_range", scopes ) != -1 && $table.data('dt_params').hasOwnProperty("start_on") != 'undefined' && !$('.custom-dates').is(':visible') ) {
+        additional_params["start_on"] = start_on;
+        additional_params["end_on"] = end_on;
+      }
     }
     $table.data('dt_params', additional_params );
     if (additional_params.hasOwnProperty('key')) {

@@ -2,7 +2,7 @@
   <%= render partial: "shared/data_table", locals:  {
     page_header:  ["Employers", ""],
     directions:  "",
-    new_button:  [],
+    new_button:  ["New Employer", begin_employer_enrollment_exchanges_agents_path(original_application_type: 'paper')],
     sibling_pages: [],
     base_model: "organization",
     tab: "Employer",
