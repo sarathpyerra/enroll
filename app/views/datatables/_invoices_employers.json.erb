@@ -21,7 +21,7 @@
 "hbx_id": "<%= json_escape truncate("#{employer.id}", length: 8, omission: '' ) %>",
 "fein": "<%= json_escape number_to_obscured_fein(employer.fein) %>",
 "employer_status": "<%= json_escape employer.employer_profile.renewing_plan_year.present? ? "Renewing" : "New" %>",
-"eligibility_criteria": "<%= json_escape eligibility_criteria(employer.employer_profile) || "Eligible" %>",
+"eligibility_criteria": "<%= json_escape eligibility_criteria(employer.employer_profile) %>",
 "broker": "<% if employer.employer_profile.broker_agency_profile.present? %><%= raw (employer.employer_profile.broker_agency_profile.organization.legal_name.titleize) %><% end %>",
 "conversion": <%= raw boolean_to_glyph(employer.employer_profile.is_conversion?).to_json %>,
 "status": "<%= raw employer.employer_profile.aasm_state.humanize.titleize %>",

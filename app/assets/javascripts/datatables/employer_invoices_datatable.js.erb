@@ -351,7 +351,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
       var $employer_ids = []
       $table.find('tbody .enroll-checkbox input:checked').closest('tr').find('.row-data').find('span').each( function() {
         if ( $(this).data('employer-profile-id') !== undefined ) {
-          if ( $(this).closest('tr').find('.fa-info-circle').length ) {
+          if ( $(this).closest('tr').find('.fa-info-circle').length || $(this).closest('tr td.eligibility:contains("Ineligible")') ) {
             $(this).closest('tr').find('.enroll-checkbox label > input').removeProp('checked');
             alert("You can not mark ineligible employers as binder paid.");
             return false;
