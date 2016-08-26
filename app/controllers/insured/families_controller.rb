@@ -47,6 +47,20 @@ class Insured::FamiliesController < FamiliesController
     @employee_role = @person.active_employee_roles.first
     @tab = params['tab'] 
     @family_members = @family.active_family_members
+
+    #if @employee_role.present?
+     # ce = CensusEmployee.find(@employee_role.census_employee_id)
+      # checking for future hire
+      #if ce.hired_on > ce.created_at
+       # @future_hire = true
+     
+     # else
+      
+      #  @future_hire = false  
+      
+      #end  
+    #end 
+    #binding.pry
     respond_to do |format|
       format.html
     end
@@ -83,6 +97,7 @@ class Insured::FamiliesController < FamiliesController
 
     @market_kind = (params[:employee_role_id].present? && params[:employee_role_id] != 'None') ? 'shop' : 'individual'
     @existing_sep = @family.special_enrollment_periods.where(:end_on.gte => Date.today).first unless params.key?(:shop_for_plan)
+    
     render :layout => 'application'
   end
 
