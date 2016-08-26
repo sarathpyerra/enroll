@@ -108,8 +108,9 @@
                               </tr>
                               <tr>
                                 <td colspan="2">Total Estimated Monthly Cost for Plan Participants</td>
-                                <td><%= number_to_currency(385)%></td>
-                                <td><%= number_to_currency(372)%></td>
+                                <% cost_range = benefit_group.employee_cost_min_max %>
+                                <td><%= number_to_currency(cost_range[0])%></td>
+                                <td><%= number_to_currency(cost_range[1])%></td>
                               </tr>
                             </table>
                           </div>

@@ -33,6 +33,7 @@ class QuoteBenefitGroup
   field :published_lowest_cost_plan, type: BSON::ObjectId
   field :published_highest_cost_plan, type: BSON::ObjectId
   field :published_dental_reference_plan, type: BSON::ObjectId
+  field :elected_dental_plan_ids, type: Array, default: []
 
   associated_with_one :plan, :published_reference_plan, "Plan"
   associated_with_one :lowest_cost_plan, :published_lowest_cost_plan, "Plan"
@@ -118,15 +119,24 @@ class QuoteBenefitGroup
     end
   end
 
-  def roster_employee_cost(plan_id, reference_plan_id)
+  def roster_employee_cost(plan_id)
     p = Plan.find(plan_id)
-    reference_plan = Plan.find(reference_plan_id)
     cost = 0
-    quote.quote_households.each do |hh|
-      pcd = PlanCostDecorator.new(p, hh, self, reference_plan)
+    self.quote_households.each do |hh|
+      pcd = PlanCostDecorator.new(p, hh, self, p)
       cost = cost + pcd.total_employee_cost.round(2)
     end
     cost.round(2)
+  end
+
+  def employee_cost_min_max(coverage_kind = 'health')
+    cost = []
+    p = coverage_kind == 'health' ? plan : dental_plan
+    self.quote_households.each do |hh|
+      pcd = PlanCostDecorator.new(p, hh, self, p)
+      cost << pcd.total_employee_cost.round(2)
+    end
+    cost.minmax
   end
 
   def roster_cost_all_plans(quote_type = 'health')
@@ -142,11 +152,8 @@ class QuoteBenefitGroup
   def roster_premium(plan, combined_family)
     roster_premium = Hash.new{|h,k| h[k]=0.00}
     pcd = PlanCostDecoratorQuote.new(plan, nil, self, plan)
-    #TODOJF 
     reference_date = pcd.plan_year_start_on
-    puts reference_date
     pcd.add_premiums(combined_family, reference_date)
-
   end
 
   def flat_roster_for_premiums

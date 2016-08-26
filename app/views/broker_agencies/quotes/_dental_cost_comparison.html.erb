@@ -1,12 +1,12 @@
 <div class="container-fluid">
-  <h2>Quote Employer Cost Comparison Results</h2>
+  <h2>Quote Employer Dental Cost Comparison Results</h2>
 
   <p>Your results are based on your quote <strong><%= @q.quote_name %></strong> effective on <strong><%= @q.start_on %></strong></p>
 
-  <p>The following employer percentage contributions were used for calculation of cost:</p>
+  <p>The following employer dental percentage contributions were used for calculation of cost.   These percentages are independent of the health plan percentages.</p>
 
   <ul>
-    <% @q.quote_relationship_benefits.each do |qrb|
+    <% @q.quote_dental_relationship_benefits.each do |qrb|
       unless @employee_relationship_map[qrb.relationship].blank? %>
       <li><%= @employee_relationship_map[qrb.relationship] %> - <%= qrb.premium_pct.to_i %>%</li>
     <%

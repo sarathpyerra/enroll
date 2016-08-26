@@ -26,7 +26,7 @@ class BrokerAgencies::QuotesController < ApplicationController
       @quote.claim_code = @quote.employer_claim_code
       @quote.publish!
     end
-    flash[:notice] = "Quote Published" 
+    flash[:notice] = "Quote Published"
   end
 
   # displays index page of quotes
@@ -56,6 +56,10 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def show #index (old index)
+    $quote_shop_health_selectors = Plan.build_plan_selectors unless $quote_shop_health_selectors
+    $quote_shop_health_plan_features = Plan.build_plan_features unless $quote_shop_health_plan_features
+    $quote_shop_dental_selectors = Plan.build_plan_selectors('shop', 'dental') unless $quote_shop_dental_selectors
+    $quote_shop_dental_plan_features = Plan.build_plan_features('shop', 'dental') unless $quote_shop_dental_plan_features
     @q = Quote.find(params[:id])
     @benefit_groups = @q.quote_benefit_groups
     @quote_on_page = (params[:benefit_group_id] && @q.quote_benefit_groups.find(params[:benefit_group_id])) || @benefit_groups.first
@@ -87,7 +91,6 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def health_cost_comparison
-      #@q =  Quote.find(params[:quote])
       @q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id]) # NEW
       @quote_results = Hash.new
       @quote_results_summary = Hash.new
@@ -98,16 +101,14 @@ class BrokerAgencies::QuotesController < ApplicationController
           @q.quote_relationship_benefits, roster_premiums)
         params['plans'].each do |plan_id|
           p = $quote_shop_health_plans.detect{|plan| plan.id.to_s == plan_id}
-
           detailCost = Array.new
           @q.quote_households.each do |hh|
             pcd = PlanCostDecorator.new(p, hh, @q, p)
             detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employee_contribution]] }
           end
-
           employer_cost = @q.roster_employer_contribution(p,p)
           @quote_results[p.name] = {:detail => detailCost,
-            :total_employee_cost => @q.roster_employee_cost(p,p),
+            :total_employee_cost => @q.roster_employee_cost(p),
             :total_employer_cost => employer_cost,
             plan_id: plan_id,
             buy_up: PlanCostDecoratorQuote.buy_up(employer_cost, p.metal_level, @roster_elected_plan_bounds)
@@ -119,6 +120,29 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def dental_cost_comparison
+    @q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
+    @quote_results = Hash.new
+    @quote_results_summary = Hash.new
+    @health_plans = $quote_shop_dental_plans
+    @roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds(
+      @health_plans,
+      @q.quote_dental_relationship_benefits,
+      @q.roster_cost_all_plans('dental'))
+    params['plans'].each do |plan_id|
+      p = @health_plans.detect{|plan| plan.id.to_s == plan_id}
+      detailCost = Array.new
+      @q.quote_households.each do |hh|
+        pcd = PlanCostDecorator.new(p, hh, @q, p)
+        detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employee_contribution]] }
+      end
+      employer_cost = @q.roster_employer_contribution(p,p)
+      @quote_results[p.name] = {:detail => detailCost,
+        :total_employee_cost => @q.roster_employee_cost(p),
+        :total_employer_cost => employer_cost,
+        plan_id: plan_id,
+      }
+    end
+    @quote_results = @quote_results.sort_by { |k, v| v[:total_employer_cost] }.to_h
     render partial: 'dental_cost_comparison', layout: false
   end
 
@@ -138,12 +162,8 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     unless params[:duplicate_household].blank? && params[:num_of_dup].blank?
       dup_household = @quote.quote_households.find(params[:duplicate_household]).dup
-      dup_household.quote_members.each do |qhm|
-        qhm.dob = nil
-        qhm.first_name = ""
-        qhm.last_name = ""
-      end
-      for i in 0..params[:num_of_dup].to_i
+
+      for i in 1..params[:num_of_dup].to_i
         temp_household = dup_household.dup
         max_family_id = max_family_id + 1
         temp_household.family_id = max_family_id
@@ -304,17 +324,6 @@ class BrokerAgencies::QuotesController < ApplicationController
     end
   end
 
-  # def destroy
-  #   if @quote.destroy
-  #     flash[:notice] = "Successfully deleted #{@quote.quote_name}."
-  #     respond_to do |format|
-  #       format.html {
-  #         redirect_to broker_agencies_quotes_root_path
-  #       }
-  #     end
-  #   end
-  # end
-
   def delete_member
     if @quote.is_complete?
       render :text => "false", :format => :js
@@ -356,22 +365,23 @@ class BrokerAgencies::QuotesController < ApplicationController
       end
   end
 
-
   def new_household
     @quote = Quote.new
     @quote.quote_households.build
   end
 
   def update_benefits
-    quote_benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
-    return false if quote_benefit_group.quote.is_complete?
+    benefit_group = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
+    return false if benefit_group.quote.is_complete?
     benefits = params[:benefits]
-    quote_benefit_group.quote_relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
+    relationship_benefits = params[:coverage_kind] != 'dental' ?  benefit_group.quote_relationship_benefits : benefit_group.quote_dental_relationship_benefits
+    relationship_benefits.each {|b| b.update_attributes!(premium_pct: benefits[b.relationship]) }
     render json: {}
   end
 
   def get_quote_info
     bp_hash = {}
+    bp_dental_hash = {}
     quote = Quote.find(params[:quote_id])
     benefit_groups = quote.quote_benefit_groups
     bg = (params[:benefit_group_id] && quote.quote_benefit_groups.find(params[:benefit_group_id])) || benefit_groups.first
@@ -382,9 +392,12 @@ class BrokerAgencies::QuotesController < ApplicationController
      deductible_value: bg.deductible_for_ui,
     }
     bg.quote_relationship_benefits.each{|bp| bp_hash[bp.relationship] = bp.premium_pct}
+    bg.quote_dental_relationship_benefits.each{|bp| bp_dental_hash[bp.relationship] = bp.premium_pct}
     render json: {
                   'relationship_benefits' => bp_hash,
+                  'dental_relationship_benefits' => bp_dental_hash,
                   'roster_premiums' => bg.roster_cost_all_plans,
+                  'dental_roster_premiums' => bg.roster_cost_all_plans('dental'),
                   'criteria' => JSON.parse(bg.criteria_for_ui),
                   'summary' => summary}
   end
@@ -449,10 +462,6 @@ class BrokerAgencies::QuotesController < ApplicationController
     benefit_group.update_attributes(deductible_for_ui: deductible_for_ui) if deductible_for_ui
     render json: JSON.parse(benefit_group.criteria_for_ui)
   end
-
-  # def export_to_pdf
-  #   @pdf_url = "/broker_agencies/quotes/download_pdf?"
-  # end
 
   def download_pdf
     standard_component_ids = get_standard_component_ids

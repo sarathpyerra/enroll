@@ -19,6 +19,16 @@ QuotePageLoad = (function() {
   }
   var set_dental_relationship_pct = function(relationship, val) {
     dental_relationship_benefits[relationship] = val
+    $("[name~='" + relationship + "']").val(val)
+    $.ajax({
+      type: 'POST',
+      data: {benefits: dental_relationship_benefits,
+             quote_id: $('#quote_id').val(),
+             benefit_id: $('#benefit_group_select option:selected').val(),
+             coverage_kind: 'dental'
+      },
+      url: '/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/update_benefits.js',
+    })
     Quote.set_dental_plan_costs()
   }
   var _plan_test = function(plan, criteria){
@@ -108,10 +118,18 @@ QuotePageLoad = (function() {
       $('#pct_child_under_26').bootstrapSlider('setValue', child_value = relationship_benefits['child_under_26']);
       $('#child_input').val(child_value)
       $('#child_label').html(child_value + '%')
-      $('#dental_pct_employee').bootstrapSlider('setValue',relationship_benefits['employee']);
-      $('#dental_pct_spouse').bootstrapSlider('setValue', relationship_benefits['spouse']);
-      $('#dental_pct_domestic_partner').bootstrapSlider('setValue', relationship_benefits['domestic_partner']);
-      $('#dental_pct_child_under_26').bootstrapSlider('setValue', relationship_benefits['child_under_26']);
+      $('#dental_pct_employee').bootstrapSlider('setValue',employee_value = dental_relationship_benefits['employee']);
+      $('.dental #employee_slide_input').val(employee_value)
+      $('.dental #employee_slide_label').html(employee_value + '%')
+      $('#dental_pct_spouse').bootstrapSlider('setValue',  spouse_value = dental_relationship_benefits['spouse']);
+      $('.dental #spouse_input').val(spouse_value)
+      $('.dental #spouse_label').html(spouse_value + '%')
+      $('#dental_pct_domestic_partner').bootstrapSlider('setValue', domestic_value = dental_relationship_benefits['domestic_partner']);
+      $('.dental #domestic_input').val(domestic_value)
+      $('.dental #domestic_label').html(domestic_value + '%')
+      $('#dental_pct_child_under_26').bootstrapSlider('setValue', child_value = dental_relationship_benefits['child_under_26']);
+      $('.dental #child_input').val(child_value)
+      $('.dental #child_label').html(child_value + '%')
   }
   var configure_benefit_group = function(quote_id, broker_role_id,benefit_group_id) {
     $.ajax({
@@ -120,12 +138,13 @@ QuotePageLoad = (function() {
             url: '/broker_agencies/broker_roles/' + broker_role_id +'/quotes/get_quote_info.js'
           }).done(function(response){
               relationship_benefits = response['relationship_benefits']
+              dental_relationship_benefits = response['dental_relationship_benefits']
               roster_premiums = response['roster_premiums']
+              dental_roster_premiums = response['dental_roster_premiums']
               _turn_off_criteria()
               deductible_value = parseInt(response['summary']['deductible_value'])
               $('#ex1').bootstrapSlider('setValue', deductible_value)
               $('#ex1_input').val(deductible_value)
-              console.log('deductible', deductible_value)
               toggle_plans(response['criteria'])
               _set_benefits()
               Quote.set_plan_costs()
@@ -133,7 +152,7 @@ QuotePageLoad = (function() {
   }
 
   var _get_health_cost_comparison =function(){
-    var plans = Quote.selected_plans();
+    var plans = Quote.selected_plans('health');
     if(plans.length == 0) {
       alert('Please select one or more plans for comparison');
       return;
@@ -154,7 +173,7 @@ QuotePageLoad = (function() {
     })
   }
   var _get_dental_cost_comparison= function() {
-    plans = selected_plans();
+    plans = Quote.selected_plans('dental');
     quote_id=$('#quote').val();
     if(plans.length == 0) {
       alert('Please select one or more plans for comparison');
@@ -162,8 +181,12 @@ QuotePageLoad = (function() {
      }
     $.ajax({
       type: "GET",
-      url: "/broker_agencies/quotes/dental_cost_comparison",
-      data: {plans: plans, quote: quote_id},
+      url: "/broker_agencies/broker_roles/"+$('#broker_role_id').val()+"/quotes/dental_cost_comparison",
+      data: {
+        plans: plans,
+        quote_id: $('#quote_id').val(),
+        benefit_id: $('#benefit_group_select option:selected').val(),
+      },
       success: function(response) {
         $('#dental_plan_comparison_frame').html(response);
       }

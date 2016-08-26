@@ -33,14 +33,15 @@ var Quote = ( function() {
       $(employee_cost_div).html(Math.ceil(parseFloat(premium)))
     }
   }
-  var selected_plans = function(){
+  var selected_plans = function(coverage_kind){
     var plans=[];
-    $.each($('.btn.active input'), function(i,item){plans.push( $(item).attr("value"))})
+    var panel_class = '.' + coverage_kind + '-panel '
+    $.each($(panel_class +' .btn.active input'), function(i,item){plans.push( $(item).attr("value"))})
     return(plans)
   }
   var sort_plans = function(){
     var sort_by = $(this.parentNode).text();
-    var plans = selected_plans()
+    var plans = selected_plans('health')
     if(plans.length == 0) {
       alert('Please select one or more plans for comparison');
       return;
@@ -59,7 +60,9 @@ var Quote = ( function() {
     })
   }
   var _compared_plans_export = function(){
-    var plans = selected_plans()
+    // NOT BEING USED 
+    // TODOJF
+    // needs to get plans from the dragged columns
     $.ajax({
       type: "GET",
       url: '/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/download_pdf',
@@ -69,6 +72,8 @@ var Quote = ( function() {
     })
   }
   var _export_compare_plans_listener = function(){
+    // NOT BEING USED
+    // TODOJF
     $('#pdf_export_compare_plans').on('click', _compared_plans_export);
   }
   var _open_quote = function() {
@@ -83,12 +88,6 @@ var Quote = ( function() {
     $('[aria-controls="publish-quote"]').attr('aria-expanded', true)
     $('#publish-quote').addClass('in')
   }
-  var _set_quote_toolbar =  function(summary) {
-    $('#quote-name').html(summary['name'])
-    $('#quote-status').html(summary['status'])
-    $('#quote-plan-name').html(summary['plan_name'])
-    $('#quote-dental-plan-name').html(summary['dental_plan_name'])
-  }
   var inject_plan_into_quote = function(quote_id, benefit_group_id, plan_id, elected) {
     $.ajax({
       type: "GET",
@@ -96,7 +95,8 @@ var Quote = ( function() {
       data: {quote_id: quote_id,
              benefit_group_id: benefit_group_id,
              plan_id: plan_id,
-             elected: elected},
+             elected: elected,
+             },
       success: function(response){
         $('#publish-quote').html(response);
       }
@@ -110,13 +110,6 @@ var Quote = ( function() {
         benefit_group_id = $('#benefit_group_select').val()
         elected=td.index()
         inject_plan_into_quote(quote_id, benefit_group_id, plan_id, elected)
-        $.ajax({
-          type: 'GET',
-          data: {quote_id: quote_id, benefit_group_id: benefit_group_id},
-          url: '/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/get_quote_info.js'
-        }).done(function(response){
-          _set_quote_toolbar(response['summary'])
-        })
         _open_quote()
     })
   }

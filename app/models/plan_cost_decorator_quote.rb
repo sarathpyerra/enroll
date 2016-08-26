@@ -18,7 +18,7 @@ class PlanCostDecoratorQuote < PlanCostDecorator
 
   class << self
 
-    def elected_plans_cost_bounds plans, relationship_benefits, roster_premiums
+    def elected_plans_cost_bounds plans, relationship_benefits, roster_premiums, elected_plans=[]
       bounds = {
         carrier_low: Hash.new{|h,k| h[k] = 999999},
         carrier_high: Hash.new{|h,k| h[k] = 0},
@@ -29,6 +29,8 @@ class PlanCostDecoratorQuote < PlanCostDecorator
         carrier_high_plan: Hash.new,
         metal_low_plan: Hash.new,
         metal_high_plan: Hash.new,
+
+        elected_plans_cost: [],
       }
       #employer_premiums={}
       plans.each{|plan|
@@ -51,6 +53,8 @@ class PlanCostDecoratorQuote < PlanCostDecorator
         bounds[:metal_high_plan][metal] = plan.id if cost > bounds[:metal_high][metal]
         bounds[:metal_low][metal] = cost if cost < bounds[:metal_low][metal]
         bounds[:metal_high][metal] = cost if cost > bounds[:metal_high][metal]
+
+        elected_plans_cost <<  cost if elected_plans.include? plan.id
       }
       bounds
     end
@@ -62,9 +66,7 @@ class PlanCostDecoratorQuote < PlanCostDecorator
       low = bounds[:metal_low][up_metal] - employer_cost
       high = bounds[:metal_high][up_metal] - employer_cost
       low_dollar = low < 0 ? "-$#{-low.ceil}" : "$#{low.ceil}"
-      buy_up = "Buy #{up_metal.capitalize} for #{low_dollar} to $#{high.ceil}"
-      puts buy_up
-      buy_up
+      "Buy #{up_metal.capitalize} for #{low_dollar} to $#{high.ceil}"
     end
   end
 end
