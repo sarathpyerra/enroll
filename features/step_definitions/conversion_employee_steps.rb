@@ -119,7 +119,7 @@ end
 Then(/Employee should see confirmation and clicks continue/) do
   expect(page).to have_content "Based on the information you entered, you may be eligible to enroll now but there is limited time"
   screenshot("valid_qle")
-  click_button 'Continue'
+  click_button "Continue"
 end
 
 Then(/Employee should see family members page and clicks continue/) do
