@@ -13,7 +13,7 @@
     <% elsif hbx_enrollment.coverage_canceled?  %>
     <div class="text-right">
       <span class="label label-success canceled">
-      Canceled
+        Canceled
       </span>
     </div>
     <% else %>
@@ -95,12 +95,12 @@
         <strong class="text-danger">Plan End:
         </strong>
         <% if @census_employee.coverage_terminated_on.present? %>
-          <span class="text-danger">
-            <%= @census_employee.coverage_terminated_on.end_of_month %>
-          </span>
+        <span class="text-danger">
+          <%= @census_employee.coverage_terminated_on.end_of_month %>
+        </span>
         <% end %>
       </div>
-  </div>
+    </div>
     <% if hbx_enrollment.is_coverage_waived? %>
     <div class="col-xs-12 vertically-aligned-row">
       <div class="benefit-group info vertical-align-top">
@@ -172,6 +172,7 @@
         <i class="fa fa-phone fa-2x pull-left"></i>
         <span>Carrier Contact Info</span>
       </a>
+      <%= render partial: "shared/carrier_contact_information", locals: { plan: plan } unless plan.carrier_profile.blank? %>
     </div>
     <% if !read_only == true %>
     <div class="col-lg-3">
@@ -193,7 +194,6 @@
     <% end %>
   </div>
 </div>
-</div>
 <% else %>
-  <%= render partial: 'insured/families/waived_coverage_widget', locals: { read_only: true, hbx_enrollment: @census_employee.active_benefit_group_assignment.hbx_enrollments.detect{|enrollment| enrollment.coverage_kind == hbx_enrollment.coverage_kind } } %>
+<%= render partial: 'insured/families/waived_coverage_widget', locals: { read_only: true, hbx_enrollment: @census_employee.active_benefit_group_assignment.hbx_enrollments.detect{|enrollment| enrollment.coverage_kind == hbx_enrollment.coverage_kind } } %>
 <% end %>
