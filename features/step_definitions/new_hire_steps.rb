@@ -77,6 +77,7 @@ end
 
 When(/(.*) clicks on Continue button on receipt page/) do |named_person|
   find('.interaction-click-control-continue').click
+  screenshot ("Please be right")
 end
 
 Then(/(.*) should see \"my account\" page with enrollment/) do |named_person|
