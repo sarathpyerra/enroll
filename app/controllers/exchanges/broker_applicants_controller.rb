@@ -94,4 +94,8 @@ class Exchanges::BrokerApplicantsController < ApplicationController
       redirect_to exchanges_hbx_profiles_root_path, :flash => { :error => "You must be an HBX staff member" }
     end
   end
+
+  def sort_by_latest_transition_time(broker_applicants, limit_size)
+    broker_applicants.order_by("broker_role.workflow_state_transitions.0.transition_at" => -1).limit(limit_size)
+  end
 end
