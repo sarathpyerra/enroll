@@ -9,7 +9,16 @@
 				</button>
 			</div>
 			<div class="col-md-2">
-				<% if qhh.object.persisted? %><select id="duplicate-family-id-<%=qhh.object.id%>" data-household-id="<%= qhh.object.id %>" class="custom_selectric"><option>Duplicate this family by:</option><option value="3">3</option><option value="5">5</option><option value="10">10</option></select><% end %>
+				<% if qhh.object.persisted? %>
+          <select id="duplicate-family-id-<%=qhh.object.id%>" data-household-id="<%= qhh.object.id %>" class="custom_selectric">
+            <option>Duplicate this family by:</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+          </select>
+        <% end %>
 			</div>
 			<div class="col-md-1">
 				<button type="button" data-household-id="<%=qhh.object.id%>" data-quote-id="<%=@quote.id%>" id="remove_household_button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>

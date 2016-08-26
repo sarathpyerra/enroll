@@ -26,7 +26,7 @@ class BrokerAgencies::QuotesController < ApplicationController
       @quote.claim_code = @quote.employer_claim_code
       @quote.publish!
     end
-    flash[:notice] = "Quote Published" 
+    flash[:notice] = "Quote Published"
   end
 
   # displays index page of quotes
@@ -138,11 +138,11 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     unless params[:duplicate_household].blank? && params[:num_of_dup].blank?
       dup_household = @quote.quote_households.find(params[:duplicate_household]).dup
-      dup_household.quote_members.each do |qhm|
-        qhm.dob = nil
-        qhm.first_name = ""
-        qhm.last_name = ""
-      end
+      #dup_household.quote_members.each do |qhm|
+        #qhm.dob = nil
+        #qhm.first_name = ""
+        #qhm.last_name = ""
+      #end
       for i in 0..params[:num_of_dup].to_i
         temp_household = dup_household.dup
         max_family_id = max_family_id + 1
