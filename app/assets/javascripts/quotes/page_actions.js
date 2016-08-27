@@ -148,6 +148,7 @@ QuotePageLoad = (function() {
               toggle_plans(response['criteria'])
               _set_benefits()
               Quote.set_plan_costs()
+              Quote.set_dental_plan_costs()
           })
   }
 

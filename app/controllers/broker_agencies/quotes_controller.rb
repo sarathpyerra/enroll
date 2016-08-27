@@ -104,7 +104,7 @@ class BrokerAgencies::QuotesController < ApplicationController
           detailCost = Array.new
           @q.quote_households.each do |hh|
             pcd = PlanCostDecorator.new(p, hh, @q, p)
-            detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employee_contribution]] }
+            detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employer_contribution]] }
           end
           employer_cost = @q.roster_employer_contribution(p,p)
           @quote_results[p.name] = {:detail => detailCost,
@@ -133,8 +133,9 @@ class BrokerAgencies::QuotesController < ApplicationController
       detailCost = Array.new
       @q.quote_households.each do |hh|
         pcd = PlanCostDecorator.new(p, hh, @q, p)
-        detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employee_contribution]] }
+        detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employer_contribution]] }
       end
+
       employer_cost = @q.roster_employer_contribution(p,p)
       @quote_results[p.name] = {:detail => detailCost,
         :total_employee_cost => @q.roster_employee_cost(p),
@@ -409,25 +410,32 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     if params[:plan_id] && bg
       plan = Plan.find(params[:plan_id][8,100])
-      elected_plan_choice = ['na', 'Single Plan', 'Single Carrier', 'Metal Level'][params[:elected].to_i]
-      bg.plan = plan
-      bg.plan_option_kind = elected_plan_choice
-      roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds($quote_shop_health_plans,
-         bg.quote_relationship_benefits, bg.roster_cost_all_plans)
-      case elected_plan_choice
-        when 'Single Carrier'
-          bg.plan_option_kind = "single_carrier"
-          bg.published_lowest_cost_plan = roster_elected_plan_bounds[:carrier_low_plan][plan.carrier_profile.abbrev]
-          bg.published_highest_cost_plan = roster_elected_plan_bounds[:carrier_high_plan][plan.carrier_profile.abbrev]
-        when 'Metal Level'
-          bg.plan_option_kind = "metal_level"
-          bg.published_lowest_cost_plan = roster_elected_plan_bounds[:metal_low_plan][plan.metal_level]
-          bg.published_highest_cost_plan = roster_elected_plan_bounds[:metal_high_plan][plan.metal_level]
-        else
-          bg.plan_option_kind = "single_plan"
-          bg.published_lowest_cost_plan = plan.id
-          bg.published_highest_cost_plan = plan.id
+      if params[:coverage_kind]  != 'dental'
+        elected_plan_choice = ['na', 'Single Plan', 'Single Carrier', 'Metal Level'][params[:elected].to_i]
+        bg.plan = plan
+        bg.plan_option_kind = elected_plan_choice
+        roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds($quote_shop_health_plans,
+           bg.quote_relationship_benefits, bg.roster_cost_all_plans)
+        case elected_plan_choice
+          when 'Single Carrier'
+            bg.plan_option_kind = "single_carrier"
+            bg.published_lowest_cost_plan = roster_elected_plan_bounds[:carrier_low_plan][plan.carrier_profile.abbrev]
+            bg.published_highest_cost_plan = roster_elected_plan_bounds[:carrier_high_plan][plan.carrier_profile.abbrev]
+          when 'Metal Level'
+            bg.plan_option_kind = "metal_level"
+            bg.published_lowest_cost_plan = roster_elected_plan_bounds[:metal_low_plan][plan.metal_level]
+            bg.published_highest_cost_plan = roster_elected_plan_bounds[:metal_high_plan][plan.metal_level]
+          else
+            bg.plan_option_kind = "single_plan"
+            bg.published_lowest_cost_plan = plan.id
+            bg.published_highest_cost_plan = plan.id
         end
+      else
+        elected_plan_choice = ['na', 'custom', 'carrier'][params[:elected].to_i]
+        bg.dental_plan_option_kind = elected_plan_choice
+        bg.dental_plan = plan
+        bg.elected_plans_list = params[:elected_plans_list] || []
+      end
       bg.save
     end
 

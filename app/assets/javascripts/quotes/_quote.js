@@ -25,7 +25,7 @@ var Quote = ( function() {
       kinds = Object.keys(premiums) 
       for (var j=0; j<kinds.length; j++) {
         kind = kinds[j]
-        premium = premium + premiums[kind] * QuotePageLoad.dental_relationship_benefits[kind]
+        premium = premium + premiums[kind] * QuotePageLoad.dental_relationship_benefits()[kind]
       }
       premium = Math.round(premium)/100.
       plan_button = "[value='" + plan_id + "']"
@@ -88,7 +88,7 @@ var Quote = ( function() {
     $('[aria-controls="publish-quote"]').attr('aria-expanded', true)
     $('#publish-quote').addClass('in')
   }
-  var inject_plan_into_quote = function(quote_id, benefit_group_id, plan_id, elected) {
+  var inject_plan_into_quote = function(quote_id, benefit_group_id, plan_id, elected, coverage_kind, elected_plans_list) {
     $.ajax({
       type: "GET",
       url: "/broker_agencies/broker_roles/"+$('#broker_role_id').val()+"/quotes/set_plan",
@@ -96,6 +96,8 @@ var Quote = ( function() {
              benefit_group_id: benefit_group_id,
              plan_id: plan_id,
              elected: elected,
+             coverage_kind: coverage_kind,
+             elected_plans_list: coverage_kind,
              },
       success: function(response){
         $('#publish-quote').html(response);

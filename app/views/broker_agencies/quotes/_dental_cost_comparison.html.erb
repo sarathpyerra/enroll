@@ -72,7 +72,6 @@
 
        <span >$<%= qr[1][:total_employer_cost].ceil %></span>
        <br>
-       <%= qr[1][:buy_up]  %>
         </sm>
    </div>
       </td>
@@ -105,7 +104,8 @@
           <%= qr[:age] %>
         </td>
         <% @quote_results.keys.each do |de| %>
-          <td class="quote_detail_results"  style='padding-left: 100px'><b><%= @quote_results[de][:total_employer_cost].round(2) %></b></td>
+          <td class="quote_detail_results"  style='padding-left: 100px'>
+            <b><%= @quote_results[de][:detail].flatten[index][:employer_contribution].round(2) %></b></td>
         <% end %>
       </tr>
     <% end %>
