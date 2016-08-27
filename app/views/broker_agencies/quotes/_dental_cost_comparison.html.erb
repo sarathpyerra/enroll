@@ -21,14 +21,11 @@
       <td class="quote_detail_plan_header">Offering Option: </td>
       <td class="quote_detail_plan_header">By Single Plan</td>
       <td class="quote_detail_plan_header">By Single Carrier</td>
-      <td class="quote_detail_plan_header">By Metal Level</td>
     </tr>
     <tr>
       <td class="quote_detail_results_header" >Plan</td>
       <td class="quote_detail_results_header text-center">Reference</td>
       <td class="quote_detail_results_header text-center">Lowest / Reference / Highest</td>
-      <td class="quote_detail_results_header text-center">Lowest / Reference / Highest</td>
-    </tr>
    <% @quote_results.each do |k,v| %>
        <% cost =  v[:total_employer_cost].ceil
           plan = @health_plans.detect{|plan|plan.name == k}
@@ -49,11 +46,6 @@
             <div class='btn'>
                 $<%= carrier_low %> / $<%= cost %> / $<%= carrier_high %>
            </div>
-        </td>
-        <td class="quote_detail_results text-center dental_publish">
-             <div class='btn'>
-                  $<%= metal_low %> / $<%= cost %> / $<%= metal_high %>
-            </div>
         </td>
       </tr>
     <% end %>

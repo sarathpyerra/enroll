@@ -51,7 +51,6 @@ class QuoteBenefitGroup
   delegate :quote_name, to: :quote
   delegate :aasm_state, to: :quote
 
-
   validates_presence_of :title
 
   before_save :build_relationship_benefits
