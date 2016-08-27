@@ -91,6 +91,7 @@
                         <header>Plans By</header>
                       </th>
                     </tr>
+                    <% if benefit_group.plan %>
                     <tr>
                       <td class="col-md-2 col-xs-2">
                         <p>
@@ -118,6 +119,36 @@
                         </p>
                       </td>
                     </tr>
+                    <%end%>
+                    <% if benefit_group.dental_plan %>
+                    <tr>
+                      <td class="col-md-2 col-xs-2">
+                        <p>
+                          <%=benefit_group.dental_plan.name %>
+                        </p>
+                      </td>
+                      <td class="col-md-2 col-xs-2">
+                        <p>
+                          <%=benefit_group.dental_plan.carrier_profile.abbrev.upcase %>
+                        </p>
+                      </td>
+                      <td class="col-md-2 col-xs-2">
+                        <p>
+                          <%= benefit_group.dental_plan.plan_type.upcase %>
+                        </p>
+                      </td>
+                      <td class="col-md-2 col-xs-2">
+                        <p>
+                          <%=benefit_group.dental_plan.metal_level.capitalize%>
+                        </p>
+                      </td>
+                      <td class="col-md-2 col-xs-2">
+                        <p>
+                          <%= benefit_group.dental_plan_option_kind.titleize %>
+                        </p>
+                      </td>
+                    </tr>
+                    <%end%>
                   </table>
                 </div>
                 <div id="collapse-health-<%=benefit_group.id.to_s%>" class="collapse" >

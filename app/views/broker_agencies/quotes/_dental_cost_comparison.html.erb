@@ -40,18 +40,22 @@
        %>
        <tr class='publish' id='publish_<%=@quote_results[k][:plan_id]%>'>
          <td class="quote_detail_results" style='white-space:nowrap'><%= k %></td>
-         <td class="quote_detail_results text-center">
+         <td class="quote_detail_results text-center dental_publish">
             <div class='btn'>
              $<%= cost %>
              </div>
          </td>
-           <td class="quote_detail_results text-center"><div class='btn'>
-        $<%= carrier_low %> / $<%= cost %> / $<%= carrier_high %>
-        </div></td>
-      <td class="quote_detail_results text-center"><div class='btn'>
-        $<%= metal_low %> / $<%= cost %> / $<%= metal_high %>
-        </div></td>
-       </tr>
+         <td class="quote_detail_results text-center dental_publish">
+            <div class='btn'>
+                $<%= carrier_low %> / $<%= cost %> / $<%= carrier_high %>
+           </div>
+        </td>
+        <td class="quote_detail_results text-center dental_publish">
+             <div class='btn'>
+                  $<%= metal_low %> / $<%= cost %> / $<%= metal_high %>
+            </div>
+        </td>
+      </tr>
     <% end %>
   </table>
 

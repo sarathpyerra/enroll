@@ -190,6 +190,7 @@ QuotePageLoad = (function() {
       },
       success: function(response) {
         $('#dental_plan_comparison_frame').html(response);
+        Quote.load_publish_listeners();
       }
     })
   }

@@ -97,7 +97,7 @@ var Quote = ( function() {
              plan_id: plan_id,
              elected: elected,
              coverage_kind: coverage_kind,
-             elected_plans_list: coverage_kind,
+             elected_plans_list: elected_plans_list,
              },
       success: function(response){
         $('#publish-quote').html(response);
@@ -111,7 +111,8 @@ var Quote = ( function() {
         plan_id=td.parent().attr('id')
         benefit_group_id = $('#benefit_group_select').val()
         elected=td.index()
-        inject_plan_into_quote(quote_id, benefit_group_id, plan_id, elected)
+        var coverage_kind = td.hasClass('dental_publish') ? 'dental' :  'health'
+        inject_plan_into_quote(quote_id, benefit_group_id, plan_id, elected, coverage_kind, [])
         _open_quote()
     })
   }
