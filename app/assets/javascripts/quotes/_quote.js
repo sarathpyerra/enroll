@@ -39,9 +39,10 @@ var Quote = ( function() {
     $.each($(panel_class +' .btn.active input'), function(i,item){plans.push( $(item).attr("value"))})
     return(plans)
   }
-  var sort_plans = function(){
+  var sort_plans = function(coverage_kind , target_id){
+    console.log('sort_plans '+coverage_kind+' target_id'+target_id);
     var sort_by = $(this.parentNode).text();
-    var plans = selected_plans('health')
+    var plans = selected_plans(coverage_kind);
     if(plans.length == 0) {
       alert('Please select one or more plans for comparison');
       return;
@@ -49,11 +50,11 @@ var Quote = ( function() {
     $.ajax({
       type: "GET",
       url: "/broker_agencies/broker_roles/"+$('#broker_role_id').val()+"/quotes/plan_comparison",
-      data: {plans: plans, sort_by: sort_by.substring(0, sort_by.length-2)},
+      data: {plans: plans, coverage_kind: coverage_kind ,sort_by: sort_by.substring(0, sort_by.length-2)},
       success: function(response) {
-        $('#plan_comparison_frame').html(response);
-        $('#compare_plans_table').dragtable({dragaccept: '.movable'});
-        $('.cost_sort').on('click', sort_plans);
+        $('#'+target_id).html(response);
+        $('#'+coverage_kind+'_compare_plans_table').dragtable({dragaccept: '.movable'});
+        $('.cost_sort').on('click', sort_plans(coverage_kind,target_id));
         _export_compare_plans_listener();
         $('#plan_ids').val(null);
       }
@@ -118,10 +119,10 @@ var Quote = ( function() {
     })
   }
   var show_benefit_group=function(quote_id, benefit_group_id){
-    QuoteSliders.slider_listeners()
-    QuotePageLoad.configure_benefit_group(quote_id, $('#broker_role_id').val(),benefit_group_id)
-    inject_plan_into_quote(quote_id, benefit_group_id)
-    QuotePageLoad.page_load_listeners()
+    QuoteSliders.slider_listeners();
+    QuotePageLoad.configure_benefit_group(quote_id, $('#broker_role_id').val(),benefit_group_id);
+    inject_plan_into_quote(quote_id, benefit_group_id);
+    QuotePageLoad.page_load_listeners();
   }
   return {
     set_plan_costs: set_plan_costs,

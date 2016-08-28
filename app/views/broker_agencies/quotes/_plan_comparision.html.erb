@@ -8,7 +8,7 @@
     <li> Use <i class='fa fa-caret-down fa-lg'></i>,<i class='fa fa-caret-up fa-lg'></i> to sort by copay </li>
   </ul>
   <div class="mygrid-wrapper-div">
-   <table class="table bordered compare-table", border = "1", style="font-size:11px;" id="compare_plans_table">
+   <table class="table bordered compare-table", border = "1", style="font-size:11px;" id="<%=@coverage_kind.downcase%>_compare_plans_table">
         <tr>
           <th class="row-title">Plans</th>
           <% qhps.each do |qhp|%>
