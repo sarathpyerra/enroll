@@ -9,7 +9,7 @@
 					%>
 			    <%= submit_tag "Save Changes", class: "btn btn-primary #{disable_class}" %>
 					<%= submit_tag "Add Family", class: "btn btn-primary #{disable_class}" %>
-					<%= link_to 'Upload Employee Roster' , upload_employee_roster_broker_agencies_broker_role_quotes_path , class: "btn btn-primary #{disable_class}", remote: true  ,id: "upload_employees" %> <br>
+					<%= link_to 'Upload Employee Roster' , upload_employee_roster_broker_agencies_broker_role_quote_path(@broker, @quote) , class: "btn btn-primary #{disable_class}", remote: true  ,id: "upload_employees" %> <br>
 				</div>
 				<div class="col-sm-2">
 					<%= link_to "Back to Quotes", my_quotes_broker_agencies_broker_role_quotes_path(@broker), class: 'btn btn-primary btn-sm!', data: { no_turbolink: true } %>

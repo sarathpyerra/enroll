@@ -277,8 +277,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def build_employee_roster
     @employee_roster = parse_employee_roster_file
-    @quote= Quote.new
-    @quote.quote_benefit_groups << QuoteBenefitGroup.new(:title =>"Default Benefit Package")
+    @quote= Quote.find(params[:id])
     @quote_benefit_group_dropdown = @quote.quote_benefit_groups
     if @employee_roster.is_a?(Hash)
       @employee_roster.each do |family_id , members|
@@ -289,8 +288,10 @@ class BrokerAgencies::QuotesController < ApplicationController
           @quote_household.quote_members << @quote_members
         end
         @quote.quote_households << @quote_household
+        @quote.save!
       end
     end
+    render "edit"
   end
 
   def upload_employee_roster
