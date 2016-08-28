@@ -270,9 +270,9 @@ Rails.application.routes.draw do
         get :messages
         get :staff_index
         get :agency_messages
-        get :build_employee_roster
-        post :build_employee_roster
-        get :upload_employee_roster
+        #get :build_employee_roster
+        #post :build_employee_roster
+        #get :upload_employee_roster
         post :build_plan_year
         get :assign_history
       end
@@ -306,8 +306,6 @@ Rails.application.routes.draw do
       root 'quotes#index'
       collection do
         post :quotes_index_datatable
-        get :upload_employee_roster
-        post :build_employee_roster
         get :new_household, :format => "js"
         post :update_benefits
         post :publish_quote
@@ -325,6 +323,8 @@ Rails.application.routes.draw do
         get :my_quotes
       end
       member do
+        get :upload_employee_roster
+        post :build_employee_roster
         delete :delete_quote
         post :download_employee_roster
         post :delete_member
