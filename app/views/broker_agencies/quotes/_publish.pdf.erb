@@ -62,6 +62,7 @@
                         <th>Plans By</th>
                       </tr>
                     </thead>
+                      <% if benefit_group.plan %>
                       <tr>
                         <td><%= benefit_group.plan.name %></td>
                         <td><%= benefit_group.plan.carrier_profile.abbrev.upcase %></td>
@@ -69,6 +70,16 @@
                         <td><%= benefit_group.plan.metal_level.capitalize%></td>
                         <td><%= benefit_group.plan_option_kind.titleize%></td>
                       </tr>
+                      <%end%>
+                      <% if benefit_group.dental_plan %>
+                      <tr>
+                        <td><%= benefit_group.dental_plan.name %></td>
+                        <td><%= benefit_group.dental_plan.carrier_profile.abbrev.upcase %></td>
+                        <td><%= benefit_group.dental_plan.plan_type.upcase%></td>
+                        <td><%= benefit_group.dental_plan.metal_level.capitalize%></td>
+                        <td><%= benefit_group.dental_plan_option_kind.titleize%></td>
+                      </tr>
+                      <%end%>
                   </table>
                 </div>
                 <p>Below is your Employer's Plan offering Spectrum. Your offerings are based on <%= benefit_group.plan_option_kind.titleize.titleize %>.</p>
