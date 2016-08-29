@@ -179,6 +179,10 @@ class QuoteBenefitGroup
     plan && roster_employer_contribution(plan.id, plan.id)
   end
 
+  def published_dental_employer_cost
+    dental_plan && roster_employer_contribution(dental_plan.id, dental_plan.id)
+  end
+
   # Determines if this benefit group is assigned to a quote household
   def is_assigned?
     self.quote.quote_households.each do |quote_household|

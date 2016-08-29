@@ -267,7 +267,10 @@ QuotePageLoad = (function() {
       $thisObj.html('View Details <i class="fa fa-chevron-down fa-lg"></i>');
       $thisObj.addClass("view");
     }
+    $thisObj.find('i').attr('data-toggle', 'collapse');
+    $thisObj.find('i').attr('href', $thisObj.attr('href'));
   }
+
   return {
       page_load_listeners: page_load_listeners,
       configure_benefit_group: configure_benefit_group,
