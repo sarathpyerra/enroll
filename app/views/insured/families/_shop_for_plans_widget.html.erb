@@ -43,7 +43,7 @@
                 <strong>Shop for health and dental plans</strong>
               </div>
 
-              <% if has_active_sep?(@family) && !newhire_enrollment_eligible?(@employee_role)%>
+              <% if @family.active_seps.present? && !newhire_enrollment_eligible?(@employee_role)%>
                 <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12  <%=pundit_class Family, :updateable?%> ">
                   <button class="btn btn-default pull-right" data-target="#choose_flow" data-toggle="modal" type="button">
                   Shop for Plans
@@ -54,7 +54,7 @@
                   <%= submit_tag 'Shop for Plans', class: "btn btn-default pull-right" %>
                 </div>
               <% end %>
-                
+
             </div>
           </div>
         </div>
