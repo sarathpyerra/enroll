@@ -108,6 +108,7 @@ When(/Employee enters Qualifying Life Event/) do
   first("#carousel-qles a").click
   expect(page).to have_content "Married"
   screenshot("future_qle_date")
+  sleep 1
   fill_in "qle_date", :with => (TimeKeeper.date_of_record - 5.days).strftime("%m/%d/%Y")
   click_link "CONTINUE"
   click_button "Continue"
