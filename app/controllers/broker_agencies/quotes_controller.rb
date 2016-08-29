@@ -147,13 +147,14 @@ class BrokerAgencies::QuotesController < ApplicationController
     render partial: 'dental_cost_comparison', layout: false
   end
 
-  def add_family
-    @qhh = Quote.all.first.quote_households.first
-    @quote = Quote.find(@qhh.quote)
-    respond_to do |format|
-      format.js
-    end
-  end
+  # no longer use?
+  # def add_family
+  #   @qhh = Quote.all.first.quote_households.first
+  #   @quote = Quote.find(@qhh.quote)
+  #   respond_to do |format|
+  #     format.js
+  #   end
+  # end
 
   def edit
     #find quote to edit
@@ -236,7 +237,6 @@ class BrokerAgencies::QuotesController < ApplicationController
     if (@quote.update_attributes(update_params) && @quote.update_attributes(insert_params))
       redirect_to edit_broker_agencies_broker_role_quote_path(@broker.id, @quote, scrollTo: scrollTo),  :flash => { :notice => notice_message }
     else
-      #render "edit" , :flash => {:error => "Unable to update the employee roster" }
       redirect_to edit_broker_agencies_broker_role_quote_path(@broker.id, @quote) ,  :flash => { :error => "Unable to update the employee roster." }
     end
   end
@@ -258,8 +258,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def plan_comparison
     standard_component_ids = get_standard_component_ids
-    @coverage_kind= params[:coverage_kind]
-    @qhps = Products::QhpCostShareVariance.find_qhp_cost_share_variances(standard_component_ids, @active_year, @coverage_kind)
+    @qhps = Products::QhpCostShareVariance.find_qhp_cost_share_variances(standard_component_ids, @active_year, "Health")
     @sort_by = params[:sort_by].rstrip
     # Sorting by the same parameter alternates between ascending and descending
     @order = @sort_by == session[:sort_by_copay] ? -1 : 1
