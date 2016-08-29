@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BrokerAgencies::QuotesController, type: :controller do
+RSpec.describe BrokerAgencies::QuotesController, type: :controller, dbclean: :after_each do
   let(:person){create(:person , :with_broker_role)}
   let(:user){create(:user, person: person)}
   let(:quote){create :quote , :with_household_and_members}
