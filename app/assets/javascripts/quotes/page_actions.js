@@ -40,8 +40,8 @@ QuotePageLoad = (function() {
       if ((criteria_type == 'carriers') && (criteria_value != plan['carrier_abbrev']))   {result=false; break; }
       if ((criteria_type == 'metals') && (criteria_value != plan['metal']))     {result=false; break; }
       if ((criteria_type == 'plan_types') && (criteria_value != plan['plan_type'])) {result=false; break; }
-      if ((criteria_type == 'nationwide') && (criteria_value != plan['nationwide'])) {result=false; break; }
-      if ((criteria_type == 'dc_in_network') && (criteria_value != plan['dc_in_network'])) {result=false; break; }
+      if ((criteria_type == 'nationwide') && (criteria_value != String(plan['nationwide']))) {result=false; break; }
+      if ((criteria_type == 'dc_in_network') && (criteria_value != String(plan['dc_in_network']))) {result=false; break; }
     }
     if (parseInt(plan['deductible']) > parseInt(deductible_value)) {result=false}
 

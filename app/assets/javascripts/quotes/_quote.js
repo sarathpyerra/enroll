@@ -83,8 +83,8 @@ var Quote = ( function() {
     $('#feature-mgmt').removeClass('in')
     $('[aria-controls="plan-selection-mgmt"]').attr('aria-expanded', false)
     $('#plan-selection-mgmt').removeClass('in')
-    $('[aria-controls="dental-plan-selection-mgmt"]').attr('aria-expanded', false)
-    $('#dental-plan-selection-mgmt').removeClass('in')
+    $('[aria-controls="dental-feature-mgmt"]').attr('aria-expanded', false)
+    $('#dental-feature-mgmt').removeClass('in')
     $('[aria-controls="publish-quote"]').attr('aria-expanded', true)
     $('#publish-quote').addClass('in')
   }
