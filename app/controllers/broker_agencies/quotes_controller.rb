@@ -258,8 +258,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def plan_comparison
     standard_component_ids = get_standard_component_ids
-    @coverage_kind= params[:coverage_kind]
-    @qhps = Products::QhpCostShareVariance.find_qhp_cost_share_variances(standard_component_ids, @active_year, @coverage_kind)
+    @qhps = Products::QhpCostShareVariance.find_qhp_cost_share_variances(standard_component_ids, @active_year, "Health")
     @sort_by = params[:sort_by].rstrip
     # Sorting by the same parameter alternates between ascending and descending
     @order = @sort_by == session[:sort_by_copay] ? -1 : 1
