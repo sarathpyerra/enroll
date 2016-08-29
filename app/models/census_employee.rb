@@ -49,6 +49,7 @@ class CensusEmployee < CensusMember
   validate :check_census_dependents_relationship
   validate :no_duplicate_census_dependent_ssns
   validate :check_cobra_begin_date
+  validate :check_hired_on_later_than_dob
   after_update :update_hbx_enrollment_effective_on_by_hired_on
 
   before_save :assign_default_benefit_package
@@ -135,12 +136,12 @@ class CensusEmployee < CensusMember
     return unless benefit_group
     return if self.benefit_group_assignments.where(:benefit_group_id => benefit_group.id).present?
 
-    active = false 
+    active = false
     if active_benefit_group_assignment.blank?
       active = true
     else
       if PlanYear::PUBLISHED.include?(benefit_group.plan_year.aasm_state)
-        self.benefit_group_assignments = self.benefit_group_assignments.map do |bg_assignment| 
+        self.benefit_group_assignments = self.benefit_group_assignments.map do |bg_assignment|
           bg_assignment.is_active = false
           bg_assignment
         end
@@ -541,7 +542,7 @@ class CensusEmployee < CensusMember
           ce.save!(validate: false)
         end
       end
-    end 
+    end
 
   end
 
@@ -585,9 +586,9 @@ class CensusEmployee < CensusMember
       transitions from: [:cobra_eligible, :cobra_linked, :cobra_termination_pending],  to: :cobra_terminated
     end
 
-    event :reinstate_eligibility, :after => [:record_transition] do 
+    event :reinstate_eligibility, :after => [:record_transition] do
       transitions from: :employment_terminated, to: :employee_role_linked, :guard => :has_employee_role_linked?
-      transitions from: :employment_terminated,  to: :eligible 
+      transitions from: :employment_terminated,  to: :eligible
       transitions from: :cobra_terminated, to: :cobra_linked, :guard => :has_employee_role_linked?
       transitions from: :cobra_terminated,  to: :cobra_eligible
     end
@@ -755,6 +756,12 @@ class CensusEmployee < CensusMember
     if (ssn_changed? || dob_changed?) && (aasm_state != "eligible" && aasm_state != 'cobra_eligible')
       message = "An employee's identifying information may change only when in 'eligible' status. "
       errors.add(:base, message)
+    end
+  end
+
+  def check_hired_on_later_than_dob
+    if hired_on && dob && hired_on <= dob
+      errors.add(:hired_on, "can't be later than date of birth.")
     end
   end
 

@@ -991,7 +991,7 @@ RSpec.describe CensusEmployee, type: :model, dbclean: :after_each do
   end
 
   context '.find_or_build_benefit_group_assignment' do
-    
+
     let(:start_on) { TimeKeeper.date_of_record.beginning_of_month + 1.month - 1.year}
     let!(:employer_profile) { FactoryGirl.create(:employer_profile) }
     let!(:plan_year) { FactoryGirl.create(:plan_year, employer_profile: employer_profile, start_on: start_on, :aasm_state => 'active' ) }
@@ -1018,7 +1018,7 @@ RSpec.describe CensusEmployee, type: :model, dbclean: :after_each do
     let!(:census_employee) { CensusEmployee.create(**valid_params) }
 
     before do
-      census_employee.benefit_group_assignments.each{|bg| bg.delete} 
+      census_employee.benefit_group_assignments.each{|bg| bg.delete}
     end
 
     context 'when benefit group assignment with benefit group already exists' do
@@ -1071,7 +1071,6 @@ RSpec.describe CensusEmployee, type: :model, dbclean: :after_each do
     end
   end
 
-
   context 'editing a CensusEmployee SSN/DOB that is in a linked status' do
     let(:census_employee)     { FactoryGirl.create(:census_employee, first_name: 'John', last_name: 'Smith', dob: '1977-01-01'.to_date, ssn: '123456789') }
     let(:person)              { FactoryGirl.create(:person,          first_name: 'John', last_name: 'Smith', dob: '1966-10-10'.to_date, ssn: '314159265') }
@@ -1102,6 +1101,15 @@ RSpec.describe CensusEmployee, type: :model, dbclean: :after_each do
 
   end
 
+  context "check_hired_on_later_than_dob" do
+    let(:census_employee) { FactoryGirl.build(:census_employee) }
 
-
+    it "should fail" do
+      census_employee.dob = TimeKeeper.date_of_record - 30.years
+      census_employee.hired_on = TimeKeeper.date_of_record - 31.years
+      expect(census_employee.save).to be_falsey
+      expect(census_employee.errors[:hired_on].any?).to be_truthy
+      expect(census_employee.errors[:hired_on].to_s).to match /can't be later than date of birth/
+    end
+  end
 end
