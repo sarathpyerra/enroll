@@ -17,7 +17,7 @@
   <span class="for-remote-replace-url" id="show-sep-history" data-replace-url="<%= show_sep_history_exchanges_hbx_profiles_path(family: family.id)%>"></span>
 <% end %>
 {
-	"name": "<%= json_escape family.primary_family_member.full_name %>",
+	"name": <%= raw (link_to "#{family.primary_family_member.full_name}", resume_enrollment_exchanges_agents_path(person_id: family.primary_family_member.person.id)).to_json %>,
 	"ssn": "<%= json_escape number_to_obscured_ssn(family.primary_family_member.ssn) %>",
 	"dob": "<%= json_escape family.primary_family_member.dob %>",
 	"hbx_id": "<%= json_escape truncate(family.primary_family_member.hbx_id, length: 8, omission: "") %>",
