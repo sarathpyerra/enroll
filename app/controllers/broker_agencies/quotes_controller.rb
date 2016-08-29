@@ -147,13 +147,14 @@ class BrokerAgencies::QuotesController < ApplicationController
     render partial: 'dental_cost_comparison', layout: false
   end
 
-  def add_family
-    @qhh = Quote.all.first.quote_households.first
-    @quote = Quote.find(@qhh.quote)
-    respond_to do |format|
-      format.js
-    end
-  end
+  # no longer use?
+  # def add_family
+  #   @qhh = Quote.all.first.quote_households.first
+  #   @quote = Quote.find(@qhh.quote)
+  #   respond_to do |format|
+  #     format.js
+  #   end
+  # end
 
   def edit
     #find quote to edit
@@ -236,7 +237,6 @@ class BrokerAgencies::QuotesController < ApplicationController
     if (@quote.update_attributes(update_params) && @quote.update_attributes(insert_params))
       redirect_to edit_broker_agencies_broker_role_quote_path(@broker.id, @quote, scrollTo: scrollTo),  :flash => { :notice => notice_message }
     else
-      #render "edit" , :flash => {:error => "Unable to update the employee roster" }
       redirect_to edit_broker_agencies_broker_role_quote_path(@broker.id, @quote) ,  :flash => { :error => "Unable to update the employee roster." }
     end
   end

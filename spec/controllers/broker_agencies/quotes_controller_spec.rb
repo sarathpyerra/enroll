@@ -162,4 +162,21 @@ RSpec.describe BrokerAgencies::QuotesController, type: :controller do
     end
   end
 
+  describe "GET edit" do
+
+    it "returns http success" do
+      get :edit, broker_role_id: person.broker_role.id, id: quote
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe "POST quotes_index_datatable" do
+
+    it "should render quotes_index_datatable template" do
+      post :quotes_index_datatable, broker_role_id: person.broker_role.id, :format => :json
+      expect(response).to render_template("datatables/quotes_index_datatable")
+    end
+  end
+
+
 end
