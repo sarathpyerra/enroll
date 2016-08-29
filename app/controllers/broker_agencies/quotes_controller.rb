@@ -16,17 +16,14 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def publish_quote
-
-    # TODO VARUN => Add more checks to publish and save
-
     if @quote.may_publish?
-      # @benefit_group = @quote.quote_benefit_groups.first
-      # @benefit_group.plan_option_kind = params[:plan_option_kind].gsub(' ','_').downcase
-      # @benefit_group.published_reference_plan = Plan.find(params[:reference_plan_id]).id
       @quote.claim_code = @quote.employer_claim_code
       @quote.publish!
+      flash[:notice] = "Quote Published"
+    else
+      flash[:error] = "Unable to publish quote"
+      redirect_to my_quotes_broker_agencies_broker_role_quotes_path(@broker)
     end
-    flash[:notice] = "Quote Published"
   end
 
   # displays index page of quotes

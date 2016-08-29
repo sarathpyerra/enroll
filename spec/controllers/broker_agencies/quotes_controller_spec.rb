@@ -178,5 +178,18 @@ RSpec.describe BrokerAgencies::QuotesController, type: :controller, dbclean: :af
     end
   end
 
+  describe "POST publish_quote" do
+    it "should publish_quote" do
+      allow(quote).to receive(:may_publish?).and_return(true)
+      post :publish_quote, broker_role_id: person.broker_role.id, id: quote
+      expect(response).to have_http_status(:success)
+      expect(flash[:notice]).to match "Quote Published"
+    end
+
+    it "should redirect if not able to publish" do
+    end
+
+  end
+
 
 end
