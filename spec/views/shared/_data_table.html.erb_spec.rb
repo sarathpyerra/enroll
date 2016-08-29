@@ -31,6 +31,7 @@ describe "shared/_data_table.html.erb" do
       		["Delete", "", false]
       	],
       	row_functions: true,
+        row_data: true,
       	row_actions: [
       		["asterisk", "url", "request_type", "tooltip"],
       		["bomb", "url", "request_type", "tooltip"],
@@ -148,6 +149,7 @@ describe "shared/_data_table.html.erb" do
       		["Delete", "", false]
       	],
       	row_functions: false,
+        row_data: false,
       	row_actions: [
       		["asterisk", "url", "request_type", "tooltip"],
       		["bomb", "url", "request_type", "tooltip"],
