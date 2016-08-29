@@ -247,16 +247,12 @@ QuotePageLoad = (function() {
           broker_role_id = $("#broker_role_id").val()
           benefit_group_id = $(this).val()
           configure_benefit_group(quote_id, broker_role_id, benefit_group_id)
-      });
-      $('#reset_selected').on('click', reset_selected_plans);
-      $('#CostComparison').on('click', _get_health_cost_comparison);
-      $('#DentalCostComparison').on('click', _get_dental_cost_comparison);
-      $('#DentalPlanComparison').on('click', function(){
-         Quote.sort_plans('dental','dental_plan_comparison_frame');
       })
-      // $('.cost_sort').on('click', Quote.sort_plans('dental','dental_plan_comparison_frame'));
+      $('#reset_selected').on('click', reset_selected_plans)
+      $('#CostComparison').on('click', _get_health_cost_comparison)
+      $('#DentalCostComparison').on('click', _get_dental_cost_comparison)
       $('#PlanComparison').on('click', function(){
-         Quote.sort_plans('health','plan_comparison_frame');
+         Quote.sort_plans()
       })
   }
   var view_details=function($thisObj) {
