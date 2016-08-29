@@ -26,7 +26,10 @@
       <td class="quote_detail_results_header" >Plan</td>
       <td class="quote_detail_results_header text-center">Reference</td>
       <td class="quote_detail_results_header text-center">Lowest / Reference / Highest</td>
+    </tr>
+    <% i = 0 %>
    <% @quote_results.each do |k,v| %>
+   <% i = i + 1 %>
        <% cost =  v[:total_employer_cost].ceil
           plan = @health_plans.detect{|plan|plan.name == k}
           abbrev = CarrierProfile.find(plan.carrier_profile_id).abbrev
@@ -38,12 +41,12 @@
        <tr class='publish' id='publish_<%=@quote_results[k][:plan_id]%>'>
          <td class="quote_detail_results" style='white-space:nowrap'><%= k %></td>
          <td class="quote_detail_results text-center dental_publish">
-            <div class='btn'>
+            <div class='btn' id="single_dental_plan_<%= i%>">
              $<%= cost %>
              </div>
          </td>
          <td class="quote_detail_results text-center dental_publish">
-            <div class='btn'>
+            <div class='btn' id="single_carrier_<%= i %>">
                 $<%= carrier_low %> / $<%= cost %> / $<%= carrier_high %>
            </div>
         </td>

@@ -126,11 +126,14 @@ Given(/^the Plans exist$/) do
   end_on = start_on + 1.year - 1.day
   plan1 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', metal_level: 'silver', active_year: start_on.year, csr_variant_id: "01")
   plan2 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', metal_level: 'bronze', active_year: start_on.year, csr_variant_id: "01")
+  plan3 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', metal_level: 'dental', active_year: start_on.year, deductible: 4000)
+  plan4 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', metal_level: 'dental', active_year: start_on.year, deductible: 4000)
   Caches::PlanDetails.load_record_cache!
   $quote_shop_health_plans = [plan1,plan2]
+  $quote_shop_dental_plans = [plan3,plan4]
 end
 
-Then(/^the broker enters Employer Contribution percentages$/) do
+Then(/^the broker enters Employer Contribution percentages for health plan$/) do
   page.execute_script(" QuoteSliders.slider_listeners()")
   page.execute_script("$('#pct_employee').bootstrapSlider({})")
   sleep(2)
@@ -140,18 +143,42 @@ Then(/^the broker enters Employer Contribution percentages$/) do
   page.execute_script("$('#pct_employee').trigger('slideStop')")
 end
 
-Then(/^the broker filters the plans$/) do
+Then(/^the broker enters Employer Contribution percentages for dental plan$/) do
+  page.execute_script(" QuoteSliders.slider_listeners()")
+  page.execute_script("$('#dental_pct_employee').bootstrapSlider({})")
+  sleep(2)
+  find(:xpath, "//div[contains(@class, 'dental')]//*[@id='employee_slide_input']").set("80")
+  page.execute_script("$('#dental_pct_employee').bootstrapSlider('setValue', employee_value= 80)")
+  sleep(2)
+  page.execute_script("$('#dental_pct_employee').trigger('slideStop')")
+end
+
+Then(/^the broker filters health plans$/) do
   find(:xpath, "//*[@id='quote-plan-list']/label[1]").trigger("click")
   find(:xpath, "//*[@id='quote-plan-list']/label[2]").trigger("click")
 end
 
-Then(/^the broker clicks Compare Costs$/) do
+Then(/^the broker filters dental plans$/) do
+  find(:xpath, "//*[@id='quote-dental-plan-list']/label[1]").trigger("click")
+  find(:xpath, "//*[@id='quote-dental-plan-list']/label[2]").trigger("click")
+end
+
+Then(/^the broker clicks Compare Costs for health plans$/) do
   find('#CostComparison').trigger 'click'
 end
 
-When(/^the broker selects the Reference Plan$/) do
+Then(/^the broker clicks Compare Costs for dental plans$/) do
+  find('#DentalCostComparison').trigger 'click'
+end
+
+When(/^the broker selects the Reference Health Plan$/) do
   Capybara.default_max_wait_time = 3
   find('div#single_plan_1').trigger("click")
+end
+
+When(/^the broker selects the Reference Dental Plan$/) do
+  Capybara.default_max_wait_time = 3
+  find('div#single_dental_plan_1').trigger("click")
 end
 
 Then(/^the broker clicks Publish Quote button$/) do
@@ -160,4 +187,8 @@ end
 
 Then(/^the broker sees that the Quote is published$/) do
   expect(page).to have_content('Your quote has been published')
+end
+
+When(/^the broker clicks Dental Features$/) do
+  find('.interaction-click-control-dental-features-and-cost-criteria').trigger 'click'
 end
