@@ -89,6 +89,26 @@
       }
     }
   }
+
+  &.flash {
+    .col-xs-12 {
+      max-width: 1170px;
+      width: 100%;
+      margin: auto;
+      display: block;
+      float: none;
+    }
+  }
+  .no-top-margin {
+    margin-top: 0;
+  }
+  .no-vertical-padding {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .no-bottom-padding {
+    padding-bottom: 0;
+  }
   .selectric-labeled {
     padding: 0 0 0 10px;
     width: 100%;
@@ -121,6 +141,7 @@
     &.auto-width {
       width: auto !important;
     }
+
     >* {
       display: table-cell;
       float: none;
@@ -128,6 +149,7 @@
       &.vertical-align-top {
         vertical-align: top !important;
       }
+
     }
   }
 }

@@ -114,6 +114,7 @@ class Insured::GroupSelectionController < ApplicationController
     hbx_enrollment = HbxEnrollment.find(params.require(:hbx_enrollment_id))
 
     if hbx_enrollment.may_terminate_coverage?
+      hbx_enrollment.termination_submitted_on = TimeKeeper.datetime_of_record
       hbx_enrollment.terminate_benefit(term_date)
       hbx_enrollment.propogate_terminate(term_date)
       redirect_to family_account_path
@@ -163,6 +164,9 @@ class Insured::GroupSelectionController < ApplicationController
       @consumer_role = @person.consumer_role
       @role = @consumer_role
     end
+
+    @existing_sep = @family.special_enrollment_periods.where(:end_on.gte => Date.today).first
+
 
     @change_plan = params[:change_plan].present? ? params[:change_plan] : ''
     @coverage_kind = params[:coverage_kind].present? ? params[:coverage_kind] : 'health'
