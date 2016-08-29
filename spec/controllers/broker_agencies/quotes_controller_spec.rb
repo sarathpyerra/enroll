@@ -187,6 +187,9 @@ RSpec.describe BrokerAgencies::QuotesController, type: :controller, dbclean: :af
     end
 
     it "should redirect if not able to publish" do
+      quote.update_attributes(aasm_state: 'published')
+      post :publish_quote, broker_role_id: person.broker_role.id, id: quote
+      expect(response).to have_http_status(:redirect)
     end
 
   end
