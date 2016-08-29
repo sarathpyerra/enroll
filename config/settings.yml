@@ -10,6 +10,11 @@ site:
 
   social_media:
     facebook_url: ""
+#This is the Segment Write Key found here: https://segment.com/enroll/sources/javascript/overview
+analytics:
+  prod: "dwslbTMoV2ELN15SpGQNsdfu4GFC2HQ2"
+  other: "S3LaqPh6HqMN1jyLo8OZleIm5LsioVp2"
+
 #
 contact_center:
   name: "DC Health Link's Customer Care Center"
