@@ -259,28 +259,33 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def families_index_datatable
+
     dt_query = extract_datatable_parameters
-    families_dt = []
+    collection = []
     all_families = Family.all
+
     if dt_query.search_string.blank?
-      families_dt = all_families
+      collection = all_families
     else
       #debugger
       person_ids = Person.search(dt_query.search_string).pluck(:id)
-      families_dt = all_families.where({
+      collection = all_families.where({
         "family_members.person_id" => {"$in" => person_ids}
       })
     end
+
+    collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
+
     @draw = dt_query.draw
     @total_records = all_families.count
-    @records_filtered = families_dt.count
-
-    if families_dt.is_a? Array
-      @families = families_dt[dt_query.skip..@total_records.count]
+    @records_filtered = collection.count
+    if collection.is_a? Array
+      @families = collection[dt_query.skip..@total_records]
     else
-      @families = families_dt.skip(dt_query.skip).limit(dt_query.take)
+      @families = collection.skip(dt_query.skip).limit(dt_query.take)
     end
-    render "families_index_datatable"
+    render "datatables/families_index_datatable"
+
   end
 
   def add_sep_form
@@ -339,7 +344,11 @@ class Exchanges::HbxProfilesController < ApplicationController
 
   def update_terminate_enrollment
     @hbx_enrollment = HbxEnrollment.find(params[:hbx_id])
-    redirect_to exchanges_hbx_profiles_path, :flash => { :success => "Termination Successful" }
+    termination_date = Date.strptime(params[:termination_date], "%m/%d/%Y")
+
+    if @hbx_enrollment.schedule_coverage_termination!(termination_date)
+      redirect_to exchanges_hbx_profiles_path, :flash => { :success => "Termination Successful" }
+    end
   end
 
   def broker_agency_index
