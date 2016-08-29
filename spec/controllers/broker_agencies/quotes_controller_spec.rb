@@ -14,7 +14,6 @@ RSpec.describe BrokerAgencies::QuotesController, type: :controller do
   end
 
   describe "Create"  do
-
     before do
       allow(user).to receive_message_chain(:person,:broker_role,:id){person.broker_role.id}
       allow(user).to receive(:has_broker_role?){true}
@@ -144,6 +143,22 @@ RSpec.describe BrokerAgencies::QuotesController, type: :controller do
         @quote.reload
         expect(@quote.quote_households.first.quote_members).to eq []
       end
+    end
+  end
+
+  describe "GET new" do
+
+    it "should render the new template" do
+      get :new, broker_role_id: person.broker_role.id
+      expect(response).to have_http_status(302)
+    end
+  end
+
+  describe "GET my_quotes" do
+
+    it "returns http success" do
+      get :my_quotes, broker_role_id: person.broker_role.id
+      expect(response).to have_http_status(:success)
     end
   end
 
