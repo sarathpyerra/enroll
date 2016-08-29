@@ -28,6 +28,19 @@
             analytics.load("<%= Settings.analytics.other %>");
           <% end %>
           analytics.ready(function() {
+            <% unless User.current_user.nil? %>
+              analytics.identify('<%= User.current_user.id.to_s %>', {
+                email: '<%= User.current_user.email.to_s %>',
+                roles: '<%= User.current_user.roles.join(", ").to_s %>',
+                oim_id: '<%= User.current_user.oim_id.to_s %>',
+                created_at: '<%= User.current_user.created_at.to_s %>',
+                <% unless User.current_user.person.nil? %>
+                  person_id: '<%= User.current_user.person.id.to_s %>',
+                  name: '<%= User.current_user.person.name_pfx.to_s %> <%= User.current_user.person.first_name.to_s %> <%= User.current_user.person.last_name.to_s %> <%= User.current_user.person.name_sfx.to_s %>',
+                  hbx_id: '<%= User.current_user.person.hbx_id.to_s %>',
+                <% end %>
+              });
+            <% end &>
             analytics.page();
             $('form').each(function(){
             if ($(this).attr('id')){
