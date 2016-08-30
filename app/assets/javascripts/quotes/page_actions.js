@@ -40,8 +40,8 @@ QuotePageLoad = (function() {
       if ((criteria_type == 'carriers') && (criteria_value != plan['carrier_abbrev']))   {result=false; break; }
       if ((criteria_type == 'metals') && (criteria_value != plan['metal']))     {result=false; break; }
       if ((criteria_type == 'plan_types') && (criteria_value != plan['plan_type'])) {result=false; break; }
-      if ((criteria_type == 'nationwide') && (criteria_value != plan['nationwide'])) {result=false; break; }
-      if ((criteria_type == 'dc_in_network') && (criteria_value != plan['dc_in_network'])) {result=false; break; }
+      if ((criteria_type == 'nationwide') && (criteria_value != String(plan['nationwide']))) {result=false; break; }
+      if ((criteria_type == 'dc_in_network') && (criteria_value != String(plan['dc_in_network']))) {result=false; break; }
     }
     if (parseInt(plan['deductible']) > parseInt(deductible_value)) {result=false}
 
@@ -148,6 +148,7 @@ QuotePageLoad = (function() {
               toggle_plans(response['criteria'])
               _set_benefits()
               Quote.set_plan_costs()
+              Quote.set_dental_plan_costs()
           })
   }
 
@@ -189,6 +190,7 @@ QuotePageLoad = (function() {
       },
       success: function(response) {
         $('#dental_plan_comparison_frame').html(response);
+        Quote.load_publish_listeners();
       }
     })
   }
@@ -261,7 +263,10 @@ QuotePageLoad = (function() {
       $thisObj.html('View Details <i class="fa fa-chevron-down fa-lg"></i>');
       $thisObj.addClass("view");
     }
+    $thisObj.find('i').attr('data-toggle', 'collapse');
+    $thisObj.find('i').attr('href', $thisObj.attr('href'));
   }
+
   return {
       page_load_listeners: page_load_listeners,
       configure_benefit_group: configure_benefit_group,

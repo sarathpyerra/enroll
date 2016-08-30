@@ -38,7 +38,7 @@
 				<div class="panel-body" id="quote-info">
 					<%= f.fields_for :quote_benefit_groups do |benefit_group| %>
 					<div class="row form-inline">
-						<div class="form-group col-sm-12">Benefit Group: <%= benefit_group.text_field :title , {size: 40, placeholder: 'Enter Benefit Group Name'} %>
+						<div class="form-group col-sm-12">Benefit Group: <%= benefit_group.text_field :title , {size: 40, placeholder: 'Enter Benefit Group Name', benefit_group_state: benefit_group.object.persisted? } %>&nbsp;<% unless benefit_group.object.persisted? %> <%= submit_tag "Save", id: "save_benefit_group_submit", class: "select btn btn-primary btn-br", disabled: true %><% end %>
 							<button type="button" data-quote-id="<%=@quote.id%>" data-benefit-group-id="<%=benefit_group.object.id%>" id="remove_benefit_group_button"  class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 						</div>
 						<div>&nbsp;</div>
@@ -169,7 +169,18 @@ var duplicate_household = function() {
 	}
 };
 
+var save_benefit_group_button = function() {
+console.log('hello');
+	if($(this).val().length !=0)
+	  $('#save_benefit_group_submit').attr('disabled', false);
+	else
+		$('#save_benefit_group_submit').attr('disabled',true);
+
+};
+
 $("[id^=duplicate-family-id]").change(duplicate_household);
+
+$("input[benefit_group_state=false]").keyup(save_benefit_group_button)
 
 <% if @scrollTo == 1 %>
 $(document).ready(function() {

@@ -21,15 +21,15 @@
       <td class="quote_detail_plan_header">Offering Option: </td>
       <td class="quote_detail_plan_header">By Single Plan</td>
       <td class="quote_detail_plan_header">By Single Carrier</td>
-      <td class="quote_detail_plan_header">By Metal Level</td>
     </tr>
     <tr>
       <td class="quote_detail_results_header" >Plan</td>
       <td class="quote_detail_results_header text-center">Reference</td>
       <td class="quote_detail_results_header text-center">Lowest / Reference / Highest</td>
-      <td class="quote_detail_results_header text-center">Lowest / Reference / Highest</td>
     </tr>
+    <% i = 0 %>
    <% @quote_results.each do |k,v| %>
+   <% i = i + 1 %>
        <% cost =  v[:total_employer_cost].ceil
           plan = @health_plans.detect{|plan|plan.name == k}
           abbrev = CarrierProfile.find(plan.carrier_profile_id).abbrev
@@ -40,18 +40,17 @@
        %>
        <tr class='publish' id='publish_<%=@quote_results[k][:plan_id]%>'>
          <td class="quote_detail_results" style='white-space:nowrap'><%= k %></td>
-         <td class="quote_detail_results text-center">
-            <div class='btn'>
+         <td class="quote_detail_results text-center dental_publish">
+            <div class='btn' id="single_dental_plan_<%= i%>">
              $<%= cost %>
              </div>
          </td>
-           <td class="quote_detail_results text-center"><div class='btn'>
-        $<%= carrier_low %> / $<%= cost %> / $<%= carrier_high %>
-        </div></td>
-      <td class="quote_detail_results text-center"><div class='btn'>
-        $<%= metal_low %> / $<%= cost %> / $<%= metal_high %>
-        </div></td>
-       </tr>
+         <td class="quote_detail_results text-center dental_publish">
+            <div class='btn' id="single_carrier_<%= i %>">
+                $<%= carrier_low %> / $<%= cost %> / $<%= carrier_high %>
+           </div>
+        </td>
+      </tr>
     <% end %>
   </table>
 
@@ -72,7 +71,6 @@
 
        <span >$<%= qr[1][:total_employer_cost].ceil %></span>
        <br>
-       <%= qr[1][:buy_up]  %>
         </sm>
    </div>
       </td>
@@ -105,7 +103,8 @@
           <%= qr[:age] %>
         </td>
         <% @quote_results.keys.each do |de| %>
-          <td class="quote_detail_results"  style='padding-left: 100px'><b><%= @quote_results[de][:total_employer_cost].round(2) %></b></td>
+          <td class="quote_detail_results"  style='padding-left: 100px'>
+            <b><%= @quote_results[de][:detail].flatten[index][:employer_contribution].round(2) %></b></td>
         <% end %>
       </tr>
     <% end %>

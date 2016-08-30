@@ -51,7 +51,6 @@ class QuoteBenefitGroup
   delegate :quote_name, to: :quote
   delegate :aasm_state, to: :quote
 
-
   validates_presence_of :title
 
   before_save :build_relationship_benefits
@@ -178,6 +177,10 @@ class QuoteBenefitGroup
 
   def published_employer_cost
     plan && roster_employer_contribution(plan.id, plan.id)
+  end
+
+  def published_dental_employer_cost
+    dental_plan && roster_employer_contribution(dental_plan.id, dental_plan.id)
   end
 
   # Determines if this benefit group is assigned to a quote household

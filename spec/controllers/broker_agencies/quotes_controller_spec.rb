@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BrokerAgencies::QuotesController, type: :controller do
+RSpec.describe BrokerAgencies::QuotesController, type: :controller, dbclean: :after_each do
   let(:person){create(:person , :with_broker_role)}
   let(:user){create(:user, person: person)}
   let(:quote){create :quote , :with_household_and_members}
@@ -14,7 +14,6 @@ RSpec.describe BrokerAgencies::QuotesController, type: :controller do
   end
 
   describe "Create"  do
-
     before do
       allow(user).to receive_message_chain(:person,:broker_role,:id){person.broker_role.id}
       allow(user).to receive(:has_broker_role?){true}
@@ -146,5 +145,54 @@ RSpec.describe BrokerAgencies::QuotesController, type: :controller do
       end
     end
   end
+
+  describe "GET new" do
+
+    it "should render the new template" do
+      get :new, broker_role_id: person.broker_role.id
+      expect(response).to have_http_status(302)
+    end
+  end
+
+  describe "GET my_quotes" do
+
+    it "returns http success" do
+      get :my_quotes, broker_role_id: person.broker_role.id
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe "GET edit" do
+
+    it "returns http success" do
+      get :edit, broker_role_id: person.broker_role.id, id: quote
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe "POST quotes_index_datatable" do
+
+    it "should render quotes_index_datatable template" do
+      post :quotes_index_datatable, broker_role_id: person.broker_role.id, :format => :json
+      expect(response).to render_template("datatables/quotes_index_datatable")
+    end
+  end
+
+  describe "POST publish_quote" do
+    it "should publish_quote" do
+      allow(quote).to receive(:may_publish?).and_return(true)
+      post :publish_quote, broker_role_id: person.broker_role.id, id: quote
+      expect(response).to have_http_status(:success)
+      expect(flash[:notice]).to match "Quote Published"
+    end
+
+    it "should redirect if not able to publish" do
+      quote.update_attributes(aasm_state: 'published')
+      post :publish_quote, broker_role_id: person.broker_role.id, id: quote
+      expect(response).to have_http_status(:redirect)
+    end
+
+  end
+
 
 end

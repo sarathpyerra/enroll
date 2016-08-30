@@ -16,17 +16,14 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def publish_quote
-
-    # TODO VARUN => Add more checks to publish and save
-
     if @quote.may_publish?
-      # @benefit_group = @quote.quote_benefit_groups.first
-      # @benefit_group.plan_option_kind = params[:plan_option_kind].gsub(' ','_').downcase
-      # @benefit_group.published_reference_plan = Plan.find(params[:reference_plan_id]).id
       @quote.claim_code = @quote.employer_claim_code
       @quote.publish!
+      flash[:notice] = "Quote Published"
+    else
+      flash[:error] = "Unable to publish quote"
+      redirect_to my_quotes_broker_agencies_broker_role_quotes_path(@broker)
     end
-    flash[:notice] = "Quote Published"
   end
 
   # displays index page of quotes
@@ -104,7 +101,7 @@ class BrokerAgencies::QuotesController < ApplicationController
           detailCost = Array.new
           @q.quote_households.each do |hh|
             pcd = PlanCostDecorator.new(p, hh, @q, p)
-            detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employee_contribution]] }
+            detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employer_contribution]] }
           end
           employer_cost = @q.roster_employer_contribution(p,p)
           @quote_results[p.name] = {:detail => detailCost,
@@ -133,8 +130,9 @@ class BrokerAgencies::QuotesController < ApplicationController
       detailCost = Array.new
       @q.quote_households.each do |hh|
         pcd = PlanCostDecorator.new(p, hh, @q, p)
-        detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employee_contribution]] }
+        detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employer_contribution]] }
       end
+
       employer_cost = @q.roster_employer_contribution(p,p)
       @quote_results[p.name] = {:detail => detailCost,
         :total_employee_cost => @q.roster_employee_cost(p),
@@ -146,13 +144,14 @@ class BrokerAgencies::QuotesController < ApplicationController
     render partial: 'dental_cost_comparison', layout: false
   end
 
-  def add_family
-    @qhh = Quote.all.first.quote_households.first
-    @quote = Quote.find(@qhh.quote)
-    respond_to do |format|
-      format.js
-    end
-  end
+  # no longer use?
+  # def add_family
+  #   @qhh = Quote.all.first.quote_households.first
+  #   @quote = Quote.find(@qhh.quote)
+  #   respond_to do |format|
+  #     format.js
+  #   end
+  # end
 
   def edit
     #find quote to edit
@@ -235,7 +234,6 @@ class BrokerAgencies::QuotesController < ApplicationController
     if (@quote.update_attributes(update_params) && @quote.update_attributes(insert_params))
       redirect_to edit_broker_agencies_broker_role_quote_path(@broker.id, @quote, scrollTo: scrollTo),  :flash => { :notice => notice_message }
     else
-      #render "edit" , :flash => {:error => "Unable to update the employee roster" }
       redirect_to edit_broker_agencies_broker_role_quote_path(@broker.id, @quote) ,  :flash => { :error => "Unable to update the employee roster." }
     end
   end
@@ -276,8 +274,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def build_employee_roster
     @employee_roster = parse_employee_roster_file
-    @quote= Quote.new
-    @quote.quote_benefit_groups << QuoteBenefitGroup.new(:title =>"Default Benefit Package")
+    @quote= Quote.find(params[:id])
     @quote_benefit_group_dropdown = @quote.quote_benefit_groups
     if @employee_roster.is_a?(Hash)
       @employee_roster.each do |family_id , members|
@@ -288,8 +285,10 @@ class BrokerAgencies::QuotesController < ApplicationController
           @quote_household.quote_members << @quote_members
         end
         @quote.quote_households << @quote_household
+        @quote.save!
       end
     end
+    render "edit"
   end
 
   def upload_employee_roster
@@ -409,25 +408,33 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     if params[:plan_id] && bg
       plan = Plan.find(params[:plan_id][8,100])
-      elected_plan_choice = ['na', 'Single Plan', 'Single Carrier', 'Metal Level'][params[:elected].to_i]
-      bg.plan = plan
-      bg.plan_option_kind = elected_plan_choice
-      roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds($quote_shop_health_plans,
-         bg.quote_relationship_benefits, bg.roster_cost_all_plans)
-      case elected_plan_choice
-        when 'Single Carrier'
-          bg.plan_option_kind = "single_carrier"
-          bg.published_lowest_cost_plan = roster_elected_plan_bounds[:carrier_low_plan][plan.carrier_profile.abbrev]
-          bg.published_highest_cost_plan = roster_elected_plan_bounds[:carrier_high_plan][plan.carrier_profile.abbrev]
-        when 'Metal Level'
-          bg.plan_option_kind = "metal_level"
-          bg.published_lowest_cost_plan = roster_elected_plan_bounds[:metal_low_plan][plan.metal_level]
-          bg.published_highest_cost_plan = roster_elected_plan_bounds[:metal_high_plan][plan.metal_level]
-        else
-          bg.plan_option_kind = "single_plan"
-          bg.published_lowest_cost_plan = plan.id
-          bg.published_highest_cost_plan = plan.id
+      if params[:coverage_kind]  != 'dental'
+        elected_plan_choice = ['na', 'Single Plan', 'Single Carrier', 'Metal Level'][params[:elected].to_i]
+        bg.plan = plan
+        bg.plan_option_kind = elected_plan_choice
+        roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds($quote_shop_health_plans,
+           bg.quote_relationship_benefits, bg.roster_cost_all_plans)
+        case elected_plan_choice
+          when 'Single Carrier'
+            bg.plan_option_kind = "single_carrier"
+            bg.published_lowest_cost_plan = roster_elected_plan_bounds[:carrier_low_plan][plan.carrier_profile.abbrev]
+            bg.published_highest_cost_plan = roster_elected_plan_bounds[:carrier_high_plan][plan.carrier_profile.abbrev]
+          when 'Metal Level'
+            bg.plan_option_kind = "metal_level"
+            bg.published_lowest_cost_plan = roster_elected_plan_bounds[:metal_low_plan][plan.metal_level]
+            bg.published_highest_cost_plan = roster_elected_plan_bounds[:metal_high_plan][plan.metal_level]
+          else
+            bg.plan_option_kind = "single_plan"
+            bg.published_lowest_cost_plan = plan.id
+            bg.published_highest_cost_plan = plan.id
         end
+      else
+        elected_plan_choice = ['na', 'custom', 'carrier'][params[:elected].to_i]
+        bg.dental_plan_option_kind = elected_plan_choice
+        bg.dental_plan = plan
+        bg.elected_dental_plan_ids = params[:elected_plans_list] || []
+
+      end
       bg.save
     end
 
