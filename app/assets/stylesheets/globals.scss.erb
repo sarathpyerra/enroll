@@ -1,5 +1,6 @@
 @import "variables";
-.module, .modal {
+.module,
+.modal {
   a.disabled {
     pointer-events: none;
     cursor: not-allowed;
@@ -79,13 +80,19 @@
         width: 30px;
       }
     }
-    input[type=checkbox]:checked + label i {
-      &:first-of-type {
-        display: inline-block;
-        width: 30px;
+    .enroll-label {
+      font-weight: $float-labels-weight;
+      color: $float-labels-color;
+      font-size: $float-labels-text-size;
+      text-transform: $float-labels-casing;
+    }
+    .label {
+      &.inactive,
+      &.canceled {
+        background-color: $primary-gray;
       }
-      &:last-of-type {
-        display: none;
+      &.employment_terminated {
+        background-color: $primary-red;
       }
     }
   }
@@ -98,8 +105,9 @@
       float: none;
     }
   }
-  .no-top-margin {
-    margin-top: 0;
+  .census-employee-details .n-radio-row {
+    border: none !important;
+    padding: inherit;
   }
   .no-vertical-padding {
     padding-top: 0;
@@ -113,23 +121,27 @@
     width: 100%;
     white-space: nowrap;
     &>* {
-      display:table-cell;
-      width:100%;
+      display: table-cell;
+      width: 100%;
       text-align: center;
-      vertical-align:middle;
+      vertical-align: middle;
       white-space: normal;
     }
     span {
-      width:100%;
+      width: 100%;
       max-width: 25%;
       display: inline-block;
       font-size: 10px;
       color: rgb(131, 135, 128);
       text-transform: uppercase;
       text-align: left;
+      line-height: 1.2;
+      strong {
+        font-weight: bold;
+      }
     }
     .selectric-wrapper {
-      width:100%;
+      width: 100%;
       max-width: 75%;
       display: inline-block;
     }
@@ -148,5 +160,8 @@
         vertical-align: top !important;
       }
     }
+  }
+  .date-field {
+    font-family: FontAwesome;
   }
 }
