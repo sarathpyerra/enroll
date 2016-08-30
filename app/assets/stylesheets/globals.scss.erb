@@ -83,19 +83,13 @@
         width: 30px;
       }
     }
-    .enroll-label {
-      font-weight: $float-labels-weight;
-      color: $float-labels-color;
-      font-size: $float-labels-text-size;
-      text-transform: $float-labels-casing;
-    }
-    .label {
-      &.inactive,
-      &.canceled {
-        background-color: $primary-gray;
+    input[type=checkbox]:checked + label i {
+      &:first-of-type {
+        display: inline-block;
+        width: 30px;
       }
-      &.employment_terminated {
-        background-color: $primary-red;
+      &:last-of-type {
+        display: none;
       }
     }
   }
