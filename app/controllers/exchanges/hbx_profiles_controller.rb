@@ -86,14 +86,14 @@ class Exchanges::HbxProfilesController < ApplicationController
 
     if dt_query.search_string.blank?
       collection = all_employers
+      collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
     else
+      collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
       organization_ids = Organization.search(dt_query.search_string).pluck(:id)
       collection = all_employers.where({
         "id" => {"$in" => organization_ids}
       })
     end
-
-    collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
 
     @draw = dt_query.draw
     @total_records = all_employers.count

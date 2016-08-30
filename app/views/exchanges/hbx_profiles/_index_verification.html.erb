@@ -2,6 +2,8 @@
   <%= render partial: "shared/data_table", locals:  {
     page_header:  ["Verifications", ""],
     directions:  "",
+    processing_text: "Loading Documents...",
+    sibling_pages: [],
     new_button:  [],
     sibling_pages: [],
 	  filters:  [
@@ -31,8 +33,7 @@
   		# ['Export CSV', 'url', 'request_type'],
   		# ['Print', 'url', 'request_type']
   	],
-    custom_handlers: [
-    ],
+    custom_handlers: [],
     child_rows: [false, "datatables/child_row"],
     destroy: false,
     processing_text: "Loading Verifications...",
@@ -55,17 +56,3 @@
   	]
   } %>
 </div>
-
-<script type="text/javascript" charset="utf-8">
-  $(document).ready(function() {
-    $('#verification-dataTable').DataTable( {
-      "processing": true,
-      "serverSide": true,
-      "ordering" : false,
-      "ajax": {
-        url: "<%= verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json) %>",
-        type: "GET"
-      }
-    });
-  });
-</script>

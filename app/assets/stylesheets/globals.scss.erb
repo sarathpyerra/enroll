@@ -1,13 +1,6 @@
 @import "variables";
-.module, .modal {
-  .label {
-    &.inactive, &.canceled {
-      background-color: #b7b7b7;
-    }
-    &.employment_terminated {
-      background-color: #e72b2d;
-    }
-  }
+.module,
+.modal {
   a.disabled {
     pointer-events: none;
     cursor: not-allowed;
@@ -36,23 +29,74 @@
   .no-bottom-padding {
     padding-bottom: 0;
   }
-  a.disabled {
-    pointer-events: none;
-    cursor: not-allowed;
-    color: $primary-gray;
-  }
-  .enroll-label {
-    font-weight: $float-labels-weight;
-    color: $float-labels-color;
-    font-size: $float-labels-text-size;
-    text-transform: $float-labels-casing;
-  }
-  .label {
-    &.inactive, &.canceled {
-      background-color: $primary-gray;
+  .enroll-checkbox {
+    input[type=checkbox] {
+      display: none;
+      + label > i.fa {
+        color: #69A30D;
+      }
     }
-    &.employment_terminated {
-      background-color: $primary-red;
+    .checkbox {
+      margin: 0;
+      padding: 0;
+    }
+    .checkbox {
+      &>div {
+        display: inline-block;
+        margin: auto;
+      }
+    }
+    .checkbox label {
+      padding-left: 0;
+    }
+    .checkbox label label {
+      display: table;
+      padding-left: 0;
+      &>* {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: left;
+      }
+      span {
+        font-size: 12px;
+        display: inline-block;
+      }
+    }
+    .checkbox label label + span {
+      display: inline-block;
+      position: relative;
+      text-transform: capitalize;
+      font-size: 16px;
+      top: -5px;
+      left: 10px;
+    }
+    input[type=checkbox]:disabled + label i {
+      color: #b7b7b7;
+      cursor: not-allowed;
+    }
+    input[type=checkbox] + label i {
+      &:first-of-type {
+        display: none;
+      }
+      &:last-of-type {
+        display: inline-block;
+        width: 30px;
+      }
+    }
+    .enroll-label {
+      font-weight: $float-labels-weight;
+      color: $float-labels-color;
+      font-size: $float-labels-text-size;
+      text-transform: $float-labels-casing;
+    }
+    .label {
+      &.inactive,
+      &.canceled {
+        background-color: $primary-gray;
+      }
+      &.employment_terminated {
+        background-color: $primary-red;
+      }
     }
   }
   &.flash {
@@ -80,14 +124,14 @@
     width: 100%;
     white-space: nowrap;
     &>* {
-      display:table-cell;
-      width:100%;
+      display: table-cell;
+      width: 100%;
       text-align: center;
-      vertical-align:middle;
+      vertical-align: middle;
       white-space: normal;
     }
     span {
-      width:100%;
+      width: 100%;
       max-width: 25%;
       display: inline-block;
       font-size: 10px;
@@ -100,7 +144,7 @@
       }
     }
     .selectric-wrapper {
-      width:100%;
+      width: 100%;
       max-width: 75%;
       display: inline-block;
     }

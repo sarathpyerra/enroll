@@ -51,8 +51,8 @@
                       <span class="caret"></span>
                     </button>
                     <ul aria-labelledby="<%= table_id %>-date-filters" class="dropdown-menu">
-                      <% dropdown_filters.each do |filter, url, request_type | %>
-                      <li><%= link_to "#{filter}", "#{url}", remote: request_type %></li>
+                      <% dropdown_filters.each do |filter, url, request_type, class_name | %>
+                      <li><%= link_to "#{filter}", "#{url}", class: class_name, remote: request_type %></li>
                       <% end %>
                     </ul>
                   </div>
@@ -150,6 +150,7 @@
         <% end %>
         EnrollDataTableInitializer.swapSearchAndNewButton('<%= table_id %>');
         EnrollDataTableInitializer.attachModalsToLinks('<%= table_id %>');
+        EnrollDataTableInitializer.moveInfo('<%= table_id %>');
         EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
         EnrollDataTableInitializer.wrapSearchInBootstrap('<%= table_id %>');
         EnrollDataTableInitializer.replaceRowActionUrls('<%= table_id %>');
@@ -157,6 +158,8 @@
         EnrollDataTableInitializer.addRowDataToParams('<%= table_id %>');
         EnrollDataTableInitializer.attachPostDrawHandlers('<%= table_id %>');
         EnrollDataTableInitializer.showProcessing('<%= table_id %>');
+        EnrollDataTableInitializer.addClearSearch('<%= table_id %>');
+        EnrollDataTableInitializer.addSubmitSearch('<%= table_id %>');
         <% if custom_handlers.present? %>
           <% custom_handlers.each do |custom_handler| %>
             <%= custom_handler %>('<%= table_id %>');
@@ -171,6 +174,9 @@
         EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
         EnrollDataTableInitializer.lastRowSpacing('<%= table_id %>');
         EnrollDataTableInitializer.exportPageAsCSV('<%= table_id %>', enroll_datatable.data(), initial_column_set );
+        EnrollDataTableInitializer.addClearSearch('<%= table_id %>');
+        EnrollDataTableInitializer.addSubmitSearch('<%= table_id %>');
+        Freebies.popover();
       },
       "columns": [
         <% if checkboxes == true %>

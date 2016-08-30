@@ -84,6 +84,7 @@ Rails.application.routes.draw do
         get :home
         get :begin_consumer_enrollment
         get :begin_employee_enrollment
+        get :begin_employer_enrollment
         get :resume_enrollment
         get :show
       end

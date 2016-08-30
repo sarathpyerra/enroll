@@ -143,10 +143,14 @@
         cursor: pointer;
       }
     }
+    .table > thead > tr > th:first-of-type {
+      font-size: inherit;
+    }
     .table > thead > tr > th {
       vertical-align: middle;
       text-transform: uppercase;
       text-align: center;
+      font-size: 12px;
       &:focus {
         outline-color: transparent;
         outline-style: none;
@@ -184,6 +188,11 @@
       }
       &.dt-center {
         text-align: center;
+      }
+      .vertically-aligned-row {
+        div:first-of-type {
+          padding-right: 5px;
+        }
       }
     }
     .vertically-aligned-row > .vertically-aligned-row {
@@ -267,6 +276,11 @@
       }
       .dataTables_paginate {
         display: none;
+        text-align: center !important;
+        margin-top: 2.25%;
+        a:focus {
+          outline: none;
+        }
       }
       .select-all.vertically-aligned-row {
         display: table;
@@ -275,9 +289,6 @@
       }
       .dataTables_info {
         text-align: right;
-      }
-      .dataTables_paginate {
-        text-align: center !important;
       }
     }
   }

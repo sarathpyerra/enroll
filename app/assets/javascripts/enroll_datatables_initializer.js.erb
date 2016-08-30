@@ -48,13 +48,20 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     if ( $active_second_level_filter.length ) {
       scopes = DataTablesFilterMap[tab][$active_first_level_filter][$active_second_level_filter]
     } else {
-      scopes = DataTablesFilterMap[tab][$active_first_level_filter]
+      if ( $table.closest('.module').find('.btn-group-second').is(':visible') && !$table.closest('.module').find('.btn-group-second > a.active').length ) {
+        if ( typeof filters != 'undefined' ) {
+          scopes = filters;
+        } else {
+          scopes = DataTablesFilterMap[tab]["all"];
+        }
+      } else {
+        scopes = DataTablesFilterMap[tab][$active_first_level_filter]
+      }
     }
     return scopes
   }
 
   function setFiltersFromScopeMap(table_id, tab, first_level, second_level) {
-    // console.log(table_id, tab, first_level, second_level);
     findTable(table_id);
     if ( typeof second_level !== "undefined" ) {
       scopes = DataTablesFilterMap[tab][first_level][second_level]
@@ -75,11 +82,13 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
 
   function clickActiveFilter(table_id, $active_filter, filter_criteria, base_model) {
     $active_filter.on('click', function() {
+      month_filter = $active_filter.hasClass('month');
       filters = EnrollDataTableInitializer.setFiltersFromScopeMap(table_id, filter_criteria.tab, filter_criteria.first_level, filter_criteria.second_level);
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(base_model),
-        filters: EnrollDataTableInitializer.setFiltersFromScopeMap(table_id, filter_criteria.tab, filter_criteria.first_level, filter_criteria.second_level)
-      });
+        filters: EnrollDataTableInitializer.setFiltersFromScopeMap(table_id, filter_criteria.tab, filter_criteria.first_level, filter_criteria.second_level),
+        month_filter: month_filter
+      }, $active_filter);
     });
   }
 
@@ -110,11 +119,14 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     if ( $dataTables_info.length ) {
       $dataTables_info_text = $dataTables_info.text();
       $dataTables_info.after($table_length);
-      $dataTables_info.remove();
-      $table_length.find('.dataTables_length').before($dataTables_info_text);
+      $dataTables_info.hide();
+      $table_length.find('.dataTables_length').before('<span class="shown">'+$dataTables_info_text+'</span>');
     } else {
       $table.closest('.module').find('.footer .vertically-aligned-row').append($table_length);
       $table_length.prepend('Showing ');
+    }
+    if ( $('span.shown').length ) {
+      $('span.shown').html($('.dataTables_info').text());
     }
     $table.closest('.module').find('.table-length').css({'white-space': 'nowrap'});
     $table_length.wrap('<div class="table-length-wrapper text-right"></div>')
@@ -141,14 +153,28 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       $filters_first_level.find('a').removeClass('active');
       $(this).addClass('active');
       $('.second-level').on('click', function() {
+        $('.custom-dates').remove();
         $(this).closest('.btn-group-second').find('a').removeClass('active');
         $(this).addClass('active');
+        if ( $(this).is('[data-children-of]') == true ) {
+          $('.second-level-dropdown a.active').removeClass('active');
+        }
       });
+      if ( $(this).hasClass('second-level') == false ) {
+        $('.second-level-dropdown a.active').removeClass('active');
+      }
     });
     if ( $filters_first_level.find('> a:first').hasClass('second-level') ) {
       $filters_first_level.find('> a:first').trigger('click');
     }
     $('.dataTables_filter').addClass('vertically-aligned-row');
+    $table.closest('.module').find('.second-level-dropdown a:not(:contains("Custom Date"))').on('click', function() {
+      $('.custom-dates').remove();
+      $(this).addClass('active');
+    });
+    $table.closest('.module').find('.second-level-dropdown a:contains("Custom Date")').on('click', function() {
+      $('.second-level-dropdown a.active').removeClass('active');
+    });
   }
 
   function showSecondLevel($thisObj) {
@@ -168,7 +194,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $('.btn-group.first-level').parent().after($second_level);
     if ( $dropdown != undefined ) {
       $second_level.after($dropdown);
-      $second_level.next().andSelf().wrapAll("<div class='vertically-aligned-row' style='table-layout: fixed;'></div>");
+      $second_level.next().andSelf().wrapAll("<div class='vertically-aligned-row' style='table-layout: fixed; margin-bottom: 10px;'></div>");
       $dropdown.removeClass('hidden');
     } else {
       $second_level.wrap("<div></div>");
@@ -274,7 +300,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $table.closest('.module').find('.search label:first').remove();
     $search_input.addClass('form-control');
     $search_input.wrap('<div class="input-group"></div>');
-    $search_input.after('<div class=\"input-group-btn\"><div class=\"btn btn-default\" id=\"census_employee_search_clear\"><span aria-hidden=\"true\" class=\"glyphicon glyphicon-remove\"></span></div><input type=\"submit\" name=\"commit\" value=\"Search\" class="btn btn-default interaction-click-control-search\"></div>');
+    $search_input.after('<div class=\"input-group-btn\"><div class=\"btn btn-default\" id=\"enrolldatatable-search\"><span aria-hidden=\"true\" class=\"glyphicon glyphicon-remove\"></span></div><input type=\"submit\" name=\"commit\" value=\"Search\" class="btn btn-default interaction-click-control-search\"></div>');
     $table.closest('.module').find('.input-group').wrap('<div class="input-no-pd"></div>');
   }
 
@@ -398,6 +424,9 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       var base_model = $table.closest('.module').find('.first-level').data('base-model');
       var first_level = $table.closest('.module').find('.first-level a.active').text().toLowerCase();
       var second_level = "custom_date";
+      start_on = start_date;
+      end_on = end_date;
+      filters = EnrollDataTableInitializer.setFiltersFromScopeMap(table_id, tab, first_level, second_level);
       AddParamsBeforeDraw(table_id, {
         base_model: base_model,
         filters: EnrollDataTableInitializer.setFiltersFromScopeMap(table_id, tab, first_level, second_level),
@@ -461,12 +490,53 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     });
   }
 
-  function AddParamsBeforeDraw(table_id, params) {
+  function setMonthFilter(table_id) {
+    findTable(table_id);
+    if ( $table.closest('.module').find('.second-level-dropdown a.active').hasClass('active') ) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  function addClearSearch(table_id) {
+    findTable(table_id);
+    $table.closest('.module').find('.glyphicon-remove').on('click', function() {
+      $table.closest('.module').find('.search .form-control[type="search"]').val('').trigger('keyup');
+    });
+  }
+
+  function addSubmitSearch(table_id) {
+    findTable(table_id);
+    $table.closest('.module').find('.search input[type="submit"]').on('click', function(){
+      if ( $table.closest('.module').find('.search .form-control[type="search"]').val().length ) {
+        $table.EnrollDataTable().draw();
+      }
+    });
+  }
+
+  function AddParamsBeforeDraw(table_id, params, $active_filter) {
     findTable(table_id);
     var additional_params = {};
     $.each(params, function(k,v) {
       additional_params[k] = v;
     });
+    if ( $('.custom-dates').is(':visible') && additional_params.hasOwnProperty("start_on") != true ) {
+      additional_params["start_on"] = $('#custom-date-from').val() || null;
+      additional_params["end_on"] = $('#custom-date-to').val() || null;
+      additional_params["scopes"] = filters || null;
+    }
+    if ( $($active_filter).hasClass('second-level') && $($active_filter).is('[data-children-of]') ) {
+      additional_params["start_on"] = undefined;
+      additional_params["end_on"] = undefined;
+      additional_params["scopes"] = undefined;
+    }
+    if ( scopes != undefined && $table.data('dt_params') != undefined ) {
+      if ( $.inArray( "employer_profiles_by_date_range", scopes ) != -1 && $table.data('dt_params').hasOwnProperty("start_on") != 'undefined' && !$('.custom-dates').is(':visible') ) {
+        additional_params["start_on"] = start_on;
+        additional_params["end_on"] = end_on;
+      }
+    }
     $table.data('dt_params', additional_params );
     if (additional_params.hasOwnProperty('key')) {
     } else {
@@ -479,6 +549,8 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   return {
+    addClearSearch: addClearSearch,
+    addSubmitSearch: addSubmitSearch,
     removeRow: removeRow,
     setTab: setTab,
     showProcessing: showProcessing,
@@ -501,6 +573,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     handleCustomDates: handleCustomDates,
     moveTableLength : moveTableLength,
     initializeFilters : initializeFilters,
+    setMonthFilter: setMonthFilter,
     showSecondLevel : showSecondLevel,
     lastRowSpacing : lastRowSpacing,
     addSelectAll : addSelectAll,

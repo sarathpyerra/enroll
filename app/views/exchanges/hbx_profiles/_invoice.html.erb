@@ -2,14 +2,14 @@
   <%= render partial: "shared/data_table", locals:  {
     page_header:  ["Employers", ""],
     directions:  "",
-    new_button:  [],
+    new_button:  ["New Employer", begin_employer_enrollment_exchanges_agents_path(original_application_type: 'paper')],
     sibling_pages: [],
     base_model: "organization",
     initial_column_set: "",
     tab: "Employer",
 	  filters:  [
-      ["All", "javascript:;", true, [], []],
-      ["Enrolling", "", true, [
+      ["All", "javascript:;", false, [], []],
+      ["Enrolling", "", false, [
         ["All", "javascript:;", false],
         ["Initial Eligible", "javascript:;", false],
         ["Renewing", "javascript:;", false],
@@ -18,9 +18,9 @@
         ["Binder Paid", "javascript:;", false],
       ],
       [
-        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}", "javascript:;", false],
-        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.year}", "javascript:;", false],
-        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month.year}", "javascript:;", false],
+        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}", "javascript:;", false, 'month'],
+        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.year}", "javascript:;", false, 'month'],
+        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month.year}", "javascript:;", false, 'month'],
         ["Custom Date", custom_dates_exchanges_hbx_profiles_path, true]
       ]
     ],
@@ -92,11 +92,11 @@
   	table_id: "employer-invoices-dataTable",
   	data_url: employer_invoice_datatable_exchanges_hbx_profiles_path(:format => :json),
   	columns: [
+      ["Legal name", "legal_name", "", [true, ""]],
       ["Hbx Id", "hbx_id", "", [true, ""]],
       ["FEIN", "fein", "", [true, ""]],
-      ["Legal name", "legal_name", "", [true, ""]],
       ["Employer Status", "employer_status", "dt-center", [true, ""]],
-      ["Eligibility", "eligibility_criteria", "dt-center", [true, ""]],
+      ["Eligibility", "eligibility_criteria", "dt-center eligibility", [true, ""]],
       ["Broker", "broker", "", [true, ""]],
       ["CNVRSN?", "conversion", "dt-center", [true, ""]],
       ["Status", "status", "dt-center", [true, ""]],
