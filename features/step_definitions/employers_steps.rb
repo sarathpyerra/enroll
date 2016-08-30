@@ -447,7 +447,7 @@ Given /^the employer is logged in$/ do
 end
 
 
-Then /^they should see that employee's details$/ do
+Then /^they should see that employee details$/ do
   expect(page).to have_selector("input[value='#{employees.first.dob.strftime('%m/%d/%Y')}']")
 end
 
