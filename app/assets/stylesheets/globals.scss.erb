@@ -79,6 +79,15 @@
         width: 30px;
       }
     }
+    input[type=checkbox]:checked + label i {
+      &:first-of-type {
+        display: inline-block;
+        width: 30px;
+      }
+      &:last-of-type {
+        display: none;
+      }
+    }
   }
   .enroll-label {
     font-weight: $float-labels-weight;
