@@ -29,27 +29,24 @@
           <% end %>
           <% unless current_user.nil? %>
             analytics.identify('<%= current_user.id.to_s %>', {
-              email: '<%= current_user.email.to_s %>',
-              Roles: '<%= current_user.roles.join(", ").to_s %>',
+              'email': '<%= current_user.email.to_s %>',
+              'Roles': '<%= current_user.roles.join(", ").to_s %>',
               'OIM ID': '<%= current_user.oim_id.to_s %>',
-              'Created At': '<%= current_user.created_at.to_s %>',
+              'Created At': '<%= current_user.created_at.to_s %>'
               <% unless current_user.person.nil? %>
-                'Person ID': '<%= current_user.person.id.to_s %>',
+                , 'Person ID': '<%= current_user.person.id.to_s %>',
                 'name': '<%= current_user.person.name_pfx.to_s %> <%= current_user.person.first_name.to_s %> <%= current_user.person.last_name.to_s %> <%= current_user.person.name_sfx.to_s %>',
-                'HBX ID': '<%= current_user.person.hbx_id.to_s %>',
+                'HBX ID': '<%= current_user.person.hbx_id.to_s %>'
               <% end %>
             });
           <% end %>
           analytics.page();
-          $('form').each(function(){
-          if ($(this).attr('id')){
-            var formName = $(this).attr('id');
-          }else{
-            var formName = $(this).parent().attr('id');
-          }
-            analytics.trackForm($(this), 'Form: ' + formName);
+          $('form').submit(function(){
+            analytics.trackForm($(this), 'Form: ' + $(this).attr('id'), {
+              'Action': $(this).attr('action')
+            });
           });
-          $('a').each(function(){
+          $('a').click(function(){
             analytics.trackLink($(this), 'Clicked: ' + $(this).attr('href'));
           });
         }}();
