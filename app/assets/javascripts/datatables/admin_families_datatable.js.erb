@@ -28,7 +28,7 @@ var AdminFamiliesDatatable = ( function( window, undefined ) {
 
   function callAllEmployeeFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $active_filter = $table.closest('.module').find('.All-second-level a:contains("Employee")');
+    var $active_filter = $table.closest('.module').find('.All-second-level a:contains("Employer-Sponsored-Coverage-Enrolled")');
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
@@ -52,7 +52,7 @@ var AdminFamiliesDatatable = ( function( window, undefined ) {
 
   function callActiveEmployeeFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $active_filter = $table.closest('.module').find('.Active-second-level a:contains("Employee")');
+    var $active_filter = $table.closest('.module').find('.Active-second-level a:contains("Employer-Sponsored-Coverage-Enrolled")');
     var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setFirstLevel($active_filter), EnrollDataTableInitializer.setSecondLevel($active_filter));
     var base_model = setBaseModel();
     EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);

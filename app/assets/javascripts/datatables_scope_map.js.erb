@@ -27,13 +27,14 @@ var DataTablesFilterMap = ( function( window, undefined ) {
     Families : {
       all: {
         "all": [],
-        "individual": [ "individual_market" ],
-        "employee sponsored": [ "shop_market" ],
+        "individual-enrolled": [ "individual_market" ],
+        "Enrolled": [ "enrolled_shop_market" ],
+        "non-enrolled": []
       },
       active: {
         "all": ["all_enrollments"],
         "individual": [ "enrolled", "enrolled_individual_market" ],
-        "employee sponsored": [ "enrolled", "enrolled_shop_market" ]
+        "employee-sponsored-coverage-enrolled": [ "enrolled_shop_market" ]
       }
     }
   };
