@@ -90,9 +90,10 @@ class Employers::EmployerProfilesController < Employers::EmployersController
       case @tab
       when 'benefits'
         @current_plan_year = @employer_profile.renewing_plan_year || @employer_profile.active_plan_year
-        @plan_years = @employer_profile.plan_years.order(id: :desc)
+        sort_plan_years(@employer_profile.plan_years)
       when 'documents'
       when 'employees'
+        @current_plan_year = @employer_profile.show_plan_year
         paginate_employees
       when 'brokers'
         @broker_agency_accounts = @employer_profile.broker_agency_accounts
@@ -104,6 +105,8 @@ class Employers::EmployerProfilesController < Employers::EmployersController
         @premium_amt_total   = enrollments.map(&:total_premium).sum
         @employee_cost_total = enrollments.map(&:total_employee_cost).sum
         @employer_contribution_total = enrollments.map(&:total_employer_contribution).sum
+
+        set_flash_by_announcement if @tab == 'home'
       end
     end
   end
@@ -158,7 +161,7 @@ class Employers::EmployerProfilesController < Employers::EmployersController
           render action: 'new'
         else
           redirect_to employers_employer_profile_path(@organization.employer_profile, tab: 'home')
-        end  
+        end
       end
     else
       render action: "new"
@@ -241,6 +244,17 @@ class Employers::EmployerProfilesController < Employers::EmployersController
 
 
   private
+
+  def sort_plan_years(plans)
+    renewing_states = PlanYear::RENEWING_PUBLISHED_STATE + PlanYear::RENEWING
+    renewing = plans.select { |plan_year| renewing_states.include? plan_year.aasm_state }
+    ineligible_plans, active_plans = plans.partition { |plan_year| PlanYear::INELIGIBLE_FOR_EXPORT_STATES.include? plan_year.aasm_state }
+    ineligible_plans = ineligible_plans.select { |plan_year| renewing.exclude? plan_year }
+    active_plans = active_plans.partition { |plan_year| PlanYear::PUBLISHED.include? plan_year.aasm_state }.flatten
+    active_plans = active_plans.select { |plan_year| renewing.exclude? plan_year }
+    @plan_years = renewing + active_plans + ineligible_plans
+  end
+
   def paginate_employees
     status_params = params.permit(:id, :status, :search)
     @status = status_params[:status] || 'active'
