@@ -25,14 +25,16 @@ var DataTablesFilterMap = ( function( window, undefined ) {
       }
     },
     Families : {
-      all: {
-        "all": [],
-        "individual-enrolled": [ "individual_market" ],
-        "Enrolled": [ "enrolled_shop_market" ],
-        "non-enrolled": []
+      all: [ "all" ],
+      individual_enrolled: {
+        "All": ["all_enrollments"],
+        "Individual-Enrolled": [],
+        "individual": [ "enrolled", "enrolled_individual_market" ],
+        "employee-sponsored-coverage-enrolled": [ "enrolled_shop_market" ]
       },
-      active: {
-        "all": ["all_enrollments"],
+      "employer-sponsored-coverage-enrolled": {
+        "enrolled": ["enrolled_shop_market"],
+        "individual-enrolled": [],
         "individual": [ "enrolled", "enrolled_individual_market" ],
         "employee-sponsored-coverage-enrolled": [ "enrolled_shop_market" ]
       }
