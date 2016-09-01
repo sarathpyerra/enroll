@@ -200,7 +200,6 @@ class Family
   def enrollments
     return [] if  latest_household.blank?
     latest_household.hbx_enrollments.show_enrollments
-
   end
 
   def primary_family_member
@@ -465,6 +464,10 @@ class Family
     broker_agency_accounts.detect { |account| account.is_active? }
   end
 
+  def any_unverified_enrollments?
+    enrollments.verification_needed.any?
+  end
+
   class << self
     # Manage: SEPs, FamilyMemberAgeOff
     def advance_day(new_date)
@@ -649,6 +652,7 @@ Family.collection.aggregate([
   def generate_family_search
     ::MapReduce::FamilySearchForFamily.populate_for(self)
   end
+
 private
   def build_household
     if households.size == 0

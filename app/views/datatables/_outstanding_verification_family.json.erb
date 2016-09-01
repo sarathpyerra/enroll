@@ -20,8 +20,7 @@
 		<span class="label label-danger">Past Due</span>
 	<% end %>
 <% end %>
-"review_status" : <%= raw review_status_info.to_json %>,
-"review" : <%= raw (link_to "Review", show_docs_documents_path(:person_id => person.id, :status => "in review"), class:"btn btn-#{review_button_class(outstanding_verification_family)} btn-xs").to_json %>,
-"fed_hub" : <%= raw (link_to "Federal Hub Detail", "#", class:"btn btn-default btn-xs").to_json %>,
-"row_data" : ""
-}
+<%= raw review_status_info.to_json %>,
+<%= raw (link_to "Review", show_docs_documents_path(:person_id => person.id), class:"btn btn-#{review_button_class(outstanding_verification_family)} btn-xs").to_json %>,
+<%= raw (link_to "Federal Hub Detail", "#", class:"btn btn-default btn-xs").to_json %>
+]
