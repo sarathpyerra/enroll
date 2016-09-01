@@ -354,7 +354,7 @@ class Insured::FamiliesController < FamiliesController
     @qualified_date = (start_date <= @qle_date && @qle_date <= end_date) ? true : false
   end
 
-  def check_for_admin_message    
+  def check_admin_message 
     if Person.where(id:@person.id).first.primary_family.active_seps.present? && Person.where(id:@person.id).first.primary_family.active_seps.last.admin_flag.present?
       @sep = Person.where(id:@person.id).first.primary_family.active_seps.last
       if @sep.admin_flag
