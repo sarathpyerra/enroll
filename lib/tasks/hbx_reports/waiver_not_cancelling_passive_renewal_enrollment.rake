@@ -20,6 +20,7 @@ namespace :reports do
                         Employee_HBX_ID
                         SSN
                         DOB
+                        Coverage_kind
                         ER_Sponsored_Passive_Enrollment_ID
                         Passive_Enrollment_Created_At
                         Enrollment_Waived_Time_Stamp
@@ -39,30 +40,33 @@ namespace :reports do
 
             next if renewing_enrollments.blank?
             # enrollment wavied in open ernrollment period
-            renewing_enrollment_waived = renewing_enrollments.select{ |hbx|
-              (HbxEnrollment::WAIVED_STATUSES).include?(hbx.aasm_state) &&
-                  (hbx.benefit_group.plan_year.open_enrollment_start_on..hbx.benefit_group.plan_year.open_enrollment_end_on).cover?(hbx.submitted_at)}
-            # employer sponsored renewing_enrollment
-            renewing_enrollment_auto_renewing = renewing_enrollments.select{ |hbx|
-              (HbxEnrollment::RENEWAL_STATUSES).include?(hbx.aasm_state)}
+            ['health','dental'].each do |ct|
+              renewing_enrollment_waived = renewing_enrollments.select{ |hbx|
+                (HbxEnrollment::WAIVED_STATUSES).include?(hbx.aasm_state) &&
+                    (hbx.benefit_group.plan_year.open_enrollment_start_on..hbx.benefit_group.plan_year.open_enrollment_end_on).cover?(hbx.submitted_at) && hbx.coverage_kind==ct}
+              # employer sponsored renewing_enrollment
+              renewing_enrollment_auto_renewing = renewing_enrollments.select{ |hbx|
+                (HbxEnrollment::RENEWAL_STATUSES).include?(hbx.aasm_state) && hbx.coverage_kind==ct }
 
-            # If there are renewing enrollments with both [ Waived(inactive) and Renewing ] statuses for an employee, we want to report them
-            if renewing_enrollment_auto_renewing.present? && renewing_enrollment_waived.present?
+              # If there are renewing enrollments with both [ Waived(inactive) and Renewing ] statuses from same coverage kind =health/dental for an employee, we want to report them
+              if renewing_enrollment_auto_renewing.present? && renewing_enrollment_waived.present?
 
 
-              csv << [
-                ce.employer_profile.organization.legal_name,
-                ce.employer_profile.fein,
-                ce.first_name,
-                ce.last_name,
-                ce.employee_role.person.hbx_id,
-                ce.ssn,
-                ce.dob,
-                renewing_enrollment_auto_renewing.first.hbx_id,
-                renewing_enrollment_auto_renewing.first.created_at,
-                renewing_enrollment_waived.first.submitted_at
-              ]
-              count += 1
+                csv << [
+                    ce.employer_profile.organization.legal_name,
+                    ce.employer_profile.fein,
+                    ce.first_name,
+                    ce.last_name,
+                    ce.employee_role.person.hbx_id,
+                    ce.ssn,
+                    ce.dob,
+                    renewing_enrollment_auto_renewing.first.coverage_kind,
+                    renewing_enrollment_auto_renewing.first.hbx_id,
+                    renewing_enrollment_auto_renewing.first.created_at,
+                    renewing_enrollment_waived.first.submitted_at
+                ]
+                count += 1
+              end
             end
           end
         end
