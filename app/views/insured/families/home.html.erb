@@ -1,3 +1,8 @@
+<!--TODO : DELETE THIS!!!, Replace with Banner--> 
+    <% if existing_sep = @person.primary_family.active_seps.last %>
+      <p>Would you like to use your existing special enrollment period? "<%= qle_link_generater_for_an_existing_qle(QualifyingLifeEventKind.find(existing_sep.qualifying_life_event_kind_id))%>"</p>
+    <% end %>
+<!---->
 <% content_for :navigation do %>
   <%= render 'navigation' %>
 <% end %>
@@ -16,6 +21,7 @@
   <div class="row">
   <div class="col-md-8">
     <%= render partial: 'qle_detail' %>
+    <%= render partial: 'qle_detail_for_existing_sep' %>
     <%= render partial: "enrollment", :collection => @hbx_enrollments, :as => :hbx_enrollment %>
     <% if @waived %>
       <%= render partial: 'waived_coverage_widget', :collection => @waived_hbx_enrollments, :as => :hbx_enrollment %>
