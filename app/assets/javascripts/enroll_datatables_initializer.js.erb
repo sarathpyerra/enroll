@@ -47,7 +47,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   function setFiltersFromScopeMap(table_id, tab, first_level, second_level) {
-    // console.log(table_id, tab, first_level, second_level);
+    console.log(table_id, tab, first_level, second_level);
     findTable(table_id);
     if ( typeof second_level !== "undefined" ) {
       scopes = DataTablesFilterMap[tab][first_level][second_level]
@@ -67,7 +67,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   }
 
   function clickActiveFilter(table_id, $active_filter, filter_criteria, base_model) {
-    // console.log(arguments);
+    console.log(arguments);
     $active_filter.on('click', function() {
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(base_model),
@@ -441,6 +441,7 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $.each(params, function(k,v) {
       additional_params[k] = v;
     });
+    console.log(params);
     $table.data('dt_params', additional_params );
     if (additional_params.hasOwnProperty('key')) {
     } else {
