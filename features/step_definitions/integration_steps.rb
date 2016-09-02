@@ -373,6 +373,7 @@ When(/^(.*) creates an HBX account$/) do |named_person|
   person = people[named_person]
 
   fill_in "user[oim_id]", :with => person[:email]
+  find('#user_oim_id').set(person[:email])
   fill_in "user[password_confirmation]", :with => person[:password]
   fill_in "user[password]", :with => person[:password]
   screenshot("create_account")

@@ -30,6 +30,7 @@ Given /(\w+) is a user with no person who goes to the Employer Portal/ do |name|
   find(portal_class).click
   @pswd = 'aA1!aA1!aA1!'
   fill_in "user[oim_id]", :with => email
+  find('#user_oim_id').set('email')
   fill_in "user[password]", :with => @pswd
   fill_in "user[password_confirmation]", :with => @pswd
   sleep(1)
@@ -103,6 +104,7 @@ Then /(\w+) decides to Update Business information/ do |person|
   find('.interaction-click-control-update-business-info', :wait => 10).click
   wait_for_ajax(10)
   screenshot('update_business_info')
+  sleep 1
 end
 
 Given /(\w+) adds an EmployerStaffRole to (\w+)/ do |staff, new_staff|

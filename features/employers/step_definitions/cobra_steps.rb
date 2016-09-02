@@ -34,6 +34,7 @@ end
 When(/^(.*) create a new account for employer$/) do |named_person|
   person = people_for_cobra[named_person]
   fill_in "user[oim_id]", :with => person[:email]
+  find('#user_oim_id').set(person[:email])
   fill_in "user[password]", :with => person[:password]
   fill_in "user[password_confirmation]", :with => person[:password]
   screenshot("create_account")
