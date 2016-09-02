@@ -28,6 +28,7 @@ end
 Then(/Individual creates HBX account$/) do
   click_button 'Create account', :wait => 10
   fill_in "user[oim_id]", :with => (@u.email :email)
+  find('#user_oim_id').set(@u.email :email)
   fill_in "user[password]", :with => "aA1!aA1!aA1!"
   fill_in "user[password_confirmation]", :with => "aA1!aA1!aA1!"
   screenshot("create_account")
@@ -57,6 +58,7 @@ When(/^\w+ clicks? on continue button$/) do
 end
 
 Then(/^user should see heading labeled personal information/) do
+  sleep 1
   expect(page).to have_content("Personal Information")
 end
 
