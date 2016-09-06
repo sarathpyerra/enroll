@@ -70,7 +70,6 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def employer_invoice_datatable
-
     dt_query = extract_datatable_parameters
     collection = []
     all_employers = Organization.all_employer_profiles
@@ -89,8 +88,9 @@ class Exchanges::HbxProfilesController < ApplicationController
     @draw = dt_query.draw
     @total_records = all_employers.count
     @records_filtered = collection.count
+
     if collection.is_a? Array
-      @employers = collection[dt_query.skip..@total_records]
+      @employers = collection[Range.new(dt_query.skip, dt_query.skip + dt_query.take.to_i)]
     else
       @employers = collection.skip(dt_query.skip).limit(dt_query.take)
     end
