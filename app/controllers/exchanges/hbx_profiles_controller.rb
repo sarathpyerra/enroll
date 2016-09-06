@@ -90,7 +90,7 @@ class Exchanges::HbxProfilesController < ApplicationController
     @records_filtered = collection.count
 
     if collection.is_a? Array
-      @employers = collection[Range.new(dt_query.skip, dt_query.skip + dt_query.take.to_i)]
+      @employers = collection[Range.new(dt_query.skip, dt_query.skip + dt_query.take.to_i - 1)]
     else
       @employers = collection.skip(dt_query.skip).limit(dt_query.take)
     end
