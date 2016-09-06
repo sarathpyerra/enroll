@@ -17,6 +17,7 @@ class Insured::FamilyMembersController < ApplicationController
 
     if params[:sep_id].present?
       @sep = @family.special_enrollment_periods.find(params[:sep_id])
+      @qle = QualifyingLifeEventKind.find(params[:qle_id])
       @change_plan = 'change_by_qle'
       @change_plan_date = @sep.qle_on
     elsif params[:qle_id].present? && !params[:shop_for_plan]

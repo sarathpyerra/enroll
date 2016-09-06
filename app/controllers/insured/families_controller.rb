@@ -10,7 +10,7 @@ class Insured::FamiliesController < FamiliesController
   def home
     set_flash_by_announcement
     set_bookmark_url
-    check_admin_message
+    @active_admin_sep = @family.active_admin_seps.last
 
     log("#3717 person_id: #{@person.id}, params: #{params.to_s}, request: #{request.env.inspect}", {:severity => "error"}) if @family.blank?
     
@@ -41,7 +41,7 @@ class Insured::FamiliesController < FamiliesController
       memo
     end
 
-    @last_active_sep = Family.active_seps.last
+    #@last_active_sep_by_admin = @family.active_admin_seps.last
 
     @waived_hbx_enrollments = @waived_hbx_enrollments.select {|h| !hbx_enrollment_kind_and_years[h.coverage_kind].include?(h.effective_on.year) }
     @waived = @family.coverage_waived? && @waived_hbx_enrollments.present?
@@ -355,14 +355,14 @@ class Insured::FamiliesController < FamiliesController
     @qualified_date = (start_date <= @qle_date && @qle_date <= end_date) ? true : false
   end
 
-  def check_admin_message 
-    if Person.where(id:@person.id).first.primary_family.active_seps.present? && Person.where(id:@person.id).first.primary_family.active_seps.last.admin_flag.present?
-      @sep = Person.where(id:@person.id).first.primary_family.active_seps.last
-      if @sep.admin_flag
-        @sep_flag = @sep.admin_flag  
-        #@sep.admin_flag = false
-        @sep.save!
-      end
-    end
-  end
+  # def check_admin_message 
+  #   if @family.active_seps.present? && Person.where(id:@person.id).first.primary_family.active_seps.last.admin_flag.present?
+  #     @sep = Person.where(id:@person.id).first.primary_family.active_seps.last
+  #     if @sep.admin_flag
+  #       @sep_flag = @sep.admin_flag  
+  #       #@sep.admin_flag = false
+  #       @sep.save!
+  #     end
+  #   end
+  # end
 end
