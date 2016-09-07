@@ -41,7 +41,7 @@
         <% end %>
         analytics.page();
       }}();
-      $(document).ready(function(){
+      $(document).on('ready page:load', function () {
         $('a').click(function(){
           window.analytics.track('Clicked Link', {
             'Href': $(this).attr('href')
