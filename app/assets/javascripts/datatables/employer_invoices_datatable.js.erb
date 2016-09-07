@@ -191,7 +191,6 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
       var tab = setTab();
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(),
-        custom_sort: true,
         order_by: "legal_name",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)

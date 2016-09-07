@@ -70,10 +70,10 @@ class Exchanges::HbxProfilesController < ApplicationController
   end
 
   def employer_invoice_datatable
+
     dt_query = extract_datatable_parameters
     collection = []
-    all_employers = Organization.all_employer_profiles
-
+    all_employers = Organization.all_employer_profiles.offset(dt_query.skip).limit(dt_query.take)
     if dt_query.search_string.blank?
       collection = all_employers
       collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
@@ -86,14 +86,15 @@ class Exchanges::HbxProfilesController < ApplicationController
     end
 
     @draw = dt_query.draw
-    @total_records = all_employers.count
-    @records_filtered = collection.count
+    @total_records = all_employers.to_a.length
+    @records_filtered = all_employers.count
 
     if collection.is_a? Array
       @employers = collection[Range.new(dt_query.skip, dt_query.skip + dt_query.take.to_i - 1)]
     else
       @employers = collection.skip(dt_query.skip).limit(dt_query.take)
     end
+
     @profile = find_mailbox_provider
     render "datatables/employers_index_datatable"
 

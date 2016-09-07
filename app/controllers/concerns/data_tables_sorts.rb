@@ -32,56 +32,56 @@ module DataTablesSorts
         if params[:custom_sort].present?
           if sort == "asc"
             if params[:boolean_sort] == "true"
-              sorted_collection = "#{base_model.capitalize}.to_a.sort_by{|p| p.#{order_by} ? 0 : 1}"
+              sorted_collection = "#{base_model.capitalize}.sort_by{|p| p.#{order_by} ? 0 : 1}"
             else
-              sorted_collection = "#{base_model.capitalize}.to_a.sort_by{|p| p.#{order_by}}"
+              sorted_collection = "#{base_model.capitalize}.sort_by{|p| p.#{order_by}}"
             end
           else
             if params[:boolean_sort] == "true"
-              sorted_collection = "#{base_model.capitalize}.to_a.sort_by{|p| p.#{order_by} ? 1 : 0}"
+              sorted_collection = "#{base_model.capitalize}.sort_by{|p| p.#{order_by} ? 1 : 0}"
             else
-              sorted_collection = "#{base_model.capitalize}.to_a.sort_by{|p| p.#{order_by}}.reverse"
+              sorted_collection = "#{base_model.capitalize}.sort_by{|p| p.#{order_by}}.reverse"
             end
           end
         else
-          sorted_collection = "#{base_model.capitalize}.order_by('#{order_by} #{sort.upcase}')"
+          sorted_collection = "#{base_model.capitalize}.order_by('#{order_by}: :#{sort.downcase}')"
         end
       else
         if params[:custom_sort].present?
           if sort == "asc"
             if params[:boolean_sort] == "true"
               if params[:start_on].present? && params[:end_on].present?
-                sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).to_a.sort_by{|p| p.#{order_by} ? 0 : 1}"
+                sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).sort_by{|p| p.#{order_by} ? 0 : 1}"
               else
-                sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.to_a.sort_by{|p| p.#{order_by} ? 0 : 1}"
+                sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.sort_by{|p| p.#{order_by} ? 0 : 1}"
               end
             else
               if params[:start_on].present? && params[:end_on].present?
-                sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).to_a.sort_by{|p| p.#{order_by}}"
+                sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).sort_by{|p| p.#{order_by}}"
               else
-                sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.to_a.sort_by{|p| p.#{order_by}}"
+                sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.sort_by{|p| p.#{order_by}}"
               end
             end
           else
             if params[:boolean_sort] == "true"
               if params[:start_on].present? && params[:end_on].present?
-                sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).to_a.sort_by{|p| p.#{order_by} ? 1 : 0}"
+                sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).sort_by{|p| p.#{order_by} ? 1 : 0}"
               else
-                sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.to_a.sort_by{|p| p.#{order_by} ? 1 : 0}"
+                sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.sort_by{|p| p.#{order_by} ? 1 : 0}"
               end
             else
               if params[:start_on].present? && params[:end_on].present?
-                sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).to_a.sort_by{|p| p.#{order_by}}.reverse"
+                sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).sort_by{|p| p.#{order_by}}.reverse"
               else
-                sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.to_a.sort_by{|p| p.#{order_by}}.reverse"
+                sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.sort_by{|p| p.#{order_by}}.reverse"
               end
             end
           end
         else
           if params[:start_on].present? && params[:end_on].present?
-            sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).order_by('#{order_by} #{sort.upcase}')"
+            sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).order_by('#{order_by}: :#{sort.downcase}')"
           else
-            sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.order_by('#{order_by} #{sort.upcase}')"
+            sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.order_by('#{order_by}: :#{sort.downcase}')"
           end
         end
       end

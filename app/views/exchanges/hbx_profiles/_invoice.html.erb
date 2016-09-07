@@ -93,18 +93,17 @@
   	columns: [
       ["Legal name", "legal_name", "", [true, ""]],
       ["Hbx Id", "hbx_id", "", [true, ""]],
-      ["FEIN", "fein", "", [true, ""]],
-      ["Employer Status", "employer_status", "dt-center", [true, ""]],
+      ["FEIN", "fein", "dt-center", [true, ""]],
+      ["Plan Year Status", "plan_year_status", "dt-center", [true, ""]],
       ["Eligibility", "eligibility_criteria", "dt-center eligibility", [true, ""]],
       ["Broker", "broker", "", [true, ""]],
       ["CNVRSN?", "conversion", "dt-center", [true, ""]],
       ["Status", "status", "dt-center", [true, ""]],
       ["EFF Date", "effective_date", "", [true, ""]],
   	  ["Invoiced?", "invoiced", "dt-center", [true, ""]],
-  	  ["Enrolled/Waived", "enrolled_waived", "dt-center", [true, ""]],
-      ["PCT", "percentage", "dt-right", [true, ""]],
-      ["Submitted At", "submitted_at", "dt-center", [true, ""]]
-  	]
+  	  ["Enrolled Waived", "enrolled_waived", "dt-center", [true, ""]],
+      ["PCT", "percentage", "dt-right", [true, ""]]
+    ]
   } %>
 </div>
 <form id="export-csv-injected-form" action="<%= export_csv_path %>.csv" method="post">
