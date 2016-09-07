@@ -201,14 +201,6 @@ class Organization
     end
   end
 
-  def latest_plan_year_effective_date
-    if employer_profile.latest_plan_year.present?
-      employer_profile.latest_plan_year.effective_date
-    else
-      Date.new
-    end
-  end
-
   def broker_agency_profile_legal_name
     if employer_profile.broker_agency_profile.present?
       employer_profile.broker_agency_profile.organization.legal_name

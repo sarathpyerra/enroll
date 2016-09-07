@@ -147,7 +147,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(),
         custom_sort: true,
-        order_by: "employer_profile_aasm",
+        order_by: "employer_profile.aasm_state",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
@@ -254,7 +254,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         boolean_sort: true,
-        order_by: "employer_profile.is_conversion?",
+        order_by: "employer_profile.is_conversion_employer",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
@@ -269,7 +269,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(),
         custom_sort: true,
-        order_by: "latest_plan_year_effective_date",
+        order_by: "employer_profile.latest_plan_year_effective_date",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
@@ -278,7 +278,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
 
   function addEnrolledWaivedScopesBeforeSorting(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $sort_column = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("Enrolled/Waived")');
+    var $sort_column = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("Enrolled Waived")');
     $sort_column.on('click', function() {
       var tab = setTab();
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {

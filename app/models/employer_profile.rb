@@ -34,6 +34,10 @@ class EmployerProfile
   field :registered_on, type: Date, default: ->{ TimeKeeper.date_of_record }
   field :xml_transmitted_timestamp, type: DateTime
 
+  #datatable sorting fields
+  field :latest_plan_year_effective_date, type: Date
+  field :is_conversion_employer, type: Boolean
+
   delegate :hbx_id, to: :organization, allow_nil: true
   delegate :legal_name, :legal_name=, to: :organization, allow_nil: true
   delegate :dba, :dba=, to: :organization, allow_nil: true
@@ -725,6 +729,14 @@ class EmployerProfile
 
   def is_conversion?
     self.profile_source == "conversion"
+  end
+
+  def set_latest_plan_year_effective_date
+    if latest_plan_year.present?
+      latest_plan_year.effective_date
+    else
+      Date.new
+    end
   end
 
 private
