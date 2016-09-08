@@ -46,16 +46,16 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     $active_first_level_filter = $table.closest('.module').find('.first-level > a.active').text().toLowerCase();
     $active_second_level_filter = $table.closest('.module').find('.btn-group-second > a.active').text().toLowerCase();
     if ( $active_second_level_filter.length ) {
-      scopes = DataTablesFilterMap[tab][$active_first_level_filter][$active_second_level_filter]
+      scopes = DataTablesFilterMap()[tab][$active_first_level_filter][$active_second_level_filter]
     } else {
       if ( $table.closest('.module').find('.btn-group-second').is(':visible') && !$table.closest('.module').find('.btn-group-second > a.active').length ) {
         if ( typeof filters != 'undefined' ) {
           scopes = filters;
         } else {
-          scopes = DataTablesFilterMap[tab]["all"];
+          scopes = DataTablesFilterMap()[tab]["all"];
         }
       } else {
-        scopes = DataTablesFilterMap[tab][$active_first_level_filter]
+        scopes = DataTablesFilterMap()[tab][$active_first_level_filter]
       }
     }
     return scopes
@@ -64,9 +64,9 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   function setFiltersFromScopeMap(table_id, tab, first_level, second_level) {
     findTable(table_id);
     if ( typeof second_level !== "undefined" ) {
-      scopes = DataTablesFilterMap[tab][first_level][second_level]
+      scopes = DataTablesFilterMap()[tab][first_level][second_level]
     } else {
-      scopes = DataTablesFilterMap[tab][first_level]
+      scopes = DataTablesFilterMap()[tab][first_level]
     }
     return scopes
   }

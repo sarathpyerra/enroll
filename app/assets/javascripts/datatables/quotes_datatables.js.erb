@@ -1,5 +1,10 @@
 var QuotesDatatable = ( function( window, undefined ) {
 
+  function setTab() {
+    var tab = "Broker";
+    return tab;
+  }
+
   function setBaseModel() {
     var base_model = "quote";
     return base_model;
@@ -16,44 +21,26 @@ var QuotesDatatable = ( function( window, undefined ) {
 
   function callDraftFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $draft_filter = $table.closest('.module').find('.first-level a:contains("Draft")');
-    var $broker_id =  $('.broker-quotes-table').data('broker-id');
-    $draft_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
-        base_model: setBaseModel(),
-        filters: [
-        "all_broker_quotes('"+$broker_id+"')",
-        "draft_quotes"
-      ]});
-    });
+    var $active_filter = $table.closest('.module').find('.first-level a:contains("Draft")');
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setSecondLevel($active_filter), undefined );
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
   function callPublishedFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $published_filter = $table.closest('.module').find('.first-level a:contains("Published")');
-    var $broker_id = $('.broker-quotes-table').data('broker-id');
-    $published_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
-        base_model: setBaseModel(),
-        filters: [
-        "all_broker_quotes('"+$broker_id+"')",
-        "published_quotes"
-      ]});
-    });
+    var $active_filter = $table.closest('.module').find('.first-level a:contains("Published")');
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setSecondLevel($active_filter), undefined );
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
   function callClaimedFilter(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $claimed_filter = $table.closest('.module').find('.first-level a:contains("Claimed")');
-    var $broker_id = $('.broker-quotes-table').data('broker-id');
-    $claimed_filter.on('click', function() {
-      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
-        base_model: setBaseModel(),
-        filters: [
-        "all_broker_quotes('"+$broker_id+"')",
-        "claimed_quotes"
-      ]});
-    });
+    var $active_filter = $table.closest('.module').find('.first-level a:contains("Claimed")');
+    var filter_criteria = EnrollDataTableInitializer.setFilterCriteria(table_id, setTab(), EnrollDataTableInitializer.setSecondLevel($active_filter), undefined );
+    var base_model = setBaseModel();
+    EnrollDataTableInitializer.clickActiveFilter(table_id, $active_filter, filter_criteria, base_model);
   }
 
   return {
