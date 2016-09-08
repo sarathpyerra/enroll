@@ -66,7 +66,7 @@ module Insured::FamiliesHelper
     end
 
     plan_details.inject([]) do |data, element|
-      data << "<label>#{element}</label>"
+      data << "#{element}"
     end.join("&nbsp<label class='separator'></label>").html_safe
   end
 
@@ -155,4 +155,5 @@ module Insured::FamiliesHelper
   def dual_role_without_shop_sep?
     @family.primary_applicant.person.has_multiple_roles? && @family.earliest_effective_shop_sep.blank?
   end
+
 end

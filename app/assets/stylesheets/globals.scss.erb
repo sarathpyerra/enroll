@@ -79,14 +79,19 @@
         width: 30px;
       }
     }
-    input[type=checkbox]:checked + label i {
-      &:first-of-type {
-        display: inline-block;
-        width: 30px;
-      }
-      &:last-of-type {
-        display: none;
-      }
+  }
+  .enroll-label {
+    font-weight: $float-labels-weight;
+    color: $float-labels-color;
+    font-size: $float-labels-text-size;
+    text-transform: $float-labels-casing;
+  }
+  .label {
+    &.inactive, &.canceled {
+      background-color: $primary-gray;
+    }
+    &.employment_terminated {
+      background-color: $primary-red;
     }
   }
   
@@ -99,8 +104,9 @@
       float: none;
     }
   }
-  .no-top-margin {
-    margin-top: 0;
+  .census-employee-details .n-radio-row {
+    border: none !important;
+    padding: inherit;
   }
   .no-vertical-padding {
     padding-top: 0;
@@ -128,6 +134,10 @@
       color: rgb(131, 135, 128);
       text-transform: uppercase;
       text-align: left;
+      line-height: 1.2;
+      strong {
+        font-weight: bold;
+      }
     }
     .selectric-wrapper {
       width:100%;
@@ -141,7 +151,6 @@
     &.auto-width {
       width: auto !important;
     }
-
     >* {
       display: table-cell;
       float: none;
@@ -149,7 +158,9 @@
       &.vertical-align-top {
         vertical-align: top !important;
       }
-
     }
+  }
+  .date-field {
+    font-family: FontAwesome;
   }
 }
