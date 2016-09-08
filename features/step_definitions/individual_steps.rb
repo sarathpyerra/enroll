@@ -64,6 +64,7 @@ end
 
 Then(/Individual should click on Individual market for plan shopping/) do
   expect(page).to have_button("CONTINUE", visible: false)
+  sleep 1
   find('.btn', text: 'CONTINUE').click
 end
 
