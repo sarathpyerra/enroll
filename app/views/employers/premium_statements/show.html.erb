@@ -28,13 +28,14 @@
       <% end %>
     </div>
   </div>
-  <br/>
   <% if plan_year.present? && billing_date.present? %>
   <div class="tables premium-reports-table">
     <%= render partial: 'shared/premium_reports_table' %>
   </div>
   <% else %>
-  After your employees have enrolled in coverage, your enrollment reports will show here.
+  <h4>
+    After your employees have enrolled in coverage, your enrollment reports will show here.
+  </h4>
   <% end %>
   <% if plan_year.present? && billing_date.present? %>
   <a class='btn btn-default' data-target='#downloadCsv' data-toggle='modal'>
