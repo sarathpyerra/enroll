@@ -79,21 +79,21 @@ class Exchanges::HbxProfilesController < ApplicationController
       collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
     else
       collection = apply_sort_or_filter(collection, dt_query.skip, dt_query.take)
-      organization_ids = Organization.search(dt_query.search_string).pluck(:id)
+      organization_ids = Organization.all_employer_profiles.search(dt_query.search_string).pluck(:id)
       collection = all_employers.where({
         "id" => {"$in" => organization_ids}
       })
     end
-
-    @draw = dt_query.draw
-    @total_records = all_employers.to_a.length
-    @records_filtered = all_employers.count
 
     if collection.is_a? Array
       @employers = collection[Range.new(dt_query.skip, dt_query.skip + dt_query.take.to_i - 1)]
     else
       @employers = collection.skip(dt_query.skip).limit(dt_query.take)
     end
+
+    @draw = dt_query.draw
+    @records_filtered = @employers.size
+    @total_records = collection.size
 
     @profile = find_mailbox_provider
     render "datatables/employers_index_datatable"

@@ -175,6 +175,9 @@
         EnrollDataTableInitializer.exportPageAsCSV('<%= table_id %>', enroll_datatable.data(), initial_column_set );
         EnrollDataTableInitializer.addClearSearch('<%= table_id %>');
         EnrollDataTableInitializer.addSubmitSearch('<%= table_id %>');
+        <% if pagination == true %>
+          EnrollDataTableInitializer.showPagination('<%= table_id %>');
+        <% end %>
         Freebies.popover();
       },
       "columns": [

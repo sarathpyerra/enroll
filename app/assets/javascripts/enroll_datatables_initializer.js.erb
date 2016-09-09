@@ -109,6 +109,8 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
     var $pagination = $table.closest('.module').find('.dataTables_paginate')
     if ( $pagination.find('.paginate_button').length >= 4 ) {
       $pagination.show();
+    } else {
+      $pagination.hide();
     }
   }
 
