@@ -30,6 +30,10 @@ class Insured::FamiliesController < FamiliesController
     @waived_hbx_enrollments = @family.active_household.hbx_enrollments.waived.to_a
     update_changing_hbxs(@hbx_enrollments)
 
+    if @person.active_employee_roles.count > 1 && @hbx_enrollments.present?
+      @hbx_enrollments = @hbx_enrollments.select {|h| (h.is_shop? && h.employee_role_id == @employee_role.id) || !h.is_shop?}
+    end
+
     # Filter out enrollments for display only
     @hbx_enrollments = @hbx_enrollments.reject { |r| !valid_display_enrollments.include? r._id }
     @waived_hbx_enrollments = @waived_hbx_enrollments.each.reject { |r| !valid_display_waived_enrollments.include? r._id }
@@ -44,7 +48,7 @@ class Insured::FamiliesController < FamiliesController
     @waived_hbx_enrollments = @waived_hbx_enrollments.select {|h| !hbx_enrollment_kind_and_years[h.coverage_kind].include?(h.effective_on.year) }
     @waived = @family.coverage_waived? && @waived_hbx_enrollments.present?
 
-    @employee_role = @person.active_employee_roles.first
+    #@employee_role = @person.active_employee_roles.first
     @tab = params['tab'] 
     @family_members = @family.active_family_members
     respond_to do |format|
@@ -251,7 +255,7 @@ class Insured::FamiliesController < FamiliesController
   end
 
   def check_employee_role
-    @employee_role = @person.active_employee_roles.first
+    @employee_role = params[:employee_role_id].present? ? @person.active_employee_roles.detect{|e| e.id.to_s == params[:employee_role_id]} : @person.active_employee_roles.first
   end
 
   def init_qualifying_life_events
