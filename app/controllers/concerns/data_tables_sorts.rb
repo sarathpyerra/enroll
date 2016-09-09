@@ -10,7 +10,7 @@ module DataTablesSorts
     end
   end
 
-  def apply_sort(collection, sort, cursor, limit, base_model, scopes, order_by)
+  def apply_sort(collection, sort, cursor, limit, base_model, scopes, order_by, custom_order_by_array)
     if params[:start_on].present? && params[:end_on].present?
       start_on = Date.strptime(params[:start_on], "%m/%d/%Y")
       end_on = Date.strptime(params[:end_on], "%m/%d/%Y")
@@ -32,9 +32,11 @@ module DataTablesSorts
         sorted_collection = "#{base_model.capitalize}.order_by(:'#{order_by}'.#{sort.downcase})"
       else
         if params[:start_on].present? && params[:end_on].present?
-          sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).order_by(:'#{order_by}'.#{sort.downcase})"
+          sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on)"
+          sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).order_by(:'#{order_by}'.#{sort.downcase})" if params[:order_by].present?
         else
-          sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.order_by(:'#{order_by}'.#{sort.downcase})"
+          sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}"
+          sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.order_by(:'#{order_by}'.#{sort.downcase})" if params[:order_by].present?
         end
       end
       collection = eval(sorted_collection)

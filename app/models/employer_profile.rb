@@ -34,10 +34,6 @@ class EmployerProfile
   field :registered_on, type: Date, default: ->{ TimeKeeper.date_of_record }
   field :xml_transmitted_timestamp, type: DateTime
 
-  #datatable sorting fields
-  field :latest_plan_year_effective_date, type: Date
-  field :is_conversion_employer, type: Boolean
-
   delegate :hbx_id, to: :organization, allow_nil: true
   delegate :legal_name, :legal_name=, to: :organization, allow_nil: true
   delegate :dba, :dba=, to: :organization, allow_nil: true
@@ -236,6 +232,23 @@ class EmployerProfile
     if plan_year = plan_years.published_plan_years_by_date(today).first
       @active_plan_year = plan_year
     end
+  end
+
+  def set_enrolled_waived_count
+    plan_year = latest_plan_year
+    census_employees = plan_year.find_census_employees if plan_year.present?
+    enrolled = plan_year.try(:enrolled).try(:count).to_i || 0
+    waived = census_employees.try(:waived).try(:count).to_i || 0
+    return "#{enrolled}/#{waived}"
+  end
+
+  def set_enrolled_percentage
+    plan_year = latest_plan_year
+    census_employees = plan_year.find_census_employees if plan_year.present?
+    enrolled = plan_year.try(:enrolled).try(:count).to_i || 0
+    eligible_to_enroll_count = census_employees.try(:active).try(:count)
+    eligible_to_enroll_count = 0.0 if eligible_to_enroll_count == nil
+    (enrolled / eligible_to_enroll_count * 100).to_s
   end
 
   def latest_plan_year
@@ -731,12 +744,8 @@ class EmployerProfile
     self.profile_source == "conversion"
   end
 
-  def set_latest_plan_year_effective_date
-    if latest_plan_year.present?
-      latest_plan_year.effective_date
-    else
-      Date.new
-    end
+  def latest_plan_year_effective_date
+    latest_plan_year.effective_date if latest_plan_year.present?
   end
 
 private
