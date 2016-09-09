@@ -66,6 +66,7 @@ RSpec.describe "employers/premium_statements/show.html.erb" do
     assign :hbx_enrollments, hbx_enrollments
     assign :employer_profile, employer_profile
     assign :billing_date, TimeKeeper.date_of_record.beginning_of_month
+    allow(view).to receive(:policy_helper).and_return(double("PersonPolicy", updateable?: true, list_enrollments?: true ))
     allow(employer_profile).to receive(:billing_plan_year).and_return([current_plan_year, start_on])
     render :template => "employers/premium_statements/show.html.erb", locals: { employer_profile: employer_profile }
   end
