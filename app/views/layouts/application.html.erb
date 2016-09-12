@@ -69,14 +69,14 @@
             return
           }
           // Stop the form from submitting...for now
-          e.preventDefault();
+          //e.preventDefault();
           //run our tracking
           window.analytics.track('Form Submit',{
             'Form ID': $(this).attr('id'),
             'Form Action': $(this).attr('action')
           });
           // Submit the form now that all our analytics stuff is done
-          $(e.target).unbind('submit').trigger('submit');
+          //$(e.target).unbind('submit').trigger('submit');
         });
       });
     </script>
