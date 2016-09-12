@@ -62,22 +62,6 @@
             'Href': $(this).attr('href')
             });
         });
-        $('form').submit(function(e){
-          // If some client-side validation kicked in and wants to prevent
-          // the form from submitting, bail out now without calling track or identify
-          if ( e.isDefaultPrevented() ) {
-            return
-          }
-          // Stop the form from submitting...for now
-          //e.preventDefault();
-          //run our tracking
-          window.analytics.track('Form Submit',{
-            'Form ID': $(this).attr('id'),
-            'Form Action': $(this).attr('action')
-          });
-          // Submit the form now that all our analytics stuff is done
-          //$(e.target).unbind('submit').trigger('submit');
-        });
       });
     </script>
   </body>
