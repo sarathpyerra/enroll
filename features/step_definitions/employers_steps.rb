@@ -217,6 +217,7 @@ When(/^.+ clicks on terminate button for a census family for invalid case$/) do
  find(".date-picker").set(TimeKeeper.date_of_record - 75.days)
  # fill_in ".date-picker", :with => TimeKeeper.date_of_record - 75.days
  find(".delete_confirm").click
+ sleep 1
  expect(find('.alert')).to have_content('Census Employee could not be terminated: Termination date must be within the past 60 days.')
  expect(page).to have_content("John")
 
