@@ -312,6 +312,7 @@ Rails.application.routes.draw do
         post :update_benefits
         post :publish_quote
         get :get_quote_info
+        get :copy
         get :set_plan
         get :publish
         get :criteria
