@@ -17,7 +17,6 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def publish_quote
     if @quote.may_publish?
-      @quote.claim_code = @quote.employer_claim_code
       @quote.publish!
       flash[:notice] = "Quote Published"
     else
@@ -446,6 +445,12 @@ class BrokerAgencies::QuotesController < ApplicationController
                  :template => "/broker_agencies/quotes/_publish.pdf.erb"
       end
     end
+  end
+
+  def copy
+    @q = Quote.find(params[:quote_id])
+    @q.clone
+    redirect_to my_quotes_broker_agencies_broker_role_quotes_path(@broker)
   end
 
   def publish
