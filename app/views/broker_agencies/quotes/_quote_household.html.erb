@@ -21,7 +21,7 @@
         <% end %>
 			</div>
 			<div class="col-md-1">
-				<button type="button" data-household-id="<%=qhh.object.id%>" data-quote-id="<%=@quote.id%>" id="remove_household_button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<button type="button" data-household-id="<%=qhh.object.id%>" data-quote-id="<%=@quote.id%>" id="remove_household_button" data-broker-role-id="<%=@broker.id%>" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
     </div>
 		</div>
@@ -32,7 +32,7 @@
 					<div class="form-group col-sm-3">DOB: <%= qm.text_field :dob , {:class => "uidatepicker", placeholder: "Date of Birth (DOB)" } %></div>
 					<div class="form-group col-sm-5">Name: <%= qm.text_field :first_name, {size: 20, placeholder: 'First Name'} %>&nbsp;<%= qm.text_field :last_name, {size: 20, placeholder: 'Last Name'} %></div>
 					<div class="form-group col-sm-3"><%= qm.select(:employee_relationship, [['Employee','employee'], ['Spouse','spouse'], ['Domestic partner','domestic_partner'],['Child','child_under_26']], {}, {:class => "floatlabel custom_selectric"})  %></div>
-					<div class="form-group col-sm-1"><button type="button" data-household-id="<%=qhh.object.id%>" data-quote-id="<%=@quote.id%>" data-member-id="<%=qm.object.id%>" id="remove_member_button"  class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+					<div class="form-group col-sm-1"><button type="button" data-household-id="<%=qhh.object.id%>" data-quote-id="<%=@quote.id%>" data-member-id="<%=qm.object.id%>" data-broker-role-id="<%=@broker.id%>" id="remove_member_button"  class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
 				</div>
 				<% end %>
 			</div>

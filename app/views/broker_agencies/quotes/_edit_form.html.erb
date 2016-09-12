@@ -78,7 +78,7 @@ var remove_member_handler = function(){
 
 	 $.ajax({
         type: "POST",
-        url: "/broker_agencies/quotes/" + this.getAttribute("data-quote-id")  +"/delete_member/?member_id=" +this.getAttribute("data-member-id")+"&household_id="+this.getAttribute("data-household-id"),
+        url: "/broker_agencies/broker_roles/"+this.getAttribute("data-broker-role-id") +"/quotes/"+ this.getAttribute("data-quote-id")  +"/delete_member/?member_id=" +this.getAttribute("data-member-id")+"&household_id="+this.getAttribute("data-household-id"),
         dataType: "js",
         data: {"_method":"post"},
         complete: function(data){
@@ -105,7 +105,7 @@ var remove_household_handler = function(){
 	if(this.getAttribute("data-household-id") != undefined){
 	 $.ajax({
         type: "POST",
-        url: "/broker_agencies/quotes/" + this.getAttribute("data-quote-id")  +"/delete_household/?household_id=" +this.getAttribute("data-household-id"),
+        url: "/broker_agencies/broker_roles/"+this.getAttribute("data-broker-role-id") +"/quotes/" + this.getAttribute("data-quote-id")  +"/delete_household/?household_id=" +this.getAttribute("data-household-id"),
         dataType: "js",
         data: {"_method":"delete"},
         success: function(){
