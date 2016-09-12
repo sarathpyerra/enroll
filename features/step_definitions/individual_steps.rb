@@ -63,6 +63,7 @@ Then(/^user should see heading labeled personal information/) do
 end
 
 Then(/Individual should click on Individual market for plan shopping/) do
+  sleep 1
   expect(page).to have_button("CONTINUE", visible: false)
   sleep 1
   find('.btn', text: 'CONTINUE').click
