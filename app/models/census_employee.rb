@@ -341,12 +341,8 @@ class CensusEmployee < CensusMember
   def terminate_employment!(employment_terminated_on)
 
     if employment_terminated_on < TimeKeeper.date_of_record
-
       if may_terminate_employee_role?
-
         unless employee_termination_pending?
-
-
           self.employment_terminated_on = employment_terminated_on
           self.coverage_terminated_on = earliest_coverage_termination_on(employment_terminated_on)
 
@@ -355,7 +351,6 @@ class CensusEmployee < CensusMember
 
           census_employee_hbx_enrollment = HbxEnrollment.find_shop_and_health_by_benefit_group_assignment(renewal_benefit_group_assignment).select {|hbx| !hbx.coverage_terminated? }
           census_employee_hbx_enrollment.map { |e| self.employment_terminated_on < e.effective_on ? e.cancel_coverage!(self.employment_terminated_on) : e.schedule_coverage_termination!(self.coverage_terminated_on)  }
-
         end
         terminate_employee_role!
       else
@@ -364,21 +359,17 @@ class CensusEmployee < CensusMember
         raise CensusEmployeeError, message
       end
     else # Schedule Future Terminations as employment_terminated_on is in the future
-
       self.employment_terminated_on = employment_terminated_on
       self.coverage_terminated_on = earliest_coverage_termination_on(employment_terminated_on)
-
       if may_schedule_employee_termination? || employee_termination_pending?
-          schedule_employee_termination!
-          census_employee_hbx_enrollment = HbxEnrollment.find_shop_and_health_by_benefit_group_assignment(active_benefit_group_assignment).select {|hbx| !hbx.coverage_terminated? }
-          census_employee_hbx_enrollment.map { |e| self.employment_terminated_on < e.effective_on ? e.cancel_coverage!(self.employment_terminated_on) : e.schedule_coverage_termination!(self.coverage_terminated_on) }
+        schedule_employee_termination!
+        census_employee_hbx_enrollment = HbxEnrollment.find_shop_and_health_by_benefit_group_assignment(active_benefit_group_assignment).select {|hbx| !hbx.coverage_terminated? }
+        census_employee_hbx_enrollment.map { |e| self.employment_terminated_on < e.effective_on ? e.cancel_coverage!(self.employment_terminated_on) : e.schedule_coverage_termination!(self.coverage_terminated_on) }
 
-          census_employee_hbx_enrollment = HbxEnrollment.find_shop_and_health_by_benefit_group_assignment(renewal_benefit_group_assignment).select {|hbx| !hbx.coverage_terminated? }
-          census_employee_hbx_enrollment.map { |e| self.employment_terminated_on < e.effective_on ? e.cancel_coverage!(self.employment_terminated_on) : e.schedule_coverage_termination!(self.coverage_terminated_on) }
-
+        census_employee_hbx_enrollment = HbxEnrollment.find_shop_and_health_by_benefit_group_assignment(renewal_benefit_group_assignment).select {|hbx| !hbx.coverage_terminated? }
+        census_employee_hbx_enrollment.map { |e| self.employment_terminated_on < e.effective_on ? e.cancel_coverage!(self.employment_terminated_on) : e.schedule_coverage_termination!(self.coverage_terminated_on) }
       end
-  end
-
+    end
     self
   end
 
