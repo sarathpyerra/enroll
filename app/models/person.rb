@@ -498,7 +498,7 @@ class Person
   end
 
   def active_employee_roles
-    employee_roles.select{|employee_role| employee_role.census_employee.present? }
+    employee_roles.select{|er| er.census_employee.present? && er.census_employee.is_active? }
   end
 
   def linked_active_employee_roles
