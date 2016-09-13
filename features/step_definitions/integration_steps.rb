@@ -651,6 +651,7 @@ When(/^I click the "(.*?)" in qle carousel$/) do |qle_event|
 end
 
 When(/^I click on "(.*?)" button on household info page$/) do |select_action|
+  sleep 1
   click_link "Continue"
   click_button "Shop for new plan"
 end
