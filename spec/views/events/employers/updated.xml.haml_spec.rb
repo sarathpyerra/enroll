@@ -16,8 +16,12 @@ RSpec.describe "events/employers/updated.haml.erb" do
       download_vocabularies
     end
 
-    let(:plan_year) { PlanYear.new(:aasm_state => "published", :created_at => DateTime.now, :start_on => DateTime.now, :open_enrollment_start_on => DateTime.now, :open_enrollment_end_on => DateTime.now ) }
-    let(:employer) { EmployerProfile.new(:organization => organization, :plan_years => [plan_year], :entity_kind => entity_kind ) }
+    let(:plan_year) { PlanYear.new(:aasm_state => "published", :created_at => DateTime.now,
+                                  :start_on => DateTime.now,
+                                  :open_enrollment_start_on => DateTime.now,
+                                  :open_enrollment_end_on => DateTime.now)
+                    }
+    let(:employer) { EmployerProfile.new(:organization => organization, :plan_years => [plan_year], :entity_kind => entity_kind) }
 
     before :each do
       render :template => "events/employers/updated", :locals => { :employer => employer }
@@ -32,7 +36,7 @@ RSpec.describe "events/employers/updated.haml.erb" do
       let(:benefit_group) {bg = FactoryGirl.create(:benefit_group, plan_year: plan_year);
                           bg.elected_dental_plans = [FactoryGirl.create(:plan, name: "new dental plan", coverage_kind: 'dental',
                                                  dental_level: 'high')];
-                          plan_year.benefit_groups = [bg];
+                          bg.dental_reference_plan_id = bg.elected_dental_plans.first.id.to_s
                           bg}
 
       context "is_offering_dental? is true" do
@@ -44,15 +48,6 @@ RSpec.describe "events/employers/updated.haml.erb" do
         end
       end
 
-
-      context "is_offering_dental? is false" do
-        it "does not show the dental plan in output" do
-          benefit_group.dental_reference_plan_id = nil
-          benefit_group.save!
-          render :template => "events/employers/updated", :locals => {:employer => employer}
-          expect(rendered).not_to include "new dental plan"
-        end
-      end
     end
 
     context "staff is owner" do
