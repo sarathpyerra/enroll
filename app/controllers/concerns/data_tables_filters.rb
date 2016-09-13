@@ -12,7 +12,7 @@ module DataTablesFilters
       end_on = Date.strptime(params[:end_on], "%m/%d/%Y")
       custom_date_filter, other_filters = filters.partition {|filter| filter == filters.last}
       custom_date_filter = custom_date_filter.first
-      filtered_collection = "#{base_model.capitalize}.#{other_filters.join(".")}.#{custom_date_filter}(start_on, end_on).offset(cursor).limit(limit)"
+      filtered_collection = "#{base_model.capitalize}.#{other_filters.join(".")}.#{custom_date_filter}(start_on, end_on)"
     else
       if params[:month_filter] == "true"
         month_filters, regular_filters = filters.partition {|filter| filter =~ /\d/ }
@@ -23,9 +23,9 @@ module DataTablesFilters
           new_month_filters << filter
         end
         filters = regular_filters + new_month_filters
-        filtered_collection = "#{base_model.capitalize}.#{filters.join(".")}.offset(cursor).limit(limit)"
+        filtered_collection = "#{base_model.capitalize}.#{filters.join(".")}"
       else
-        filtered_collection = "#{base_model.capitalize}.#{filters.join(".")}.offset(cursor).limit(limit)"
+        filtered_collection = "#{base_model.capitalize}.#{filters.join(".")}"
       end
     end
     collection = eval(filtered_collection)

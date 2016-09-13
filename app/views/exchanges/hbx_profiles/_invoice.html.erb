@@ -72,6 +72,7 @@
       "EmployerInvoicesDatatable.addLegalNameScopesBeforeSorting",
       "EmployerInvoicesDatatable.addEmployerStatusScopesBeforeSorting",
       "EmployerInvoicesDatatable.addEligibilityScopesBeforeSorting",
+      "EmployerInvoicesDatatable.addGeneralAgencyScopesBeforeSorting",
       "EmployerInvoicesDatatable.addBrokerScopesBeforeSorting",
       "EmployerInvoicesDatatable.addConversionScopesBeforeSorting",
       "EmployerInvoicesDatatable.addEffectiveDateScopesBeforeSorting",
@@ -94,18 +95,18 @@
   	columns: [
       ["Legal name", "legal_name", "", [true, ""]],
       ["Hbx Id", "hbx_id", "", [true, ""]],
-      ["FEIN", "fein", "", [true, ""]],
-      ["Employer Status", "employer_status", "dt-center", [true, ""]],
-      ["Eligibility", "eligibility_criteria", "dt-center eligibility", [true, ""]],
-      ["Broker", "broker", "", [true, ""]],
-      ["CNVRSN?", "conversion", "dt-center", [true, ""]],
-      ["Status", "status", "dt-center", [true, ""]],
-      ["EFF Date", "effective_date", "", [true, ""]],
-  	  ["Invoiced?", "invoiced", "dt-center", [true, ""]],
-  	  ["Enrolled/Waived", "enrolled_waived", "dt-center", [true, ""]],
-      ["PCT", "percentage", "dt-right", [true, ""]],
-      ["Submitted At", "submitted_at", "dt-center", [true, ""]]
-  	]
+      ["FEIN", "fein", "dt-center", [true, ""]],
+      ["Plan Year Status", "plan_year_status", "dt-center", [false, ""]],
+      ["Eligibility", "eligibility_criteria", "dt-center eligibility", [false, ""]],
+      ["General Agency", "general_agency", "", [false, ""]],
+      ["Broker", "broker", "", [false, ""]],
+      ["CNVRSN?", "conversion", "dt-center", [false, ""]],
+      ["Status", "status", "dt-center", [false, ""]],
+      ["Effective Date", "effective_date", "", [false, ""]],
+  	  ["Invoiced?", "invoiced", "dt-center", [false, ""]],
+  	  ["Enrolled Waived", "enrolled_waived", "dt-center", [false, ""]],
+      ["PCT", "percentage", "dt-center", [false, ""]]
+    ]
   } %>
 </div>
 <form id="export-csv-injected-form" action="<%= export_csv_path %>.csv" method="post">

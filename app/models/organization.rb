@@ -149,6 +149,37 @@ class Organization
   scope :employer_profiles_ineligible,        ->{ where(:"employer_profile.aasm_state" => "ineligible") }
 
   scope :employer_profiles_by_date_range,     ->( start_on, end_on ){ unscoped.where(:"employer_profile.plan_years.start_on".gte => start_on, :"employer_profile.plan_years.end_on".lte => end_on)  if start_on.present? && end_on.present? }
+  scope :employer_profiles_plan_years,        ->{ where(:"employer_profile.plan_years") }
+
+  scope :order_organizations_employer_profile_plan_years,  ->{ order_by(:"employer_profile.plan_years.start_on".asc) }
+
+  def self.employers_by_effective_date(order, page_size, page)
+    direction = ("asc" == order) ? 1 : -1
+    skip_count = (page - 1) * page_size
+    organization_id_records = Organization.collection.aggregate([
+      {"$match" => {"employer_profile" => {"$exists" => true}}},
+      {"$project" => {"_id" => "$_id", "plan_years" => {"$ifNull" => ["$employer_profile.plan_years", {"$literal" => [{start_on: nil}]}]}}},
+      {"$unwind" => "$plan_years"},
+      {"$sort" => {"plan_years.start_on" => direction}},
+      {"$group" => {"_id": "$_id", "start_on" => {"$last" => "$plan_years.start_on"}}},
+      {"$sort" => {"start_on" => direction}},
+      {"$skip" => skip_count},
+      {"$limit" => page_size}
+    ])
+
+    total_records = Organization.collection.aggregate([
+      {"$match" => {"employer_profile" => {"$exists" => true}}},
+      {"$project" => {"_id" => "$_id", "plan_years" => {"$ifNull" => ["$employer_profile.plan_years", {"$literal" => [{start_on: nil}]}]}}},
+      {"$unwind" => "$plan_years"},
+      {"$sort" => {"plan_years.start_on" => direction}},
+      {"$group" => {"_id" => "$_id", "start_on" => {"$last" => "$plan_years.start_on"}}}
+    ]).count
+
+    organization_ids = organization_id_records.map do |rec|
+      rec["_id"]
+    end
+    [total_records, Organization.find(organization_ids)]
+  end
 
   def generate_hbx_id
     write_attribute(:hbx_id, HbxIdGenerator.generate_organization_id) if hbx_id.blank?
@@ -175,23 +206,6 @@ class Organization
     employer_profile.aasm_state
   end
 
-  def enrolled_waived_count
-    plan_year = employer_profile.latest_plan_year
-    census_employees = plan_year.find_census_employees if plan_year.present?
-    enrolled = plan_year.try(:enrolled).try(:count).to_i || 0
-    waived = census_employees.try(:waived).try(:count).to_i || 0
-    return "#{enrolled}/#{waived}"
-  end
-
-  def enrolled_as_percentage
-    plan_year = employer_profile.latest_plan_year
-    census_employees = plan_year.find_census_employees if plan_year.present?
-    enrolled = plan_year.try(:enrolled).try(:count).to_i || 0
-    eligible_to_enroll_count = census_employees.try(:active).try(:count)
-    eligible_to_enroll_count = 0.0 if eligible_to_enroll_count == nil
-    (enrolled / eligible_to_enroll_count * 100).to_s
-  end
-
   def employer_xml_transmitted_at
     if employer_profile.xml_transmitted_timestamp.present?
       employer_profile.xml_transmitted_timestamp
@@ -200,20 +214,8 @@ class Organization
     end
   end
 
-  def latest_plan_year_effective_date
-    if employer_profile.latest_plan_year.present?
-      employer_profile.latest_plan_year.effective_date
-    else
-      Date.new
-    end
-  end
-
   def broker_agency_profile_legal_name
-    if employer_profile.broker_agency_profile.present?
-      employer_profile.broker_agency_profile.organization.legal_name
-    else
-      ""
-    end
+    employer_profile.broker_agency_profile.organization.legal_name if employer_profile.broker_agency_profile.present?
   end
 
   def self.search_by_general_agency(search_content)

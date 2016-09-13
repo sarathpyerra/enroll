@@ -132,7 +132,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         boolean_sort: true,
-        order_by: "current_month_invoice.present?",
+        order_by: "employer_profile.invoiced_for_current_month",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
@@ -147,7 +147,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(),
         custom_sort: true,
-        order_by: "employer_profile_aasm",
+        order_by: "employer_profile.aasm_state",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
@@ -191,7 +191,6 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
       var tab = setTab();
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(),
-        custom_sort: true,
         order_by: "legal_name",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
@@ -201,14 +200,14 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
 
   function addEmployerStatusScopesBeforeSorting(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $sort_column = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("Employer Status")');
+    var $sort_column = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("Plan Year Status")');
     $sort_column.on('click', function() {
       var tab = setTab();
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(),
         custom_sort: true,
         boolean_sort: true,
-        order_by: "employer_profile.renewing_plan_year.present?",
+        order_by: "employer_profile.has_renewing_plan_year",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
@@ -224,7 +223,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         boolean_sort: true,
-        order_by: "employer_profile.show_plan_year.present?",
+        order_by: "employer_profile.has_passing_eligibility_criteria",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
@@ -239,7 +238,22 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(),
         custom_sort: true,
-        order_by: "broker_agency_profile_legal_name",
+        order_by: "employer_profile.broker_name",
+        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
+      });
+    });
+  }
+
+  function addGeneralAgencyScopesBeforeSorting(table_id) {
+    EnrollDataTableInitializer.findTable(table_id);
+    var $sort_column = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("General Agency")');
+    $sort_column.on('click', function() {
+      var tab = setTab();
+      EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
+        base_model: setBaseModel(),
+        custom_sort: true,
+        order_by: "employer_profile.general_agency_name",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
@@ -255,7 +269,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
         base_model: setBaseModel(),
         custom_sort: true,
         boolean_sort: true,
-        order_by: "employer_profile.is_conversion?",
+        order_by: "employer_profile.is_conversion_employer",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
@@ -264,14 +278,17 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
 
   function addEffectiveDateScopesBeforeSorting(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $sort_column = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("EFF Date")');
+    var $sort_column = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("Effective Date")');
     $sort_column.on('click', function() {
       var tab = setTab();
+      var filter_scopes = EnrollDataTableInitializer.setScopesFromFilters(table_id, tab);
+      var additional_scopes = filter_scopes.push("order_organizations_by_employer_profiles_latest_plan_year");
+      var scopes = filter_scopes;
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(),
         custom_sort: true,
-        order_by: "latest_plan_year_effective_date",
-        scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
+        order_by: "[]",
+        scopes: scopes,
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
     });
@@ -279,13 +296,13 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
 
   function addEnrolledWaivedScopesBeforeSorting(table_id) {
     EnrollDataTableInitializer.findTable(table_id);
-    var $sort_column = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("Enrolled/Waived")');
+    var $sort_column = $table.closest('.module').find('.sorting .vertically-aligned-row').find('div:contains("Enrolled Waived")');
     $sort_column.on('click', function() {
       var tab = setTab();
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(),
         custom_sort: true,
-        order_by: "enrolled_waived_count",
+        order_by: "employer_profile.enrolled_wavied_count",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
@@ -300,7 +317,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
       EnrollDataTableInitializer.AddParamsBeforeDraw(table_id, {
         base_model: setBaseModel(),
         custom_sort: true,
-        order_by: "enrolled_as_percentage",
+        order_by: "employer_profile.enrolled_percentage",
         scopes: EnrollDataTableInitializer.setScopesFromFilters(table_id, tab),
         month_filter: EnrollDataTableInitializer.setMonthFilter(table_id)
       });
@@ -398,6 +415,7 @@ var EmployerInvoicesDatatable = ( function( window, undefined ) {
     addLegalNameScopesBeforeSorting: addLegalNameScopesBeforeSorting,
     addEmployerStatusScopesBeforeSorting: addEmployerStatusScopesBeforeSorting,
     addEligibilityScopesBeforeSorting: addEligibilityScopesBeforeSorting,
+    addGeneralAgencyScopesBeforeSorting: addGeneralAgencyScopesBeforeSorting,
     addBrokerScopesBeforeSorting: addBrokerScopesBeforeSorting,
     addConversionScopesBeforeSorting: addConversionScopesBeforeSorting,
     addEffectiveDateScopesBeforeSorting: addEffectiveDateScopesBeforeSorting,

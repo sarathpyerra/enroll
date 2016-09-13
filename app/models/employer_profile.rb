@@ -233,6 +233,23 @@ class EmployerProfile
     end
   end
 
+  def set_enrolled_waived_count
+    plan_year = latest_plan_year
+    census_employees = plan_year.find_census_employees if plan_year.present?
+    enrolled = plan_year.try(:enrolled).try(:count).to_i || 0
+    waived = census_employees.try(:waived).try(:count).to_i || 0
+    return "#{enrolled}/#{waived}"
+  end
+
+  def set_enrolled_percentage
+    plan_year = latest_plan_year
+    census_employees = plan_year.find_census_employees if plan_year.present?
+    enrolled = plan_year.try(:enrolled).try(:count).to_i || 0
+    eligible_to_enroll_count = census_employees.try(:active).try(:count)
+    eligible_to_enroll_count = 0.0 if eligible_to_enroll_count == nil
+    (enrolled / eligible_to_enroll_count * 100).to_s
+  end
+
   def latest_plan_year
     plan_years.order_by(:'start_on'.desc).limit(1).only(:plan_years).first
   end
@@ -786,6 +803,10 @@ class EmployerProfile
 
   def is_conversion?
     self.profile_source == "conversion"
+  end
+
+  def latest_plan_year_effective_date
+    latest_plan_year.effective_date if latest_plan_year.present?
   end
 
 private

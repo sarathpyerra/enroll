@@ -10,7 +10,7 @@ module DataTablesSorts
     end
   end
 
-  def apply_sort(collection, sort, cursor, limit, base_model, scopes, order_by)
+  def apply_sort(collection, sort, cursor, limit, base_model, scopes, order_by, custom_order_by_array)
     if params[:start_on].present? && params[:end_on].present?
       start_on = Date.strptime(params[:start_on], "%m/%d/%Y")
       end_on = Date.strptime(params[:end_on], "%m/%d/%Y")
@@ -29,60 +29,14 @@ module DataTablesSorts
     end
     if params[:order]["0"][:column].present?
       if scopes.blank?
-        if params[:custom_sort].present?
-          if sort == "asc"
-            if params[:boolean_sort] == "true"
-              sorted_collection = "#{base_model.capitalize}.offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by} ? 0 : 1}"
-            else
-              sorted_collection = "#{base_model.capitalize}.offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by}}"
-            end
-          else
-            if params[:boolean_sort] == "true"
-              sorted_collection = "#{base_model.capitalize}.offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by} ? 1 : 0}"
-            else
-              sorted_collection = "#{base_model.capitalize}.offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by}}.reverse"
-            end
-          end
-        else
-          sorted_collection = "#{base_model.capitalize}.offset(cursor).limit(limit).order_by('#{order_by} #{sort.upcase}')"
-        end
+        sorted_collection = "#{base_model.capitalize}.order_by(:'#{order_by}'.#{sort.downcase})"
       else
-        if params[:custom_sort].present?
-          if sort == "asc"
-            if params[:boolean_sort] == "true"
-              if params[:start_on].present? && params[:end_on].present?
-                sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by} ? 0 : 1}"
-              else
-                sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by} ? 0 : 1}"
-              end
-            else
-              if params[:start_on].present? && params[:end_on].present?
-                sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by}}"
-              else
-                sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by}}"
-              end
-            end
-          else
-            if params[:boolean_sort] == "true"
-              if params[:start_on].present? && params[:end_on].present?
-                sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by} ? 1 : 0}"
-              else
-                sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by} ? 1 : 0}"
-              end
-            else
-              if params[:start_on].present? && params[:end_on].present?
-                sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by}}.reverse"
-              else
-                sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.offset(cursor).limit(limit).to_a.sort_by{|p| p.#{order_by}}.reverse"
-              end
-            end
-          end
+        if params[:start_on].present? && params[:end_on].present?
+          sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on)"
+          sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).order_by(:'#{order_by}'.#{sort.downcase})" if params[:order_by].present?
         else
-          if params[:start_on].present? && params[:end_on].present?
-            sorted_collection = "#{base_model.capitalize}.#{other_scopes.join(".")}.#{custom_date_scope}(start_on, end_on).offset(cursor).limit(limit).order_by('#{order_by} #{sort.upcase}')"
-          else
-            sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.offset(cursor).limit(limit).order_by('#{order_by} #{sort.upcase}')"
-          end
+          sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}"
+          sorted_collection = "#{base_model.capitalize}.#{scopes.join(".")}.order_by(:'#{order_by}'.#{sort.downcase})" if params[:order_by].present?
         end
       end
       collection = eval(sorted_collection)
