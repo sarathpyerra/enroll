@@ -78,7 +78,7 @@ class ApplicationController < ActionController::Base
 
   DataTablesCSV = Struct.new(:rows, :columns) do
     def to_csv
-      attributes = columns
+      attributes = columns.reverse
       column_count = columns.size
       CSV.generate(headers: true) do |csv|
         csv << attributes
@@ -92,7 +92,7 @@ class ApplicationController < ActionController::Base
               end
             end
           ]
-          csv << data
+          csv << data[0].values.reverse
         end
       end
     end

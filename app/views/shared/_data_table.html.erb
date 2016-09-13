@@ -94,7 +94,7 @@
 <script charset="utf-8" defer="defer" type="text/javascript">
   initial_column_set = [<%= raw initial_column_set.to_json %>];
   $(document).ready(function () {
-    var enroll_datatable = $('#<%= table_id %>').EnrollDataTable({
+    enroll_datatable = $('#<%= table_id %>').EnrollDataTable({
       "destroy": <%= destroy || false %>,
       "processing": true,
       "serverSide": true,
@@ -172,7 +172,7 @@
         EnrollDataTableInitializer.clickRowDataLink('<%= table_id %>');
         EnrollDataTableInitializer.moveInfo('<%= table_id %>');
         EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
-        EnrollDataTableInitializer.exportPageAsCSV('<%= table_id %>', enroll_datatable.data(), initial_column_set );
+        EnrollDataTableInitializer.exportPageAsCSV('<%= table_id %>', initial_column_set );
         EnrollDataTableInitializer.addClearSearch('<%= table_id %>');
         EnrollDataTableInitializer.addSubmitSearch('<%= table_id %>');
         <% if pagination == true %>

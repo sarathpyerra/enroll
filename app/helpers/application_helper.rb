@@ -590,6 +590,14 @@ module ApplicationHelper
     end
   end
 
+  def eligibility_criteria_for_export(employer)
+    if employer.show_plan_year.present?
+      @participation_count == 0 && @non_owner_participation_rule == true ? "Eligible" : "Ineligible"
+    else
+      "Ineligible"
+    end
+  end
+
   def participation_rule(employer)
     @participation_count = employer.show_plan_year.additional_required_participants_count
     if @participation_count == 0

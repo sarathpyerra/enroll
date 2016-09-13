@@ -447,12 +447,13 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
   //   $table.closest('.module').find('.processing-overlay').remove();
   // }
 
-  function exportPageAsCSV(table_id, table_data, columns) {
+  function exportPageAsCSV(table_id, columns) {
     findTable(table_id);
     var $url = $table.closest('.module').data('export-csv-url');
     var $export_csv_link = $('.dropdown-menu').find('a:contains("Export CSV")');
     $('#export-csv-injected-form').html("");
     $export_csv_link.on('click', function() {
+      table_data = enroll_datatable.data();
       row_indexes_for_export = [];
       rows_for_export = [];
       $table.find('tbody .enroll-checkbox input:checked').closest('.enroll-checkbox').each( function() {
@@ -467,11 +468,14 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
       });
       $(rows_for_export).each(function(row_index, row) {
         $(columns["0"]).each(function(index, column_name) {
-          $('#export-csv-injected-form').prepend('<input type="hidden" type="hidden" name="rows['+row_index+']['+column_name+']" value="'+escape(row[index])+'">');
+          row_export_text = row[index].match(/"(.*?)"/);
+          $('#export-csv-injected-form').prepend('<input type="hidden" type="hidden" name="rows['+row_index+']['+column_name+']" value='+escape(row_export_text[1])+'>');
         });
       });
       $(columns["0"]).each(function(index, column_name) {
-        $('#export-csv-injected-form').prepend('<input type="hidden" type="hidden" name="columns[]" value="'+escape(column_name)+'">');
+
+          $('#export-csv-injected-form').prepend('<input type="hidden" type="hidden" name="columns[]" value='+escape(column_name)+'>');
+
       });
       var authenticity_token = $("meta[name='csrf-token']").attr("content");
       $('#export-csv-injected-form').prepend('<input name="authenticity_token" type="hidden" value="'+authenticity_token+'">');
