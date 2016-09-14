@@ -51,10 +51,10 @@
                 </tr>
                 <div class="col-md-12 col-sm-12 col-xs-12">            
                   <tr>
-                    <% if f.admin_comment.present? %>
-                      <td><%="Admin Comment: " + f.admin_comment %></td>
+                    <% if f.comments.present? %>
+                      <td colspan = "8"> <b>Admin Comment: </b> <%= f.comments.first.content %> </td>
                     <% else %>
-                      <td>&nbsp;&nbsp;Admin: N/A</td>
+                      <td colspan = "8"><b>Admin Comment:</b> N/A </td>
                     <% end %>
                   </tr>
                 </div>
