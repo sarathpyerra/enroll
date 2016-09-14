@@ -176,6 +176,7 @@ And(/^I click on continue button on group selection page$/) do
   #wait_for_ajax(2,2)
   screenshot("test1")
   #click_link "Continue" #Get
+  wait_for_ajax(2,2)
   click_button "CONTINUE"
   screenshot("test2")
   wait_for_ajax

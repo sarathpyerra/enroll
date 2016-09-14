@@ -209,7 +209,7 @@ Then(/^(?:(?!Employee).)+ should see the matched employee record form$/) do
 end
 
 Then(/^Broker Assisted is a family$/) do
-  #sleep 1
+  #
   wait_for_ajax
   find(:xpath, "//li[contains(., 'Families')]/a").click
   expect(page).to have_content('Broker Assisted')
