@@ -24,8 +24,12 @@ class Employers::EmployerProfilesController < Employers::EmployersController
     elsif claim_code_status == "claimed"
       flash[:error] = 'Quote claim code already claimed.'
     else
-      flash[:notice] = 'Code claimed with success. Your Plan Year has been created.'
-      @employer_profile.build_plan_year_from_quote(claim_code, import_roster)
+      if @employer_profile.build_plan_year_from_quote(claim_code, import_roster)
+        flash[:notice] = 'Code claimed with success. Your Plan Year has been created.'
+      else
+        flash[:error] = 'There was issue claiming this quote.'
+      end
+
     end
 
     redirect_to employers_employer_profile_path(@employer_profile, tab: 'benefits')

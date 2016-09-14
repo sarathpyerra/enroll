@@ -346,20 +346,28 @@ class EmployerProfile
 
       benefit_group_mapping = Hash.new
 
-      # Build each quote benefit group
+      # Build each quote benefit group from quote
       quote.quote_benefit_groups.each do |quote_benefit_group|
-        benefit_group = plan_year.benefit_groups.build({plan_option_kind: quote_benefit_group.plan_option_kind, title: quote_benefit_group.title, description: "Linked from claim code " + quote_claim_code })
+        benefit_group = plan_year.benefit_groups.build({plan_option_kind: quote_benefit_group.plan_option_kind, title: quote_benefit_group.title, description: "Linked from Quote with claim code " + quote_claim_code })
 
         # map quote benefit group to newly created plan year benefit group so it can be assigned to census employees if imported
         benefit_group_mapping[quote_benefit_group.id.to_s] = benefit_group.id
 
-        # Assign benefit group plan information
+        # Assign benefit group plan information (HEALTH)
         benefit_group.lowest_cost_plan_id = quote_benefit_group.published_lowest_cost_plan
         benefit_group.reference_plan_id = quote_benefit_group.published_reference_plan
         benefit_group.highest_cost_plan_id = quote_benefit_group.published_highest_cost_plan
         benefit_group.elected_plan_ids.push(quote_benefit_group.published_reference_plan)
 
         benefit_group.relationship_benefits = quote_benefit_group.quote_relationship_benefits.map{|x| x.attributes.slice(:offered,:relationship, :premium_pct)}
+
+
+        # Assign benefit group plan information (DENTAL )
+        benefit_group.dental_reference_plan_id = quote_benefit_group.published_dental_reference_plan
+        benefit_group.elected_dental_plan_ids.push(quote_benefit_group.elected_dental_plan_ids)
+
+        benefit_group.dental_relationship_benefits = quote_benefit_group.quote_dental_relationship_benefits.map{|x| x.attributes.slice(:offered,:relationship, :premium_pct)}
+
       end
 
       if plan_year.save!
