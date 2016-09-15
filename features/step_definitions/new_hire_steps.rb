@@ -62,6 +62,7 @@ end
 
 When(/(.*) clicks continue on the group selection page/) do |named_person|
   screenshot("Testing")
+  wait_for_ajax
   if find_all('.interaction-click-control-continue').any?
     find('.interaction-click-control-continue').click
   else
