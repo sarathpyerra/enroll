@@ -270,6 +270,11 @@ var EnrollDataTableInitializer = ( function( window, undefined ) {
         $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('data-method', 'delete');
       }
       $(this).closest('tr').find('.row-actions a[href="replace_url_'+$replace_for+'"]').attr('href', $new_url);
+
+      if ($(this).attr('data-no-turbolink') == 'true') {
+        $(this).closest('tr').find('a').attr('data-no-turbolink',true);
+      }
+
     });
   }
 
