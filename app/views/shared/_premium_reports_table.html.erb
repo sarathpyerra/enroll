@@ -1,28 +1,28 @@
 <table class="table table-striped display table-hover table-condensed panel panel-default" id="premium-reports-table">
-    <thead>
-        <tr>
-          <th>Employee Profile</th>
-          <th>Benefit Package</th>
-          <th>Insurance Coverage</th>
-          <th>Cost</th>
-        </tr>
-    </thead>
-    <tbody>
-      <% if @hbx_enrollments.present? %>
-        <% @hbx_enrollments.each do |hbx_enrollment| %>
-          <%= render "employee_line_item", census_employee: hbx_enrollment.census_employee, enrollment: hbx_enrollment %>
-        <% end %>
-      <% else %>
-        <tr>
-          <td style="text-align: left;">
-            No employees enrolled
-          </td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
+  <thead>
+    <tr>
+      <th>Employee Profile</th>
+      <th>Benefit Package</th>
+      <th>Insurance Coverage</th>
+      <th>Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @hbx_enrollments.present? %>
+      <% @hbx_enrollments.each do |hbx_enrollment| %>
+        <%= render "employee_line_item", census_employee: hbx_enrollment.census_employee, enrollment: hbx_enrollment %>
       <% end %>
-    </tbody>
+    <% else %>
+      <tr>
+        <td style="text-align: left;">
+          No employees enrolled
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>
 
 <script>
