@@ -456,8 +456,8 @@ class HbxEnrollment
           term_date = self.effective_on - 1.day
           term_date = TimeKeeper.date_of_record + HbxProfile::IndividualEnrollmentTerminationMinimum if (TimeKeeper.date_of_record + HbxProfile::IndividualEnrollmentTerminationMinimum) > term_date && self.effective_on > (TimeKeeper.date_of_record + HbxProfile::IndividualEnrollmentTerminationMinimum)
 
-          p.terminate_coverage
-          p.update_current(terminated_on: term_date)
+          previous_enrollment.terminate_coverage
+          previous_enrollment.update_current(terminated_on: term_date)
         end
       end
     end
