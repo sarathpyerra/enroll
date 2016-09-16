@@ -16,7 +16,7 @@ module Api
       private
       def find_slcsp(coverage_start)
 
-        benefit_coverage_period = Organization.where(dba:'DCHL').first.hbx_profile.benefit_sponsorship.benefit_coverage_periods.detect do |benefit_coverage_period|
+        benefit_coverage_period = HbxProfile.current_hbx.benefit_sponsorship.benefit_coverage_periods.detect do |benefit_coverage_period|
           benefit_coverage_period.start_on <= coverage_start && benefit_coverage_period.end_on >= coverage_start
         end
 
