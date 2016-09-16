@@ -486,6 +486,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def dental_plans_data
     set_dental_plans
+    render partial: 'my_dental_plans'
   end
 
 
