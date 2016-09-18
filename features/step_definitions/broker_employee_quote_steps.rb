@@ -186,6 +186,7 @@ Then(/^the broker clicks Publish Quote button$/) do
 end
 
 Then(/^the broker sees that the Quote is published$/) do
+  sleep 1
   expect(page).to have_content('Your quote has been published')
 end
 
