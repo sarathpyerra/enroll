@@ -98,6 +98,11 @@ class QuoteBenefitGroup
     @reference_plan = Plan.find(reference_plan_id) unless reference_plan_id.nil?
   end
 
+  def elected_dental_plans
+    return @elected_dental_plans if defined? @elected_dental_plans
+    @elected_dental_plans ||= Plan.where(:id => {"$in" => elected_dental_plan_ids}).to_a
+  end
+
   def set_bounding_cost_plans
     return if reference_plan_id.nil?
     if quote.plan_option_kind == "single_plan"

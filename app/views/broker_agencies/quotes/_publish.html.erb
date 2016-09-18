@@ -110,7 +110,12 @@
                     </td>
                     <td class="col-md-2 col-xs-2">
                       <p>
-                        <%= benefit_group.dental_plan_option_kind.titleize %>
+                        <%= plan_option_kind = benefit_group.dental_plan_option_kind.titleize %>
+                        <% if plan_option_kind.match(/custom/i) %>
+                          <br/>
+                          <%= link_to "View Plans(" + benefit_group.elected_dental_plan_ids.count.to_s + ')',
+                           "", data: {toggle: "modal", target: "#electedDentalPlans_#{benefit_group.id}"} %>
+                        <% end %>
                       </p>
                     </td>
                   </tr>
@@ -271,8 +276,13 @@
       </div>
     </div>
   </div>
+
 <%else%>
   <div class="alert alert-notice">
     <h4>Please select plans for all the benefit groups by using the <b>"COMPARE COSTS / SELECT PLAN" </b> button in health plan selection</h4>
   </div>
+<% end %>
+
+<% @q.quote_benefit_groups.each do |bg| %>
+ <%= render partial: 'shared/custom_dental_offered_plans_modal', locals: { bg: bg } %>
 <% end %>
