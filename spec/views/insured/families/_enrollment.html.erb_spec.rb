@@ -104,6 +104,10 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
       it "should disable the Make Changes button" do
         expect(rendered).to have_selector('.cna')
       end
+
+      it "should disable the Make Changes button" do
+        expect(rendered).to have_selector('.cna')
+      end
     end
 
     it "should display the effective date" do
