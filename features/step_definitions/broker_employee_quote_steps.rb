@@ -172,13 +172,14 @@ Then(/^the broker clicks Compare Costs for dental plans$/) do
 end
 
 When(/^the broker selects the Reference Health Plan$/) do
-  Capybara.default_max_wait_time = 3
+  wait_for_ajax(3)
   find('div#single_plan_1').trigger("click")
 end
 
 When(/^the broker selects the Reference Dental Plan$/) do
-  Capybara.default_max_wait_time = 3
+  wait_for_ajax(3)
   find('div#single_dental_plan_1').trigger("click")
+  wait_for_ajax
 end
 
 Then(/^the broker clicks Publish Quote button$/) do
@@ -186,7 +187,7 @@ Then(/^the broker clicks Publish Quote button$/) do
 end
 
 Then(/^the broker sees that the Quote is published$/) do
-  sleep 1
+  wait_for_ajax
   expect(page).to have_content('Your quote has been published')
 end
 
