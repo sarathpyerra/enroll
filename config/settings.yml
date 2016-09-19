@@ -22,6 +22,10 @@ contact_center:
 aca:
   state_name: "District of Columbia"
   state_abbreviation: "DC"
+
+#
+  qle:
+    with_in_sixty_days: 60
 #
   individual_market:
     monthly_enrollment_due_on: 15
@@ -63,6 +67,9 @@ aca:
       earliest_start_prior_to_effective_on:
         months: -3
       monthly_open_enrollment_end_on: 13
+      open_enrollment:
+        minimum_length:
+          days: 3
 
     benefit_period:
       length_minimum:

@@ -296,6 +296,13 @@ RSpec.describe CensusEmployee, type: :model, dbclean: :after_each do
                             end
                           end
 
+                          context "and the termination date is in the future" do
+                              before { initial_census_employee.terminate_employment!(TimeKeeper.date_of_record + 10.days) }
+                              it "is in termination pending state" do
+                                expect(CensusEmployee.find(initial_census_employee.id).aasm_state).to eq "employee_termination_pending"
+                              end
+                          end
+
                           context "and the termination date is within the retroactive reporting time period" do
                             before { initial_census_employee.terminate_employment!(earliest_valid_employment_termination_date) }
 
@@ -542,7 +549,7 @@ RSpec.describe CensusEmployee, type: :model, dbclean: :after_each do
 
               context "and existing employee instance is terminated" do
                 before do
-                  saved_census_employee.terminate_employment(TimeKeeper.date_of_record)
+                  saved_census_employee.terminate_employment(TimeKeeper.date_of_record-1.day)
                   saved_census_employee.save
                 end
 
@@ -1061,6 +1068,18 @@ RSpec.describe CensusEmployee, type: :model, dbclean: :after_each do
         expect(census_employee.benefit_group_assignments.size).to eq 2
         expect(census_employee.active_benefit_group_assignment.benefit_group).to eq white_collar_benefit_group
       end
+    end
+  end
+
+  context "check_hired_on_before_dob" do
+    let(:census_employee) { FactoryGirl.build(:census_employee) }
+
+    it "should fail" do
+      census_employee.dob = TimeKeeper.date_of_record - 30.years
+      census_employee.hired_on = TimeKeeper.date_of_record - 31.years
+      expect(census_employee.save).to be_falsey
+      expect(census_employee.errors[:hired_on].any?).to be_truthy
+      expect(census_employee.errors[:hired_on].to_s).to match /date can't be before  date of birth/
     end
   end
 end
