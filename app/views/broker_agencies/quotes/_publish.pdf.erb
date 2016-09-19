@@ -135,7 +135,7 @@
                     <%end%>
                   </div>
                   <div class="col-xs-12 quote-dental-details">
-                    <p>Below is your Employer's Dental Plan offering Spectrum. Your offerings are based on <%=benefit_group.plan_option_kind.titleize%>.</p>
+                    <p>Below is your Employer's Dental Plan offering Spectrum. Your offerings are based on <%=plan_option_kind = benefit_group.dental_plan_option_kind.titleize%>.</p>
                     <% if benefit_group.dental_plan %>
                       <table class = "employer-dental-contribution">
                         <tr>
@@ -180,6 +180,14 @@
                                 </table>
                               </div>
                             </div>
+                            <% if plan_option_kind.match /custom/i %>
+                              Dental Plan Options:<br>
+                              <ul>
+                              <% benefit_group.elected_dental_plans.each do |dental_option| %>
+                                <li><%= dental_option.name %> </li>
+                              <% end %>
+                              </ul>
+                            <% end %>
                           </div>
                         </div>
                       </div>
