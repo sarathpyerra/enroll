@@ -95,13 +95,27 @@ class Quote
      4.times.map{generate_character}.join + '-' + 4.times.map{generate_character}.join
   end
 
+  def set_employer_claim_code
+    self.claim_code = employer_claim_code
+    self.save!
+  end
+
+  def clone
+    q = super
+    q.quote_name = q.quote_name + ' copy ' + Time.now.to_s
+    q.aasm_state = 'draft'
+    q.claim_code = nil
+    q.save
+    q
+  end
+
   aasm do
     state :draft, initial: true
     state :published
     state :claimed
 
     event :publish do
-      transitions from: :draft, to: :published, :guard => "can_quote_be_published?"
+      transitions from: :draft, to: :published, :guard => "can_quote_be_published?", after: :set_employer_claim_code
     end
 
     event :claim do

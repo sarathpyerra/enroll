@@ -215,15 +215,23 @@ QuotePageLoad = (function() {
         dc_network = $('#dental-dc_in_network').find('div.active1').attr('id')
         nationwide = $('#dental-nationwide').find('div.active1').attr('id')
         quote = $('#quote').val()
-        $.get('/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/dental_plans_data/',
-          {
+        $.ajax({
+          type: 'GET',
+          url: '/broker_agencies/broker_roles/'+$('#broker_role_id').val()+'/quotes/dental_plans_data/',
+          data: {
             carrier_id: carrier_id,
             dental_level: dental_level,
             plan_type: plan_type,
             dc_network: dc_network,
             nationwide: nationwide,
             quote: quote
-          }                                                     );
+          },
+          success: function(response) {
+            $('#dental_plan_container').html(response)
+            Quote.set_dental_plan_costs()
+            $('#DentalCostComparison').on('click', _get_dental_cost_comparison)
+          }
+        });
       });
       $('.plan_buttons .btn').on('click', function() {
           var plan = $(this)

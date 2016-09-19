@@ -17,7 +17,6 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def publish_quote
     if @quote.may_publish?
-      @quote.claim_code = @quote.employer_claim_code
       @quote.publish!
       flash[:notice] = "Quote Published"
     else
@@ -429,11 +428,10 @@ class BrokerAgencies::QuotesController < ApplicationController
             bg.published_highest_cost_plan = plan.id
         end
       else
-        elected_plan_choice = ['na', 'custom', 'carrier'][params[:elected].to_i]
+        elected_plan_choice = ['na', 'single', 'carrier', 'custom'][params[:elected].to_i]
         bg.dental_plan_option_kind = elected_plan_choice
         bg.dental_plan = plan
-        bg.elected_dental_plan_ids = params[:elected_plans_list] || []
-
+        bg.elected_dental_plan_ids = elected_plan_choice == 'custom' ? params[:elected_plans_list] : []
       end
       bg.save
     end
@@ -446,6 +444,12 @@ class BrokerAgencies::QuotesController < ApplicationController
                  :template => "/broker_agencies/quotes/_publish.pdf.erb"
       end
     end
+  end
+
+  def copy
+    @q = Quote.find(params[:quote_id])
+    @q.clone
+    redirect_to my_quotes_broker_agencies_broker_role_quotes_path(@broker)
   end
 
   def publish
@@ -481,6 +485,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def dental_plans_data
     set_dental_plans
+    render partial: 'my_dental_plans'
   end
 
 

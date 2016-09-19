@@ -59,7 +59,7 @@ Then(/^the broker should see the data in the table$/) do
 end
 
 Then(/^the broker enters the quote effective date$/) do
-  select "#{(Date.today+2.month).strftime("%B %Y")}", :from => "quote_start_on"
+  select "#{(Date.today+3.month).strftime("%B %Y")}", :from => "quote_start_on"
 end
 
 When(/^broker enters valid information$/) do
@@ -172,13 +172,14 @@ Then(/^the broker clicks Compare Costs for dental plans$/) do
 end
 
 When(/^the broker selects the Reference Health Plan$/) do
-  Capybara.default_max_wait_time = 3
+  wait_for_ajax(3)
   find('div#single_plan_1').trigger("click")
 end
 
 When(/^the broker selects the Reference Dental Plan$/) do
-  Capybara.default_max_wait_time = 3
+  wait_for_ajax(3)
   find('div#single_dental_plan_1').trigger("click")
+  wait_for_ajax
 end
 
 Then(/^the broker clicks Publish Quote button$/) do
