@@ -100,14 +100,15 @@ class Quote
     self.save!
   end
 
-  def clone
-    q = super
-    q.quote_name = q.quote_name + ' copy ' + Time.now.to_s
-    q.aasm_state = 'draft'
-    q.claim_code = nil
-    q.save
-    q
-  end
+ def clone
+   q = super
+   q.quote_name = q.quote_name + ' copy ' + Time.now.to_s
+   q.aasm_state = 'draft'
+   q.claim_code = nil
+   q.quote_benefit_groups.each {|bg| bg._id = BSON::ObjectId.new}
+   q.save
+   q
+ end
 
   aasm do
     state :draft, initial: true
