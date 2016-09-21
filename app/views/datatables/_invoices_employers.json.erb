@@ -1,8 +1,8 @@
 <% plan_year = organization.employer_profile.latest_plan_year %>
-<% census_employees = plan_year.find_census_employees if plan_year.present? %>
+<% census_employees = nil #plan_year.find_census_employees if plan_year.present? %>
 <% enrolled = plan_year.try(:enrolled).try(:count).to_i %>
-<% eligible_to_enroll_count = census_employees.try(:active).try(:count).to_i %>
-<% waived = census_employees.try(:waived).try(:count).to_i %>
+<% eligible_to_enroll_count = 0#census_employees.try(:active).try(:count).to_i %>
+<% waived = 0#census_employees.try(:waived).try(:count).to_i %>
 <% disabled = organization.employer_profile.can_transmit_xml? %>
 
 <% row_data = capture do %>
