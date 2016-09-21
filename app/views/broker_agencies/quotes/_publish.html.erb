@@ -110,8 +110,8 @@
                     </td>
                     <td class="col-md-2 col-xs-2">
                       <p>
-                        <%= plan_option_kind = benefit_group.dental_plan_option_kind.titleize %>
-                        <% if plan_option_kind.match(/custom/i) %>
+                        <%= display_dental_plan_option_kind benefit_group %>
+                        <% if benefit_group.dental_plan_option_kind == 'single_plan' %>
                           <br/>
                           <%= link_to "View Plans(" + benefit_group.elected_dental_plan_ids.count.to_s + ')',
                            "", data: {toggle: "modal", target: "#electedDentalPlans_#{benefit_group.id}"} %>
