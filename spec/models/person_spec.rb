@@ -590,7 +590,7 @@ describe Person do
       expect(person.emails.first.address).to eq 'sam@example.com'
     end
   end
-  
+
   describe '#work_email_or_best' do
     it "expects to get a work email address or home address" do
       person = Person.new
@@ -1251,7 +1251,7 @@ describe Person do
 
     context "person has active employee roles" do
       before(:each) do
-        person.employee_roles.create!(FactoryGirl.create(:employee_role, person: person, 
+        person.employee_roles.create!(FactoryGirl.create(:employee_role, person: person,
                                                                        census_employee_id: census_employee.id).attributes)
         person.employee_roles.pluck(:census_employee).each { |census_employee| census_employee.update_attribute(:aasm_state, 'eligible') }
       end
