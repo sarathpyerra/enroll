@@ -29,7 +29,7 @@ class Family
   field :status, type: String, default: "" # for aptc block
 
   before_save :clear_blank_fields
-  after_save :generate_family_search
+ #after_save :generate_family_search
 
   belongs_to  :person
 
@@ -106,8 +106,8 @@ class Family
   validate :family_integrity
 
   after_initialize :build_household
-  after_save :update_family_search_collection
-  after_destroy :remove_family_search_record
+ # after_save :update_family_search_collection
+ # after_destroy :remove_family_search_record
 
 
   scope :shop_market_enrolled,        ->{ where(:"households.hbx_enrollments" => {:$elemMatch => {:kind => "employer_sponsored", :aasm_state.in => HbxEnrollment::ENROLLED_STATUSES}}) }
