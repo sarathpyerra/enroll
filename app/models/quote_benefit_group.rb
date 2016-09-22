@@ -99,8 +99,7 @@ class QuoteBenefitGroup
   end
 
   def elected_dental_plans
-    return @elected_dental_plans if defined? @elected_dental_plans
-    @elected_dental_plans ||= Plan.where(:id => {"$in" => elected_dental_plan_ids}).to_a
+    @elected_dental_plans = Plan.where(:id => {"$in" => elected_dental_plan_ids}).to_a
   end
 
   def set_bounding_cost_plans

@@ -434,11 +434,11 @@ class BrokerAgencies::QuotesController < ApplicationController
         bg.dental_plan = plan
         bg.elected_dental_plan_ids = case column_for_dental_plan_option_kind.to_i
         when 1
-         [plan.id.to_s]
+         [plan.id]
         when 2
-         []
+         [plan.id]
         else
-          params[:elected_plans_list]
+          params[:elected_plans_list].map{|plan_id| Plan.find(plan_id).id}
         end
       end
       bg.save
