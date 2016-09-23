@@ -136,6 +136,31 @@ RSpec.describe CensusEmployee, type: :model, dbclean: :after_each do
         end
       end
 
+      context "check_cobra_begin_date" do
+        it "should not have errors when existing_cobra is false" do
+          initial_census_employee.cobra_begin_date = initial_census_employee.hired_on - 5.days
+          initial_census_employee.existing_cobra = false
+          expect(initial_census_employee.save).to be_truthy
+        end
+
+        context "when existing_cobra is true" do
+          before do
+            initial_census_employee.existing_cobra = 'true'
+          end
+
+          it "should not have errors when hired_on earlier than cobra_begin_date" do
+            initial_census_employee.cobra_begin_date = initial_census_employee.hired_on + 5.days
+            expect(initial_census_employee.save).to be_truthy
+          end
+
+          it "should have errors when hired_on later than cobra_begin_date" do
+            initial_census_employee.cobra_begin_date = initial_census_employee.hired_on - 5.days
+            expect(initial_census_employee.save).to be_falsey
+            expect(initial_census_employee.errors[:cobra_begin_date].to_s).to match(/must be after Hire Date/)
+          end
+        end
+      end
+
       context "and it is saved" do
         before { initial_census_employee.save }
 
@@ -1078,6 +1103,108 @@ RSpec.describe CensusEmployee, type: :model, dbclean: :after_each do
     end
   end
 
+  context "current_state" do
+    let(:census_employee) { CensusEmployee.new }
+
+    context "existing_cobra is true" do
+      before :each do
+        census_employee.existing_cobra = 'true'
+      end
+
+      it "should return cobra_terminated" do
+        census_employee.aasm_state = CensusEmployee::COBRA_STATES.last
+        expect(census_employee.current_state).to eq CensusEmployee::COBRA_STATES.last.humanize
+      end
+    end
+
+    context "existing_cobra is false" do
+      it "should return aasm_state" do
+        expect(census_employee.current_state).to eq 'eligible'.humanize
+      end
+    end
+  end
+
+  context "is_cobra_status?" do
+    let(:census_employee) { CensusEmployee.new }
+
+    context 'when existing_cobra is true' do
+      before :each do
+        census_employee.existing_cobra = 'true'
+      end
+
+      it "should return true" do
+        expect(census_employee.is_cobra_status?).to be_truthy
+      end
+
+      it "aasm_state should be cobra_eligible" do
+        expect(census_employee.aasm_state).to eq 'cobra_eligible'
+      end
+    end
+
+    context "when existing_cobra is false" do
+      before :each do
+        census_employee.existing_cobra = false
+      end
+
+      it "should return false when aasm_state not equal cobra" do
+        census_employee.aasm_state = 'eligible'
+        expect(census_employee.is_cobra_status?).to be_falsey
+      end
+
+      it "should return true when aasm_state equal cobra_linked" do
+        census_employee.aasm_state = 'cobra_linked'
+        expect(census_employee.is_cobra_status?).to be_truthy
+      end
+    end
+  end
+
+  context "existing_cobra" do
+    let(:census_employee) { FactoryGirl.create(:census_employee) }
+
+    it "should return true" do
+      CensusEmployee::COBRA_STATES.each do |state|
+        census_employee.aasm_state = state
+        expect(census_employee.existing_cobra).to be_truthy
+      end
+    end
+  end
+
+  context "linked?" do
+    let(:census_employee) { FactoryGirl.create(:census_employee) }
+
+    it "should return true when employee_role_linked" do
+      census_employee.aasm_state = 'employee_role_linked'
+      expect(census_employee.linked?).to be_truthy
+    end
+
+    it "should return true when cobra_linked" do
+      census_employee.aasm_state = 'cobra_linked'
+      expect(census_employee.linked?).to be_truthy
+    end
+  end
+
+  context "have_valid_date_for_cobra?" do
+    let(:hired_on) { TimeKeeper.date_of_record }
+    let(:census_employee) { FactoryGirl.create(:census_employee, hired_on: hired_on) }
+    before :each do
+      census_employee.terminate_employee_role!
+    end
+
+    it "can cobra employee_role" do
+      census_employee.cobra_begin_date = hired_on + 10.days
+      census_employee.coverage_terminated_on = TimeKeeper.date_of_record - Settings.aca.shop_market.cobra_enrollment_period.months.months + 5.days
+      census_employee.cobra_begin_date = TimeKeeper.date_of_record
+      expect(census_employee.may_elect_cobra?).to be_truthy
+    end
+
+    it "can not cobra employee_role" do
+      census_employee.cobra_begin_date = hired_on + 10.days
+      census_employee.coverage_terminated_on = TimeKeeper.date_of_record - Settings.aca.shop_market.cobra_enrollment_period.months.months - 5.days
+      census_employee.cobra_begin_date = TimeKeeper.date_of_record
+      expect(census_employee.may_elect_cobra?).to be_falsey
+    end
+  end
+
   context 'editing a CensusEmployee SSN/DOB that is in a linked status' do
     let(:census_employee)     { FactoryGirl.create(:census_employee, first_name: 'John', last_name: 'Smith', dob: '1977-01-01'.to_date, ssn: '123456789') }
     let(:person)              { FactoryGirl.create(:person,          first_name: 'John', last_name: 'Smith', dob: '1966-10-10'.to_date, ssn: '314159265') }
@@ -1106,6 +1233,61 @@ RSpec.describe CensusEmployee, type: :model, dbclean: :after_each do
       expect(census_employee.dob).not_to eq person.dob
     end
 
+  end
+
+  context "can_elect_cobra?" do
+    let(:census_employee) { FactoryGirl.build(:census_employee) }
+
+    it "should return false when aasm_state is eligible" do
+      expect(census_employee.can_elect_cobra?).to be_falsey
+    end
+
+    it "should return true when aasm_state is employment_terminated" do
+      census_employee.aasm_state = 'employment_terminated'
+      expect(census_employee.can_elect_cobra?).to be_truthy
+    end
+
+    it "should return true when aasm_state is cobra_terminated" do
+      census_employee.aasm_state = 'cobra_terminated'
+      expect(census_employee.can_elect_cobra?).to be_falsey
+    end
+  end
+
+  context "has_hbx_enrollments?" do
+    let(:census_employee) { FactoryGirl.build(:census_employee) }
+    let(:employee_role) { FactoryGirl.build(:employee_role) }
+    let(:hbx_enrollment) { HbxEnrollment.new }
+    let(:benefit_group_assignment) { FactoryGirl.build(:benefit_group_assignment) }
+
+    it "should return flase without employee_role" do
+      allow(census_employee).to receive(:employee_role).and_return nil
+      expect(census_employee.has_hbx_enrollments?).to be_falsey
+    end
+
+    it "should return true" do
+      allow(census_employee).to receive(:employee_role).and_return employee_role
+      allow(census_employee).to receive(:benefit_group_assignments).and_return [benefit_group_assignment]
+      allow(benefit_group_assignment).to receive(:hbx_enrollment).and_return hbx_enrollment
+      expect(census_employee.has_hbx_enrollments?).to be_truthy
+    end
+  end
+
+  context "linked?" do
+    let(:census_employee) { FactoryGirl.build(:census_employee) }
+
+    it "should return true when aasm_state is employee_role_linked" do
+      census_employee.aasm_state = 'employee_role_linked'
+      expect(census_employee.linked?).to be_truthy
+    end
+
+    it "should return true when aasm_state is cobra_linked" do
+      census_employee.aasm_state = 'cobra_linked'
+      expect(census_employee.linked?).to be_truthy
+    end
+
+    it "should return false" do
+      expect(census_employee.linked?).to be_falsey
+    end
   end
 
   context "check_hired_on_before_dob" do

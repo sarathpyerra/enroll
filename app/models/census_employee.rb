@@ -499,11 +499,19 @@ class CensusEmployee < CensusMember
     false
   end
 
+  def need_to_build_renewal_hbx_enrollment_for_cobra?
+    renewal_benefit_group_assignment.present? && active_benefit_group_assignment != renewal_benefit_group_assignment
+  end
+
+  def benefit_group_assignments_for_cobra
+    benefit_group_assignments.select { |bga| (bga == renewal_benefit_group_assignment) || (bga.plan_year == employer_profile.published_plan_year) }
+  end
+
   def build_hbx_enrollment_for_cobra
     family = employee_role.person.primary_family
-    enrollments = active_benefit_group_assignment.hbx_enrollments.select{|hbx| (hbx.coverage_terminated? || hbx.coverage_termination_pending?) && !hbx.is_cobra_status? }
+    hbxs = benefit_group_assignments_for_cobra.map(&:latest_hbx_enrollment_for_cobra) rescue []
 
-    enrollments.each do |hbx|
+    hbxs.compact.each do |hbx|
       enrollment_cobra_factory = Factories::FamilyEnrollmentCloneFactory.new
       enrollment_cobra_factory.family = family
       enrollment_cobra_factory.census_employee = self
@@ -693,7 +701,7 @@ class CensusEmployee < CensusMember
 
   def has_hbx_enrollments?
     return false if employee_role.blank?
-    benefit_group_assignments.any? { |bga| bga.hbx_enrollment.present? && !bga.hbx_enrollment.coverage_canceled? }
+    benefit_group_assignments.any? { |bga| bga.hbx_enrollment.present? }
   end
 
   def has_cobra_hbx_enrollment?
@@ -747,7 +755,7 @@ class CensusEmployee < CensusMember
 
   def check_cobra_begin_date
     if existing_cobra && hired_on > cobra_begin_date
-      errors.add(:cobra_begin_date, 'Cobra Begin Date should later than Hire Date')
+      errors.add(:cobra_begin_date, 'must be after Hire Date')
     end
   end
 

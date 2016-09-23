@@ -13,11 +13,10 @@ module Factories
       # excluded_states = %w(coverage_canceled, coverage_terminated unverified renewing_passive
       #                       renewing_coverage_selected renewing_transmitted_to_carrier renewing_coverage_enrolled
       #                     )
-      # shop_enrollments = family.enrollments.shop_market.reduce([]) { |list, e| excluded_states.include?(e.aasm_state) ? list : list << e }
+      # shop_enrollments = @family.enrollments.shop_market.reduce([]) { |list, e| excluded_states.include?(e.aasm_state) ? list : list << e }
+
       ## Works only for data migrated into Enroll
       ## FIXME add logic to support Enroll native renewals
-
-      # return true if family.active_household.hbx_enrollments.any?{|enrollment| (HbxEnrollment::RENEWAL_STATUSES.include?(enrollment.aasm_state) || enrollment.renewing_waived?)}
 
       shop_enrollments  = family.active_household.hbx_enrollments.enrolled.shop_market.by_coverage_kind('health').to_a
       shop_enrollments += family.active_household.hbx_enrollments.waived.to_a
@@ -31,7 +30,7 @@ module Factories
       prev_plan_year_end   = @plan_year_start_on - 1.day
 
       shop_enrollments.reject!{|enrollment| !(prev_plan_year_start..prev_plan_year_end).cover?(enrollment.effective_on) }
-      shop_enrollments.reject!{|enrollment| !(enrollment.currently_active?) }
+      shop_enrollments.reject!{|enrollment| !enrollment.currently_active? && !enrollment.is_cobra_status? }
 
       if shop_enrollments.present?
         passive_renewals = family.active_household.hbx_enrollments.where(:aasm_state.in => HbxEnrollment::RENEWAL_STATUSES).to_a
@@ -55,7 +54,7 @@ module Factories
         renew_waived_enrollment
       end
 
-      return family
+      return @family
     end
 
     def renewal_plan_offered_by_er?(enrollment)

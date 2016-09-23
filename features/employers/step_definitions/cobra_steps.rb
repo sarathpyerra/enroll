@@ -52,7 +52,7 @@ Then(/^Employer should see a form to enter information about employee, address a
   fill_in 'jq_datepicker_ignore_census_employee[dob]', :with => person[:dob]
   fill_in 'census_employee[ssn]', :with => person[:ssn]
 
-  find('label[for=census_employee_gender_male]').click
+  find(:xpath, "//label[@for='census_employee_gender_male']").click
 
   fill_in 'jq_datepicker_ignore_census_employee[hired_on]', :with => (TimeKeeper.date_of_record - 10.days).to_s
 
@@ -93,7 +93,7 @@ Then(/^Employer should see a form to enter information about employee, address a
   fill_in 'jq_datepicker_ignore_census_employee[dob]', :with => person[:dob]
   fill_in 'census_employee[ssn]', :with => person[:ssn]
 
-  find('label[for=census_employee_gender_male]').click
+  find(:xpath, "//label[@for='census_employee_gender_male']").click
 
   fill_in 'jq_datepicker_ignore_census_employee[hired_on]', :with => (TimeKeeper.date_of_record - 10.days).to_s
 
@@ -120,7 +120,6 @@ Then(/^Employer should see a form to enter information about employee, address a
 end
 
 And(/^.+ should see census employee created success message for (.*)$/) do |named_person|
-  sleep(1)
   person = people_for_cobra[named_person]
   expect(page).to have_content('Census Employee is successfully created.')
   screenshot("employer_census_new_family_success_message")
@@ -197,7 +196,6 @@ end
 
 When(/^.+ terminate one employee$/) do
   find('tr.even i.fa-trash-o').click
-  sleep(1)
   find('input.date-picker').set((TimeKeeper.date_of_record - 1.days).to_s)
   find('.employees-section').click
   click_link 'Terminate Employee'
@@ -214,7 +212,6 @@ When(/^.+ click all employee filter$/) do
 end
 
 Then(/^.+ should see the status of Employment terminated$/) do
-  sleep(1)
   expect(page).to have_content('Employment Terminated')
 end
 
@@ -238,6 +235,13 @@ Then(/^.+ should see cobra enrollment on my account page/) do
   expect(page).to have_content('Coverage Selected')
 end
 
+Then(/^.+ should see market type on my account page/) do
+  expect(page).to have_content("Market Type: Employer Sponsored COBRA/Continuation")
+end
+
+Then(/^.+ should not see individual on enrollment title/) do
+  expect(page).not_to have_content("Individual & Family")
+end
 
 And(/^.+ should be able to enter plan year, benefits, relationship benefits for cobra$/) do
   find(:xpath, "//p[@class='label'][contains(., 'SELECT START ON')]").click
@@ -264,10 +268,10 @@ And(/^.+ should be able to enter plan year, benefits, relationship benefits for 
   fill_in "plan_year[benefit_groups_attributes][0][relationship_benefits_attributes][3][premium_pct]", :with => 50
 
   find(:xpath, '//li/label[@for="plan_year_benefit_groups_attributes_0_plan_option_kind_single_carrier"]').click
-  sleep 1 #Four back to back clicks causes intermittent failures.  Make sure the page setup/DOM load is complete
+  wait_for_ajax
   find('.carriers-tab a').click
-  sleep 1 #maybe some work here
+  wait_for_ajax
   find('.reference-plans label').click
-  sleep 1
+  wait_for_ajax
   find('.interaction-click-control-create-plan-year').trigger('click')
 end

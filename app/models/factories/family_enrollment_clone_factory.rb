@@ -14,7 +14,7 @@ module Factories
     end
 
     def clone_builder(active_enrollment)
-      clone_enrollment  = @family.active_household.new_hbx_enrollment_from(
+      clone_enrollment = @family.active_household.new_hbx_enrollment_from(
         employee_role: @census_employee.employee_role,
         benefit_group: active_enrollment.benefit_group,
         coverage_household: @family.active_household.immediate_family_coverage_household,
@@ -36,16 +36,10 @@ module Factories
     end
 
     def terminate_history_enrollment(enrollment)
-      @enrollment.benefit_group_assignment.update(hbx_enrollment_id: @enrollment.id) if @enrollment.benefit_group_assignment.present?
+      enrollment.benefit_group_assignment.update(hbx_enrollment_id: enrollment.id) if enrollment.benefit_group_assignment.present?
       term_date = TimeKeeper.date_of_record
       enrollment.terminate_benefit(term_date)
       enrollment.propogate_terminate(term_date)
-    end
-
-    def need_renew_plan_for_cobra?
-      @census_employee.cobra_linked? &&
-      @census_employee.cobra_begin_date.present? &&
-      @census_employee.active_benefit_group_assignment.start_on.year + 1 == @census_employee.cobra_begin_date.year
     end
 
     def effective_on_for_cobra
@@ -55,19 +49,23 @@ module Factories
     def clone_cobra_enrollment(active_enrollment, clone_enrollment)
       clone_enrollment.benefit_group_assignment_id = active_enrollment.benefit_group_assignment_id
       clone_enrollment.benefit_group_id = active_enrollment.benefit_group_id
-
       clone_enrollment.employee_role_id = active_enrollment.employee_role_id
-
-      if need_renew_plan_for_cobra?
-        clone_enrollment.plan_id = active_enrollment.plan.renewal_plan_id
-        raise FamilyEnrollmentCloneFactoryError if clone_enrollment.plan_id.blank?
-      else
-        clone_enrollment.plan_id = active_enrollment.plan_id
-      end
+      clone_enrollment.plan_id = active_enrollment.plan_id
       clone_enrollment.kind = 'employer_sponsored_cobra'
       clone_enrollment.effective_on = effective_on_for_cobra
-      clone_enrollment.select_coverage
+      if active_enrollment.benefit_group.plan_year.is_renewing?
+        clone_enrollment.aasm_state = 'auto_renewing'
+        clone_enrollment.effective_on = active_enrollment.effective_on
+      else
+        clone_enrollment.select_coverage
+        clone_enrollment.begin_coverage if TimeKeeper.date_of_record >= effective_on_for_cobra
+      end
       clone_enrollment.generate_hbx_signature
+      if TimeKeeper.date_of_record < active_enrollment.effective_on
+        active_enrollment.cancel_coverage! if active_enrollment.may_cancel_coverage?
+      else
+        active_enrollment.terminate_coverage! if active_enrollment.may_terminate_coverage?
+      end
 
       clone_enrollment.hbx_enrollment_members = clone_enrollment_members(active_enrollment)
       clone_enrollment
