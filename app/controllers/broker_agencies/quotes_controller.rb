@@ -428,10 +428,18 @@ class BrokerAgencies::QuotesController < ApplicationController
             bg.published_highest_cost_plan = plan.id
         end
       else
-        elected_plan_choice = ['na', 'single', 'carrier', 'custom'][params[:elected].to_i]
+        column_for_dental_plan_option_kind = params[:elected].to_i # col 3 is custom, col 1 is single
+        elected_plan_choice = ['na', 'single_plan', 'single_carrier', 'single_plan'][params[:elected].to_i]
         bg.dental_plan_option_kind = elected_plan_choice
         bg.dental_plan = plan
-        bg.elected_dental_plan_ids = elected_plan_choice == 'custom' ? params[:elected_plans_list] : []
+        bg.elected_dental_plan_ids = case column_for_dental_plan_option_kind.to_i
+        when 1
+         [plan.id]
+        when 2
+         [plan.id]
+        else
+          params[:elected_plans_list].map{|plan_id| Plan.find(plan_id).id}
+        end
       end
       bg.save
     end

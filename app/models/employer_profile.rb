@@ -375,13 +375,12 @@ class EmployerProfile
         benefit_group.reference_plan_id = quote_benefit_group.published_reference_plan
         benefit_group.highest_cost_plan_id = quote_benefit_group.published_highest_cost_plan
         benefit_group.elected_plan_ids.push(quote_benefit_group.published_reference_plan)
-
+        benefit_group.dental_plan_option_kind = quote_benefit_group.dental_plan_option_kind
         benefit_group.relationship_benefits = quote_benefit_group.quote_relationship_benefits.map{|x| x.attributes.slice(:offered,:relationship, :premium_pct)}
-
 
         # Assign benefit group plan information (DENTAL )
         benefit_group.dental_reference_plan_id = quote_benefit_group.published_dental_reference_plan
-        benefit_group.elected_dental_plan_ids.push(quote_benefit_group.elected_dental_plan_ids)
+        benefit_group.elected_dental_plan_ids = quote_benefit_group.elected_dental_plan_ids
 
         benefit_group.dental_relationship_benefits = quote_benefit_group.quote_dental_relationship_benefits.map{|x| x.attributes.slice(:offered,:relationship, :premium_pct)}
 
