@@ -274,6 +274,7 @@ class HbxEnrollment
 
     def advance_day(new_date)
       # process_verification_reminders(new_date - 1.day)
+
       # families_with_contingent_enrollments.each do |family|
       #   enrollment = family.enrollments.where('aasm_state' => 'enrolled_contingent').order(created_at: :desc).to_a.first
       #   consumer_role = family.primary_applicant.person.consumer_role
@@ -294,7 +295,7 @@ class HbxEnrollment
 
       HbxEnrollment.terminate_scheduled_enrollments
 
-      # #FIXME Families with duplicate renewals
+      #FIXME Families with duplicate renewals
       families_with_effective_renewals_as_of(new_date).each do |family|
         family.enrollments.renewing.each do |hbx_enrollment|
           if hbx_enrollment.effective_on <= new_date
