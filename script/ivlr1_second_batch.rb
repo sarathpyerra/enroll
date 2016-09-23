@@ -1,5 +1,5 @@
   begin
-    csv = CSV.open('final_report_sep_20.csv',"r",:headers =>true)
+    csv = CSV.open('preprod_test_data_for_ivlr_1.csv',"r",:headers =>true)
     @data= csv.to_a
     @data_hash = {}
     @data.each do |d|
@@ -10,7 +10,7 @@
       else
         @data_hash[d["family_id"]] = [d]
       end
-   end
+    end
   rescue Exception => e
     puts "Unable to open file #{e}"
   end
@@ -18,12 +18,12 @@
           family_id
           hbx_id
         )
-  file_name = "#{Rails.root}/public/ivl_renewal_notice_1_report.csv"
+  file_name = "#{Rails.root}/public/ivl_renewal_notice_1b_report.csv"
 
   CSV.open(file_name, "w", force_quotes: true) do |csv|
     csv << field_names
 
-    event_kind = ApplicationEventKind.where(:event_name => 'ivl_renewal_notice_1').first
+    event_kind = ApplicationEventKind.where(:event_name => 'ivl_renewal_notice_1_second_batch').first
     notice_trigger = event_kind.notice_triggers.first
     @data_hash.each do |family_id , members|
       primary_member = members[0]
