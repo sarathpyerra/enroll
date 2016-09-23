@@ -627,9 +627,11 @@ private
   def csv_for(employee_roster)
     (output = "").tap do
       CSV.generate(output) do |csv|
-        csv << ["FamilyID", "Relationship", "DOB"]
+        csv << ["FamilyID", "FirstName", "LastName", "Relationship", "DOB"]
         employee_roster.each do |employee|
-          csv << [  employee.family_id,
+          csv << [  employee.quote_household.family_id,
+                    employee.first_name,
+                    employee.last_name,
                     employee.employee_relationship,
                     employee.dob
                   ]
