@@ -33,7 +33,7 @@ When(/^click on the New Quote button$/) do
 end
 
 When(/^click on the Upload Employee Roster button$/) do
-  click_link "Upload Employee Roster"
+  click_link "Upload Roster"
 end
 
 When(/^the broker clicks on the Select File to Upload button$/) do
