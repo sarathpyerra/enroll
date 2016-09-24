@@ -39,9 +39,7 @@
 
 <% eligibility_criteria = capture do %>
 	<span data-export="<%= eligibility_criteria_for_export(organization.employer_profile) %>">
-		<%= #eligibility_criteria(organization.employer_profile)
-			'Eligible'
-		%>
+		<%= eligibility_criteria(organization.employer_profile) %>
 	</span>
 <% end %>
 
