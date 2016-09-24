@@ -66,9 +66,10 @@ disableSelectric = true;
 
 var counter= 1000;
 $(".uidatepicker").datepicker({maxDate: "-1D", changeMonth: true, changeYear: true});
+$(".uidatepicker").datepicker( "option", "dateFormat", "mm/dd/yy" );
 var date_handler = function() {
 	    $(this).datepicker();
-			$(this).datepicker({ dateFormat: 'dd/mm/yyyy' , maxDate: "-1D" });
+			$(this).datepicker({ dateFormat: 'mm/dd/yy' , maxDate: "-1D" });
 	    $(this).datepicker("show");
 	};
 
@@ -86,7 +87,7 @@ var remove_member_handler = function(){
 						console.log("Deleted successfully id " + $quote_member_id.attr("data-member-id") );
 						console.log(data)
 						$quote_member_id.parent().parent().remove();
-						// Remeve the rails generated hiddent field.
+						// Remove the rails generated hiddent field.
 						$('[type="hidden"][value="' + $quote_member_id.attr("data-member-id") + '"]').remove();
 					}
 					else {
@@ -152,7 +153,7 @@ function addEmployeeRowToFamily(family, idx) {
 								   + '</div>');
 									counter += 1 ;
 									$('#family-' + family).append(table_row);
-									$(".uidatepicker").datepicker({maxDate: "-1D", changeMonth: true, changeYear: true});
+									$(".uidatepicker").datepicker({maxDate: "-1D", changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yyyy'});
 									$(".uidatepicker").focus(date_handler);
 									$('button#remove_member_button').click(remove_member_handler);
 									//$('select').selectric('refresh');
@@ -170,7 +171,6 @@ var duplicate_household = function() {
 };
 
 var save_benefit_group_button = function() {
-console.log('hello');
 	if($(this).val().length !=0)
 	  $('#save_benefit_group_submit').attr('disabled', false);
 	else
