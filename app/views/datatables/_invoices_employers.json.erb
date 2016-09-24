@@ -31,13 +31,17 @@
 
 <% plan_year_status = capture do %>
 	<span data-export="<%= organization.employer_profile.renewing_plan_year.present? ? 'Renewing' : 'New' %>">
-		<%= "NULL"#organization.employer_profile.renewing_plan_year.present? ? 'Renewing' : 'New' %>
+		<%= 'New'
+		#organization.employer_profile.renewing_plan_year.present? ? 'Renewing' : 'New'
+		%>
 	</span>
 <% end %>
 
 <% eligibility_criteria = capture do %>
 	<span data-export="<%= eligibility_criteria_for_export(organization.employer_profile) %>">
-		<%= "NULL"#eligibility_criteria(organization.employer_profile) %>
+		<%= #eligibility_criteria(organization.employer_profile)
+			'Eligible'
+		%>
 	</span>
 <% end %>
 
