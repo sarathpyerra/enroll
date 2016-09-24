@@ -1,6 +1,6 @@
 <% plan_year = organization.employer_profile.latest_plan_year %>
 <% census_employees = nil #plan_year.find_census_employees if plan_year.present? %>
-<% enrolled = plan_year.try(:enrolled).try(:count).to_i %>
+<% enrolled = 0#plan_year.try(:enrolled).try(:count).to_i %>
 <% eligible_to_enroll_count = 0#census_employees.try(:active).try(:count).to_i %>
 <% waived = 0#census_employees.try(:waived).try(:count).to_i %>
 <% disabled = organization.employer_profile.can_transmit_xml? %>
@@ -31,13 +31,13 @@
 
 <% plan_year_status = capture do %>
 	<span data-export="<%= organization.employer_profile.renewing_plan_year.present? ? 'Renewing' : 'New' %>">
-		<%= organization.employer_profile.renewing_plan_year.present? ? 'Renewing' : 'New' %>
+		<%= "NULL"#organization.employer_profile.renewing_plan_year.present? ? 'Renewing' : 'New' %>
 	</span>
 <% end %>
 
 <% eligibility_criteria = capture do %>
 	<span data-export="<%= eligibility_criteria_for_export(organization.employer_profile) %>">
-		<%= eligibility_criteria(organization.employer_profile) %>
+		<%= "NULL"#eligibility_criteria(organization.employer_profile) %>
 	</span>
 <% end %>
 
