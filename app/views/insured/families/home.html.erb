@@ -15,8 +15,8 @@
 
   <div class="row">
     <div class="col-md-8">
-      <%= render partial: 'employers_selection' if @person.active_employee_roles.count > 1 %>
       <%= render partial: 'qle_detail' %>
+      <%= render partial: 'employers_selection' if @person.has_multiple_active_employers? %>
       <%= render partial: "enrollment", :collection => @hbx_enrollments, :as => :hbx_enrollment, locals: { read_only: false } %>
       <% if @waived %>
       <div class="waived-coverage">

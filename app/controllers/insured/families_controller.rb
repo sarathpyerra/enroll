@@ -8,6 +8,7 @@ class Insured::FamiliesController < FamiliesController
   before_action :check_employee_role
 
   def home
+    build_employee_role_by_census_employee_id
     set_flash_by_announcement
     set_bookmark_url
 
@@ -254,8 +255,22 @@ class Insured::FamiliesController < FamiliesController
     authorize Family, :updateable?
   end
 
+  def build_employee_role_by_census_employee_id
+    census_employee_id = (params[:employee_id].present? && params[:employee_id].include?('census_employee')) ? params[:employee_id].gsub("census_employee_", "") : nil
+    return if census_employee_id.nil?
+
+    census_employee = CensusEmployee.find_by(id: census_employee_id)
+    if census_employee.present?
+      census_employee.construct_employee_role_for_match_person
+      @employee_role = census_employee.employee_role
+      @person.reload
+    end
+  end
+
   def check_employee_role
-    @employee_role = params[:employee_role_id].present? ? @person.active_employee_roles.detect{|e| e.id.to_s == params[:employee_role_id]} : @person.active_employee_roles.first
+    employee_role_id = (params[:employee_id].present? && params[:employee_id].include?('employee_role')) ? params[:employee_id].gsub("employee_role_", "") : nil
+
+    @employee_role = employee_role_id.present? ? @person.active_employee_roles.detect{|e| e.id.to_s == employee_role_id} : @person.active_employee_roles.first
   end
 
   def init_qualifying_life_events
