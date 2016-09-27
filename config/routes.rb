@@ -357,7 +357,7 @@ Rails.application.routes.draw do
         get :upload_employee_roster
         post :build_employee_roster
         delete :delete_quote
-        post :download_employee_roster
+        get :download_employee_roster
         post :delete_member
         delete :delete_household
         post :delete_benefit_group
