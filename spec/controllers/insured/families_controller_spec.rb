@@ -107,6 +107,7 @@ RSpec.describe Insured::FamiliesController do
         allow(person).to receive(:active_employee_roles).and_return([employee_role])
         allow(family).to receive(:coverage_waived?).and_return(true)
         allow(family).to receive(:active_family_members).and_return(family_members)
+        allow(family).to receive(:check_for_consumer_role).and_return nil
         sign_in user
         get :home
       end
@@ -147,6 +148,7 @@ RSpec.describe Insured::FamiliesController do
         allow(person).to receive(:has_active_consumer_role?).and_return(true)
         allow(person).to receive(:active_employee_roles).and_return([])
         allow(family).to receive(:active_family_members).and_return(family_members)
+        allow(family).to receive(:check_for_consumer_role).and_return true
         sign_in user
         get :home
       end
@@ -208,6 +210,7 @@ RSpec.describe Insured::FamiliesController do
         allow(family).to receive(:enrollments).and_return(enrollments)
         allow(enrollments).to receive(:order).and_return([display_hbx])
         allow(family).to receive(:enrollments_for_display).and_return([{"hbx_enrollment"=>{"_id"=>display_hbx.id}}])
+        allow(family).to receive(:check_for_consumer_role).and_return true
         allow(controller).to receive(:update_changing_hbxs).and_return(true)
       end
 
