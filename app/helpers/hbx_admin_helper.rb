@@ -4,7 +4,7 @@ module HbxAdminHelper
     Person.find(person_id).full_name
   end
 
-  def ehb_percent_for_enrrollment(hbx_id)
+  def ehb_percent_for_enrollment(hbx_id)
   	ehb = HbxEnrollment.find(hbx_id).plan.ehb
   	enb_percent = (ehb*100).round(2)
   end
@@ -41,6 +41,10 @@ module HbxAdminHelper
   def find_applied_aptc_percent(aptc_applied, max_aptc)
     return 0 if max_aptc == 0.to_f
     ((aptc_applied/max_aptc)*100).round
+  end
+
+  def all_canceled_and_terminated_enrollments_with_aptc(family)
+    family.active_household.hbx_enrollments.canceled_and_terminated.with_aptc.by_year(TimeKeeper.date_of_record.year)
   end
 
 end
