@@ -139,9 +139,6 @@
         <% if buttons_below_table.present? %>
           EnrollDataTableInitializer.addButtonsBelowTable('<%= table_id %>');
         <% end %>
-        <% if info == true %>
-          EnrollDataTableInitializer.moveInfo('<%= table_id %>');
-        <% end %>
         <% if pagination == true %>
           EnrollDataTableInitializer.showPagination('<%= table_id %>');
         <% end %>
@@ -173,7 +170,7 @@
         EnrollDataTableInitializer.moveInfo('<%= table_id %>');
         EnrollDataTableInitializer.moveTableLength('<%= table_id %>');
         EnrollDataTableInitializer.lastRowSpacing('<%= table_id %>');
-        EnrollDataTableInitializer.exportPageAsCSV('<%= table_id %>', initial_column_set );
+        EnrollDataTableInitializer.exportPageAsCSV('<%= table_id %>', enroll_datatable.data(), initial_column_set );
         EnrollDataTableInitializer.addClearSearch('<%= table_id %>');
         EnrollDataTableInitializer.addSubmitSearch('<%= table_id %>');
         <% if pagination == true %>
@@ -203,7 +200,7 @@
 
         <% end %>
       ]
-      <% if checkboxes == true && row_functions == true %>,
+      <% if checkboxes == true && row_functions == true && row_data == true %>,
         'columnDefs': [
           <% columns[1..(columns.length-3)].each_with_index do |col, idx| %>
             {

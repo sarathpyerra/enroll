@@ -46,6 +46,8 @@ class Insured::GroupSelectionController < ApplicationController
       benefit_sponsorship: HbxProfile.current_hbx.try(:benefit_sponsorship))
 
     generate_coverage_family_members_for_cobra
+    # Set @new_effective_on to the date choice selected by user if this is a QLE with date options available.
+    @new_effective_on = Date.strptime(params[:effective_on_option_selected], '%m/%d/%Y') if params[:effective_on_option_selected].present?
   end
 
   def create
@@ -79,6 +81,7 @@ class Insured::GroupSelectionController < ApplicationController
 
 
     hbx_enrollment.coverage_kind = @coverage_kind
+
     if @employee_role.present? && @employee_role.is_cobra_status?
       hbx_enrollment.kind = 'employer_sponsored_cobra'
       hbx_enrollment.effective_on = @employee_role.census_employee.coverage_terminated_on.end_of_month + 1.days if @employee_role.census_employee.need_update_hbx_enrollment_effective_on?
@@ -86,6 +89,9 @@ class Insured::GroupSelectionController < ApplicationController
         raise "You may not enroll for cobra after #{Settings.aca.shop_market.cobra_enrollment_period.months} months later of coverage terminated."
       end
     end
+
+    # Set effective_on if this is a case of QLE with date options available.
+    hbx_enrollment.effective_on = Date.strptime(params[:effective_on_option_selected], '%m/%d/%Y') if params[:effective_on_option_selected].present?
 
     if hbx_enrollment.save
       hbx_enrollment.inactive_related_hbxs # FIXME: bad name, but might go away
@@ -174,6 +180,7 @@ class Insured::GroupSelectionController < ApplicationController
       @role = @consumer_role
     end
 
+    @existing_sep = @family.special_enrollment_periods.where(:end_on.gte => Date.today).first
     @change_plan = params[:change_plan].present? ? params[:change_plan] : ''
     @coverage_kind = params[:coverage_kind].present? ? params[:coverage_kind] : 'health'
     @enrollment_kind = params[:enrollment_kind].present? ? params[:enrollment_kind] : ''

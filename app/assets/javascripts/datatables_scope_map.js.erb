@@ -24,6 +24,21 @@ var DataTablesFilterMap = function() {
         "initial ineligible": [ "employer_profiles_applicants", "employer_profiles_ineligible" ]
       }
     },
+    Families : {
+      all: [ "all" ],
+      individual_enrolled: {
+        "All": ["all_enrollments"],
+        "Individual-Enrolled": [],
+        "individual": [ "enrolled", "enrolled_individual_market" ],
+        "employee-sponsored-coverage-enrolled": [ "enrolled_shop_market" ]
+      },
+      "employer-sponsored-coverage-enrolled": {
+        "enrolled": ["enrolled_shop_market"],
+        "individual-enrolled": [],
+        "individual": [ "enrolled", "enrolled_individual_market" ],
+        "employee-sponsored-coverage-enrolled": [ "enrolled_shop_market" ]
+      }
+    },
     Broker : {
       all: [ "all_broker_quotes('"+$('[data-broker-id]').data('broker-id')+"')" ],
       draft: [ "all_broker_quotes('"+$('[data-broker-id]').data('broker-id')+"')", "draft_quotes" ],

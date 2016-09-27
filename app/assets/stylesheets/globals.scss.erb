@@ -110,6 +110,7 @@
         display: inline-block;
         width: 30px;
       }
+
     }
     input[type=checkbox]:checked + label i {
       &:first-of-type {
@@ -119,6 +120,30 @@
       &:last-of-type {
         display: none;
       }
+    }
+  }
+  .enroll-label {
+    font-weight: $float-labels-weight;
+    color: $float-labels-color;
+    font-size: $float-labels-text-size;
+    text-transform: $float-labels-casing;
+  }
+  .label {
+    &.inactive, &.canceled {
+      background-color: $primary-gray;
+    }
+    &.employment_terminated {
+      background-color: $primary-red;
+    }
+  }
+
+  &.flash {
+    .col-xs-12 {
+      max-width: 1170px;
+      width: 100%;
+      margin: auto;
+      display: block;
+      float: none;
     }
   }
   .census-employee-details .n-radio-row {
@@ -173,5 +198,8 @@
       float: none;
       vertical-align: middle;
     }
+  }
+  .date-field {
+    font-family: FontAwesome;
   }
 }

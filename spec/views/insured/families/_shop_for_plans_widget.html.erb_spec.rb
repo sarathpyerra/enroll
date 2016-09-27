@@ -1,13 +1,14 @@
- require 'rails_helper'
+require 'rails_helper'
 
 RSpec.describe "insured/families/_shop_for_plans_widget.html.erb" do
   let(:person) { FactoryGirl.build(:person) }
+  let(:family) { FactoryGirl.build(:family, :with_primary_family_member) }
   let(:employee_role) { FactoryGirl.build(:employee_role) }
   let(:census_employee) { FactoryGirl.build(:census_employee) }
   let(:hbx_enrollments) {double}
   let(:hbx_profile) { FactoryGirl.create(:hbx_profile) }
   let(:current_user) { FactoryGirl.create(:user)}
-  let(:family){double(special_enrollment_periods: special_enrollment_periods)}
+  # let(:family){double(special_enrollment_periods: special_enrollment_periods)}
   let(:special_enrollment_periods) { double(where: [double(id: 1, qualifying_life_event_kind: qualifying_life_event_kind)])}
   let(:qualifying_life_event_kind) { double(title: "yo")}
 
@@ -25,6 +26,7 @@ RSpec.describe "insured/families/_shop_for_plans_widget.html.erb" do
       allow(current_user).to receive(:has_employee_role?).and_return(true)
       allow(person).to receive(:active_employee_roles).and_return([employee_role])
       allow(view).to receive(:policy_helper).and_return(double("Policy", updateable?: true))
+      #allow(view).to receive(:has_active_sep?).and_return(false)
       render "insured/families/shop_for_plans_widget"
     end
 
@@ -42,6 +44,7 @@ RSpec.describe "insured/families/_shop_for_plans_widget.html.erb" do
       expect(rendered).to have_selector('strong', text: 'Shop for health and dental plans')
       expect(rendered).to have_selector("a[href='/insured/group_selections/new?change_plan=change_plan&employee_role_id=#{employee_role.id}&person_id=#{person.id}&shop_for_plan=shop_for_plan']")
     end
+
   end
 
   context "without hbx_enrollments" do
@@ -67,6 +70,7 @@ RSpec.describe "insured/families/_shop_for_plans_widget.html.erb" do
 
     before :each do
       assign :person, person
+      assign :family, family
       assign :employee_role, employee_role
       assign :hbx_enrollments, []
       assign :family, family
