@@ -1,7 +1,10 @@
 <% plan_year = organization.employer_profile.latest_plan_year %>
-<% census_employees = nil #plan_year.find_census_employees if plan_year.present? %>
-<% enrolled = 0#plan_year.try(:enrolled).try(:count).to_i %>
-<% eligible_to_enroll_count = 0#census_employees.try(:active).try(:count).to_i %>
+<% census_employees = plan_year.find_census_employees if plan_year.present? %>
+<% enrolled = CensusEmployee.enrolled_count(plan_year.try(:benefit_groups).try(:first))
+#binding.pry
+#plan_year.try(:enrolled).try(:count).to_i %>
+<% eligible_to_enroll_count = census_employees.try(:active).try(:count).to_i
+%>
 <% waived = 0#census_employees.try(:waived).try(:count).to_i %>
 <% disabled = organization.employer_profile.can_transmit_xml? %>
 
@@ -31,9 +34,7 @@
 
 <% plan_year_status = capture do %>
 	<span data-export="<%= organization.employer_profile.renewing_plan_year.present? ? 'Renewing' : 'New' %>">
-		<%= 'New'
-		#organization.employer_profile.renewing_plan_year.present? ? 'Renewing' : 'New'
-		%>
+		<%= organization.employer_profile.renewing_plan_year.present? ? 'Renewing' : 'New' %>
 	</span>
 <% end %>
 
@@ -65,7 +66,7 @@
 
 <% coversion = capture do %>
 	<span data-export="<%= organization.employer_profile.is_conversion? ? 'Yes' : 'No' %>">
-		<%= boolean_to_glyph(organization.current_month_invoice.present?) %>
+		<%= boolean_to_glyph(organization.employer_profile.is_conversion?) %>
 	</span>
 <% end %>
 
@@ -103,7 +104,7 @@
 
 <% percentage = capture do %>
 	<span data-export="<%= (enrolled / eligible_to_enroll_count * 100).to_i rescue 0 %>%">
-		<%= (enrolled / eligible_to_enroll_count * 100).to_i rescue 0 %>%
+		<%= (enrolled.to_f / eligible_to_enroll_count * 100).to_i rescue 0 %>%
 	</span>
 <% end %>
 
@@ -113,8 +114,8 @@
 "fein": <%= raw fein.to_json %>,
 "plan_year_status": <%= raw plan_year_status.to_json %>,
 "eligibility_criteria": <%= raw eligibility_criteria.to_json %>,
-"general_agency": <%= raw general_agency.to_json %>,
 "broker": <%= raw broker.to_json %>,
+"general_agency": <%= raw general_agency.to_json %>,
 "conversion": <%= raw coversion.to_json %>,
 "status": <%= raw status.to_json %>,
 "effective_date" : <%= raw effective_date.to_json %>,

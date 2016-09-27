@@ -19,8 +19,8 @@
       [
         ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.year}", "javascript:;", false, 'month'],
         ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.year}", "javascript:;", false, 'month'],
-        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month.year}", "javascript:;", false, 'month'],
-        ["Custom Date", custom_dates_exchanges_hbx_profiles_path, true]
+        ["#{(TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month).strftime("%B")} #{TimeKeeper.date_of_record.next_month.beginning_of_month.next_month.next_month.year}", "javascript:;", false, 'month']#,
+        #["Custom Date", custom_dates_exchanges_hbx_profiles_path, true]
       ]
     ],
       ["Enrolled", "", true, [
@@ -97,8 +97,8 @@
       ["FEIN", "fein", "dt-center", [true, ""]],
       ["Plan Year Status", "plan_year_status", "dt-center", [false, ""]],
       ["Eligibility", "eligibility_criteria", "dt-center eligibility", [false, ""]],
-      ["General Agency", "general_agency", "", [false, ""]],
       ["Broker", "broker", "", [false, ""]],
+      ["General Agency", "general_agency", "", [false, ""]],
       ["CNVRSN?", "conversion", "dt-center", [false, ""]],
       ["Status", "status", "dt-center", [false, ""]],
       ["Effective Date", "effective_date", "", [false, ""]],
