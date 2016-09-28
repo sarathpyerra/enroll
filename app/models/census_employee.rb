@@ -469,7 +469,8 @@ class CensusEmployee < CensusMember
         cnt = CensusEmployee.collection.aggregate([
         {"$match" => {"benefit_group_assignments.benefit_group_id" => benefit_group.id  }},
         {"$unwind" => "$benefit_group_assignments"},
-        {"$match" => {"aasm_state" => "employee_role_linked"}},
+        {"$match" => {"aasm_state" => { "$in" =>  EMPLOYMENT_ACTIVE_STATES  } }},
+        {"$match" => {"benefit_group_assignments.aasm_state" => "coverage_selected" }},
         {"$match" => {"benefit_group_assignments.is_active" => true}},
         {"$match" => {"benefit_group_assignments.benefit_group_id" => benefit_group.id  }},
         {"$group" => {
