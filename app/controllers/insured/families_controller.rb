@@ -293,7 +293,6 @@ class Insured::FamiliesController < FamiliesController
         end
       end
     end
-
   end
 
   def check_for_address_info
