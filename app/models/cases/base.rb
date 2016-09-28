@@ -35,11 +35,11 @@ class Cases::Base
   # enrollments
 
   identity  = [
-                  { consumer_role: { 
+                  { consumer_role: {
                         attributes: %w(first_name middle_name last_name name_pfx name_sfx ssn dob gender),
                         scopes: %w(consumer_role),
                         where: :any
-                      } 
+                      }
                     },
                   { employee_role: %w(first_name middle_name last_name name_pfx name_sfx ssn dob gender) },
                   { resident_role: %w(first_name middle_name last_name name_pfx name_sfx ssn dob gender) },
@@ -47,29 +47,29 @@ class Cases::Base
 
   citizen_status  = [
                       { resident_role: %w(first_name middle_name last_name name_pfx name_sfx ssn dob gender) },
-                      ]              
+                      ]
 
   demographic     = [
                         { consumer_role: %w(first_name middle_name last_name name_pfx name_sfx ssn dob gender) },
                       ]
 
-  location        = [
-                        { addresses: {
-                              %w(addresses), 
-                              scopes: [
-                                        { consumer_role.addresses.kind.in => ["home", "mailing"] },
-                                        { employee_role.addresses.kind.in => ["home", "mailing"] },
-                                        { resident_role.addresses.kind.in => ["home", "mailing"] },
-                                        { resident_role.addresses.kind.in => ["home", "mailing"] },
-                                        ]
-                              where: [
-                                consumer_role, kind: :home, ]
-                            }
-                          },
-                        { consumer_role: %w(addresses) },
-                        { employee_role: %w(addresses) },
-                        { resident_role: %w(addresses) },
-                      ]
+  # location        = [
+  #                       { addresses: {
+  #                             %w(addresses),
+  #                             scopes: [
+  #                                       { consumer_role.addresses.kind.in => ["home", "mailing"] },
+  #                                       { employee_role.addresses.kind.in => ["home", "mailing"] },
+  #                                       { resident_role.addresses.kind.in => ["home", "mailing"] },
+  #                                       { resident_role.addresses.kind.in => ["home", "mailing"] },
+  #                                       ],
+  #                             where: [
+  #                               consumer_role, kind: :home, ]
+  #                           }
+  #                         },
+  #                       { consumer_role: %w(addresses) },
+  #                       { employee_role: %w(addresses) },
+  #                       { resident_role: %w(addresses) },
+  #                     ]
 
 
 
@@ -81,27 +81,27 @@ class Cases::Base
                               ]}
 
   location                = {models: [
-                                {model: :address, 
+                                {model: :address,
                                   # tracker_class_name: :"journals/person_transaction",
-                                  kinds: [:home], 
+                                  kinds: [:home],
                                   attributes: %w(address_1 address_2 address_3 city state zip)}
                               ]}
 
   contact                 = {models: [
-                                {model: :person, 
+                                {model: :person,
                                   # tracker_class_name: :"journals/person_transaction",
-                                  attributes: %w(addresses emails phones)} 
+                                  attributes: %w(addresses emails phones)}
                               ]}
 
   role                    = {models: [
-                                {model: :person, 
+                                {model: :person,
                                   # tracker_class_name: :"journals/person_transaction",
-                                  attributes: %w(consumer_role employee_roles employer_staff_roles 
-                                    broker_agency_staff_roles general_agency_Staff_roles csr_role hbx_staff_role assister_role)} 
+                                  attributes: %w(consumer_role employee_roles employer_staff_roles
+                                    broker_agency_staff_roles general_agency_Staff_roles csr_role hbx_staff_role assister_role)}
                               ]}
 
   document                = {models: [
-                                {model: :person, 
+                                {model: :person,
                                   # tracker_class_name: :"journals/person_transaction",
                                   attributes: %w(documents)}
                               ]}
@@ -132,8 +132,8 @@ class Cases::Base
   EMPLOYER    = %w()
   BROKER      = %w()
 
-  change_model
-  change_id
+  # change_model
+  # change_id
 
   # Eligibility/Assistance
   ## QLEs
@@ -175,8 +175,8 @@ class Cases::Base
 
   ELIGIBILITY   = []
   ENROLLMENT    = []
-  FAMILY        = []
-  PERSON        = []
+  # FAMILY        = []
+  # PERSON        = []
   EMPLOYEE_ROLE = []
   CONSUMER_ROLE = []
 
