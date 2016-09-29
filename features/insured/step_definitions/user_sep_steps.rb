@@ -23,7 +23,7 @@ Given(/^has already enrolled for SEP$/) do
   FactoryGirl.create :hbx_profile
   user.person.consumer_role = FactoryGirl.build(:consumer_role, person: user.person, aasm_state: 'fully_verified')
   user.person.save
-  user.primary_family.special_enrollment_periods.push FactoryGirl.build(:special_enrollment_period, qle_on: Date.yesterday, effective_on_kind: ['first_of_month'])
+  user.primary_family.special_enrollment_periods.push FactoryGirl.build(:special_enrollment_period, qle_on: Date.yesterday, effective_on_kind: ['first_of_month'], admin_flag: true)
   user.primary_family.save
 end
 

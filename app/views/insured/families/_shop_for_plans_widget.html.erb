@@ -90,8 +90,6 @@
                           <%#= link_to 'Shop with existing SEP', insured_family_members_path(sep_id: existing_sep.id) %>
                           <%= build_link_for_sep_type(@active_admin_sep, 'Shop with existing SEP') %>
                         </p>
-                        <% existing_sep = @family.special_enrollment_periods.where(:end_on.gte => Date.today).first %>
-                        <p><%= link_to 'Shop with existing SEP', insured_family_members_path(sep_id: existing_sep.id) %></p>
                         <p><%= link_to 'Qualify for new SEP', find_sep_insured_families_path(options) %></p>
                       <% else %>
                         <p>Do you need coverage earlier? See if you qualify for a <%= link_to "Special Enrollment Period", find_sep_insured_families_path(options) %></p>
