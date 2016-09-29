@@ -326,28 +326,6 @@ class Exchanges::HbxProfilesController < ApplicationController
 
   end
 
-  def add_sep_form
-    getActionParams
-  end
-
-  def show_sep_history
-    getActionParams
-  end
-
-  def update_effective_date
-    @qle = QualifyingLifeEventKind.find(params[:id])
-    respond_to do |format|
-      format.js {}
-    end
-  end
-
-  def calculate_sep_dates
-    calculateDates
-    respond_to do |format|
-      format.js {}
-    end
-  end
-
   def broker_agency_index
     @broker_agency_profiles = BrokerAgencyProfile.all
 
