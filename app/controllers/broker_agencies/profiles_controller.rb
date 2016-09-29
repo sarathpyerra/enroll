@@ -80,24 +80,6 @@ class BrokerAgencies::ProfilesController < ApplicationController
     end
   end
 
-  def broker_profile_params
-    params.require(:organization).permit(
-      #:employer_profile_attributes => [ :entity_kind, :dba, :legal_name],
-      :office_locations_attributes => [
-        :address_attributes => [:kind, :address_1, :address_2, :city, :state, :zip],
-        :phone_attributes => [:kind, :area_code, :number, :extension],
-        :email_attributes => [:kind, :address]
-      ]
-    )
-  end
-
-  def sanitize_broker_profile_params
-    params[:organization][:office_locations_attributes].each do |key, location|
-      params[:organization][:office_locations_attributes].delete(key) unless location['address_attributes']
-      location.delete('phone_attributes') if (location['phone_attributes'].present? && location['phone_attributes']['number'].blank?)
-    end
-  end
-
   def staff_index
     @q = params.permit(:q)[:q]
     @staff = eligible_brokers
@@ -302,27 +284,23 @@ class BrokerAgencies::ProfilesController < ApplicationController
 
   private
 
-  # def parse_employee_roster_file
-  #   begin
-  #     CSV.parse(params[:employee_roster_file].read) if params[:employee_roster_file].present?
-  #   rescue Exception => e
-  #     redirect_to build_employee_roster_broker_agencies_profiles_path, :flash => { :error => "Unable to parse the csv file" }
-  #   end
-  # end
+  def broker_profile_params
+    params.require(:organization).permit(
+      #:employer_profile_attributes => [ :entity_kind, :dba, :legal_name],
+      :office_locations_attributes => [
+        :address_attributes => [:kind, :address_1, :address_2, :city, :state, :zip],
+        :phone_attributes => [:kind, :area_code, :number, :extension],
+        :email_attributes => [:kind, :address]
+      ]
+    )
+  end
 
-  # def csv_for(employee_roster)
-  #   (output = "").tap do
-  #     CSV.generate(output) do |csv|
-  #       csv << ["FamilyID", "Relationship", "DOB"]
-  #       employee_roster.each do |id,employee|
-  #         csv << [  employee[:family_id],
-  #                   employee[:relationship],
-  #                   employee[:dob]
-  #                 ]
-  #       end
-  #     end
-  #   end
-  # end
+  def sanitize_broker_profile_params
+    params[:organization][:office_locations_attributes].each do |key, location|
+      params[:organization][:office_locations_attributes].delete(key) unless location['address_attributes']
+      location.delete('phone_attributes') if (location['phone_attributes'].present? && location['phone_attributes']['number'].blank?)
+    end
+  end
 
   def find_hbx_profile
     @profile = current_user.person.hbx_staff_role.hbx_profile
@@ -330,6 +308,7 @@ class BrokerAgencies::ProfilesController < ApplicationController
 
   def find_broker_agency_profile
     @broker_agency_profile = BrokerAgencyProfile.find(params[:id])
+    authorize @broker_agency_profile, :access_to_broker_agency_profile?
   end
 
   def check_admin_staff_role
