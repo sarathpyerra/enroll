@@ -431,8 +431,26 @@ class Plan
       end
     end
 
-    def build_plan_selectors market_kind='shop', coverage_kind='health'
-      plans = coverage_kind == 'health' ? $quote_shop_health_plans : $quote_shop_dental_plans
+    def shop_plans coverage_kind, year
+      if coverage_kind == 'health'
+        shop_health_plans year
+      else
+        shop_dental_plans year
+      end
+    end
+
+    def shop_health_plans year
+      Plan::REFERENCE_PLAN_METAL_LEVELS.map do |metal_level|
+        Plan.valid_shop_health_plans('metal_level', metal_level, year)
+      end.flatten
+    end
+
+    def shop_dental_plans year
+      shop_dental_by_active_year year
+    end
+
+    def build_plan_selectors market_kind, coverage_kind, year
+      plans = shop_plans coverage_kind, year
       selectors = {}
       if coverage_kind == 'dental'
         selectors[:dental_levels] = plans.map{|p| p.dental_level}.uniq.append('any')
@@ -440,7 +458,9 @@ class Plan
         selectors[:metals] = plans.map{|p| p.metal_level}.uniq.append('any')
       end
       selectors[:carriers] = plans.map{|p|
-        [ p.carrier_profile.legal_name, p.carrier_profile.abbrev, p.carrier_profile.id ]
+        id = p.carrier_profile_id
+        c_p = CarrierProfile.find(id)
+        [ c_p.legal_name, c_p.abbrev, c_p.id ]
         }.uniq.append(['any','any'])
       selectors[:plan_types] =  plans.map{|p| p.plan_type}.uniq.append('any')
       selectors[:dc_network] =  ['true', 'false', 'any']
@@ -448,8 +468,8 @@ class Plan
       selectors
     end
 
-    def build_plan_features market_kind='shop', coverage_kind='health'
-      plans = coverage_kind == 'health' ? $quote_shop_health_plans : $quote_shop_dental_plans
+    def build_plan_features market_kind, coverage_kind, year
+      plans = shop_plans coverage_kind, year
       feature_array = []
       plans.each{|plan|
 

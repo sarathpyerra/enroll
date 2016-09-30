@@ -51,11 +51,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   end
 
-  def show #index (old index)
-    $quote_shop_health_selectors = Plan.build_plan_selectors unless $quote_shop_health_selectors
-    $quote_shop_health_plan_features = Plan.build_plan_features unless $quote_shop_health_plan_features
-    $quote_shop_dental_selectors = Plan.build_plan_selectors('shop', 'dental') unless $quote_shop_dental_selectors
-    $quote_shop_dental_plan_features = Plan.build_plan_features('shop', 'dental') unless $quote_shop_dental_plan_features
+  def show 
     @q = Quote.find(params[:id])
     @benefit_groups = @q.quote_benefit_groups
     @quote_on_page = (params[:benefit_group_id] && @q.quote_benefit_groups.find(params[:benefit_group_id])) || @benefit_groups.first
@@ -63,15 +59,14 @@ class BrokerAgencies::QuotesController < ApplicationController
     active_year = Date.today.year
     @coverage_kind = "health"
 
-    @health_plans = $quote_shop_health_plans
-    @health_selectors = $quote_shop_health_selectors
-    @health_plan_quote_criteria  = $quote_shop_health_plan_features.to_json
+    @health_plans = Plan.shop_health_plans @q.plan_year
+    @health_selectors = Plan.build_plan_selectors('shop', 'health', @q.plan_year)
+    @health_plan_quote_criteria  = Plan.build_plan_features('shop', 'health', @q.plan_year).to_json
 
-    @dental_selectors = $quote_shop_dental_selectors
-    @dental_plans = $quote_shop_dental_plans
+    @dental_plans = Plan.shop_dental_plans @q.plan_year
+    @dental_selectors = Plan.build_plan_selectors('shop', 'dental', @q.plan_year)
+    dental_plan_quote_criteria  = Plan.build_plan_features('shop', 'dental',@q.plan_year) .to_json
     @dental_plans_count = @dental_plans.count
-
-    dental_plan_quote_criteria  = $quote_shop_dental_plan_features.to_json
 
     @bp_hash = {'employee':50, 'spouse': 0, 'domestic_partner': 0, 'child_under_26': 0, 'child_26_and_over': 0}
     @benefit_pcts_json = @bp_hash.to_json
@@ -90,13 +85,13 @@ class BrokerAgencies::QuotesController < ApplicationController
       @q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id]) # NEW
       @quote_results = Hash.new
       @quote_results_summary = Hash.new
-      @health_plans = $quote_shop_health_plans
+      @health_plans = Plan.shop_health_plans @q.quote.plan_year
       unless @q.nil?
         roster_premiums = @q.roster_cost_all_plans
         @roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds(@health_plans,
           @q.quote_relationship_benefits, roster_premiums)
         params['plans'].each do |plan_id|
-          p = $quote_shop_health_plans.detect{|plan| plan.id.to_s == plan_id}
+          p = @health_plans.detect{|plan| plan.id.to_s == plan_id}
           detailCost = Array.new
           @q.quote_households.each do |hh|
             pcd = PlanCostDecorator.new(p, hh, @q, p)
@@ -119,7 +114,7 @@ class BrokerAgencies::QuotesController < ApplicationController
     @q = Quote.find(params[:quote_id]).quote_benefit_groups.find(params[:benefit_id])
     @quote_results = Hash.new
     @quote_results_summary = Hash.new
-    @health_plans = $quote_shop_dental_plans
+    @health_plans = Plan.shop_dental_plans(@q.quote.plan_year)
     @roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds(
       @health_plans,
       @q.quote_dental_relationship_benefits,
@@ -411,8 +406,8 @@ class BrokerAgencies::QuotesController < ApplicationController
         elected_plan_choice = ['na', 'Single Plan', 'Single Carrier', 'Metal Level'][params[:elected].to_i]
         bg.plan = plan
         bg.plan_option_kind = elected_plan_choice
-        roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds($quote_shop_health_plans,
-           bg.quote_relationship_benefits, bg.roster_cost_all_plans)
+        roster_elected_plan_bounds = PlanCostDecoratorQuote.elected_plans_cost_bounds(Plan.shop_health_plans(@q.plan_year),
+           bg.quote_relationship_benefits, bg.roster_cost_all_plans('health'))
         case elected_plan_choice
           when 'Single Carrier'
             bg.plan_option_kind = "single_carrier"

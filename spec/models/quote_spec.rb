@@ -52,8 +52,8 @@ RSpec.describe Quote, type: :model, dbclean: :after_each do
         expect(@copy.claim_code).to be_nil
       end
 
-      it 'should be named copy' do
-        expect(@copy.quote_name).to match(/copy/)
+      it 'should have quote name based on original plus (1)' do
+        expect(@copy.quote_name).to eq subject.quote_name + '(1)'
       end
 
       it 'there should be two quotes' do
@@ -61,5 +61,23 @@ RSpec.describe Quote, type: :model, dbclean: :after_each do
       end
     end
 
-	end
+    context " copied quote is copied" do
+      before do
+        @copy = subject.clone
+        @copied = @copy.clone
+      end
+      it 'should append  (1) to the quote_name for first copy' do
+        expect(@copy.quote_name).to eq subject.quote_name + '(1)'
+      end
+      it 'should append (2) to the quote name for the second copy' do
+        expect(@copied.quote_name).to eq subject.quote_name + '(2)'
+      end
+      it 'should append one to the highest quote name suffix' do
+        @copy.update_attributes(quote_name: 'wags(10)')
+        unrelated_quote = subject.clone
+        @copy_again = @copy.clone
+        expect(@copy_again.quote_name).to eq 'wags(11)'
+      end
+    end
+  end
 end

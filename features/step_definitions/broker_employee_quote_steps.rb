@@ -124,13 +124,11 @@ Given(/^the Plans exist$/) do
   open_enrollment_end_on = open_enrollment_start_on + 12.days
   start_on = open_enrollment_start_on + 1.months
   end_on = start_on + 1.year - 1.day
-  plan1 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', metal_level: 'silver', active_year: start_on.year, csr_variant_id: "01")
-  plan2 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', metal_level: 'bronze', active_year: start_on.year, csr_variant_id: "01")
-  plan3 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', metal_level: 'dental', active_year: start_on.year, deductible: 4000)
-  plan4 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', metal_level: 'dental', active_year: start_on.year, deductible: 4000)
+  plan1 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', metal_level: 'silver', active_year: start_on.year, deductible: 5000, csr_variant_id: "01", coverage_kind: 'health')
+  plan2 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', metal_level: 'bronze', active_year: start_on.year, deductible: 3000, csr_variant_id: "01", coverage_kind: 'health')
+  plan3 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', dental_level: 'high', active_year: start_on.year, deductible: 4000, coverage_kind: 'dental')
+  plan4 = FactoryGirl.create(:plan, :with_premium_tables, market: 'shop', dental_level: 'low', active_year: start_on.year, deductible: 4000, coverage_kind: 'dental')
   Caches::PlanDetails.load_record_cache!
-  $quote_shop_health_plans = [plan1,plan2]
-  $quote_shop_dental_plans = [plan3,plan4]
 end
 
 Then(/^the broker enters Employer Contribution percentages for health plan$/) do

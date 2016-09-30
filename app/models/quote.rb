@@ -100,9 +100,16 @@ class Quote
     self.save!
   end
 
- def clone
-   q = super
-   q.quote_name = q.quote_name + ' copy ' + Time.now.to_s
+  def clone
+    q = super
+    is_copy, root_of_copied_name = *(q.quote_name.match(/(.+)\(\d+\)$/))
+    name = root_of_copied_name || q.quote_name
+    max_copies = 0
+    Quote.where(broker_role_id: q.broker_role_id).each{|quote|
+      matched, matched_name,match_count = *(quote.quote_name.match /(.+)\((\d+)\)$/)
+      max_copies = match_count.to_i if matched_name == name && ((match_count.to_i) > max_copies)
+    }
+   q.quote_name = "#{name}(#{max_copies+1})"
    q.aasm_state = 'draft'
    q.claim_code = nil
    q.quote_benefit_groups.each {|bg| bg._id = BSON::ObjectId.new}
@@ -143,4 +150,5 @@ class Quote
       qoute_household.update_attributes(:quote_benefit_group_id => qbg.id)
     end
   end
+
 end

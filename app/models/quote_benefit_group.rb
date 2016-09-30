@@ -142,10 +142,11 @@ class QuoteBenefitGroup
     cost.minmax
   end
 
-  def roster_cost_all_plans(quote_type = 'health')
+  def roster_cost_all_plans(coverage_kind = 'health')
+
     @plan_costs= {}
     combined_family = flat_roster_for_premiums
-    quote_collection = quote_type == 'health' ? $quote_shop_health_plans : $quote_shop_dental_plans
+    quote_collection = Plan.shop_plans coverage_kind, quote.plan_year
     quote_collection.each {|plan|
       @plan_costs[plan.id.to_s] = roster_premium(plan, combined_family)
     }
