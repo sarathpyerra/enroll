@@ -73,6 +73,7 @@ class HbxEnrollment
 
   field :effective_on, type: Date
   field :terminated_on, type: Date
+  field :terminate_reason, type: String
   field :transmit_to_carrier, type: Boolean, default: true
 
   field :plan_id, type: BSON::ObjectId
