@@ -95,7 +95,9 @@ class BrokerAgencies::QuotesController < ApplicationController
           detailCost = Array.new
           @q.quote_households.each do |hh|
             pcd = PlanCostDecorator.new(p, hh, @q, p)
-            detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employer_contribution]] }
+            detailCost << pcd.get_family_details_hash(@q.quote.start_on).sort_by { |m|
+             [m[:family_id], -m[:age], -m[:employer_contribution]]
+            }
           end
           employer_cost = @q.roster_employer_contribution(p,p)
           @quote_results[p.name] = {:detail => detailCost,
@@ -124,7 +126,7 @@ class BrokerAgencies::QuotesController < ApplicationController
       detailCost = Array.new
       @q.quote_households.each do |hh|
         pcd = PlanCostDecorator.new(p, hh, @q, p)
-        detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employer_contribution]] }
+        detailCost << pcd.get_family_details_hash(@q.quote.start_on).sort_by { |m| [m[:family_id], -m[:age], -m[:employer_contribution]] }
       end
 
       employer_cost = @q.roster_employer_contribution(p,p)

@@ -129,13 +129,13 @@ class PlanCostDecorator < SimpleDelegator
     end).round(2)
   end
 
-  def get_family_details_hash
+  def get_family_details_hash quote_plan_year_start_on
     members.map{ |m|
       {
         :plan => @reference_plan.name,
         :first_name => m.first_name,
         :employee_relationship => m.employee_relationship,
-        :age => m.age_on(TimeKeeper.date_of_record),
+        :age => m.age_on(quote_plan_year_start_on),
         :family_id => m.quote_household.id,
         :employee_cost => employee_cost_for(m),
         :employer_contribution_percent => employer_contribution_percent(m),
