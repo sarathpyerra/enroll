@@ -26,7 +26,7 @@
       <strong> Termination Date </strong>
     </label>
     <br/>
-    <%= text_field_tag "termination_date", nil, placeholder: TimeKeeper.date_of_record, class: "form-control date-field date-picker" %>
+    <%= text_field_tag "termination_date", nil, placeholder: TimeKeeper.date_of_record, class: "form-control date-field date-picker", "data-date-min" =>  set_date_min_to_effective_on(@hbx_enrollment, TimeKeeper.date_of_record) %>
   </div>
   <div class="enroll-checkbox">
     <div class="checkbox">
