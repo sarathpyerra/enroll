@@ -34,7 +34,7 @@
 
   <%= form_for @hbx_enrollment, :url => { :action => "update_cancel_enrollment"}, :method => :post, :html => { :class => 'vertically-aligned-row' } do |f| %>
   <div class="enroll-checkbox">
-    <div class="checkbox">
+    <div class="checkbox disabled">
       <label>
         <%= f.check_box :transmit_to_carrier %>
         <%= f.label :transmit_to_carrier do %>
