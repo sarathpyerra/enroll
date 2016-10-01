@@ -3,7 +3,8 @@ FactoryGirl.define do
     start_on "2016-07-02"
     claim_code nil
     after(:create) do |q, evaluator|
-      build(:quote_benefit_group, quote: q )
+      create(:quote_benefit_group, quote: q )
+      @qbg_id_testing = q.quote_benefit_groups.last.id
     end
   end
 
@@ -16,6 +17,12 @@ FactoryGirl.define do
   trait :with_two_households_and_members do
     after(:create) do |q, evaluator|
       create_list(:quote_household,2,:with_members, quote: q)
+    end
+  end
+
+  trait :with_quote_families do
+    after(:create) do |q, evaluator|
+      create_list(:quote_household,2,:with_quote_family, quote: q)
     end
   end
 
