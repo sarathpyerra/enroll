@@ -18,6 +18,7 @@ var add_sep_form = ( function(window, undefined) {
       $parent_row.after('<tr class="child-row"><td colspan="100"><%= j render "sep/approval/admin_detail", 
       f: @family, qle: @qle, formats: [:html] %></td></tr>');
       $("li>a:contains('Collapse Form')").eq(<%= @row %>).removeClass('disabled');
+      $('.dropdown.pull-right').removeClass('open');
     }
   }
 

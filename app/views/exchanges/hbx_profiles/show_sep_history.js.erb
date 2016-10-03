@@ -12,6 +12,7 @@ var show_sep_history = ( function(){
       $parent_row.after('<tr class="child-row"><td colspan="100"><%= j render partial: "sep_history/index", 
       person_id: @family.primary_applicant.person.id, family_id: @family %></td></tr>');
       $("li>a:contains('Collapse Form')").eq(<%= @row %>).removeClass('disabled');
+      $('.dropdown.pull-right').removeClass('open');
     }
   }
 
