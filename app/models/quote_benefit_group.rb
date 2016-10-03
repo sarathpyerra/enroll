@@ -143,7 +143,6 @@ class QuoteBenefitGroup
   end
 
   def roster_cost_all_plans(coverage_kind = 'health')
-
     @plan_costs= {}
     combined_family = flat_roster_for_premiums
     quote_collection = Plan.shop_plans coverage_kind, quote.plan_year
@@ -154,7 +153,6 @@ class QuoteBenefitGroup
   end
 
   def roster_premium(plan, combined_family)
-    roster_premium = Hash.new{|h,k| h[k]=0.00}
     pcd = PlanCostDecoratorQuote.new(plan, nil, self, plan)
     reference_date = pcd.plan_year_start_on
     pcd.add_premiums(combined_family, reference_date)

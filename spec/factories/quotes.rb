@@ -20,7 +20,7 @@ FactoryGirl.define do
     end
   end
 
-  trait :with_quote_families do
+  trait :with_two_families do
     after(:create) do |q, evaluator|
       create_list(:quote_household,2,:with_quote_family, quote: q)
     end
