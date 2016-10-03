@@ -459,8 +459,8 @@ class Plan
       end
       selectors[:carriers] = plans.map{|p|
         id = p.carrier_profile_id
-        c_p = CarrierProfile.find(id)
-        [ c_p.legal_name, c_p.abbrev, c_p.id ]
+        carrier_profile = CarrierProfile.find(id)
+        [ carrier_profile.legal_name, carrier_profile.abbrev, carrier_profile.id ]
         }.uniq.append(['any','any'])
       selectors[:plan_types] =  plans.map{|p| p.plan_type}.uniq.append('any')
       selectors[:dc_network] =  ['true', 'false', 'any']

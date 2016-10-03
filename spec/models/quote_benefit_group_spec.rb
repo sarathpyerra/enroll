@@ -18,9 +18,6 @@ RSpec.describe QuoteBenefitGroup do
   	 @next_year = @current_year + 1
   	end
     describe 'access to plans CACHED methods works' do
-      it 'should have five plans' do	
-        expect(Plan.all.count).to eq(5) 
-      end
       it 'should have two current year health plans' do
       	expect(Plan.shop_plans('health', @current_year).count).to eq(2)
       end

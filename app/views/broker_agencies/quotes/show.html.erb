@@ -29,7 +29,7 @@
 
 $(document).on('ready page:load', function () {
     QuotePageLoad.set_select_health_plans(<%=raw @health_plan_quote_criteria %>)
-    Quote.show_benefit_group("<%= @q.id%>", "<%= @quote_on_page.id%>")
+    Quote.show_benefit_group("<%= @q.id%>", "<%= @quote_benefit_group.id%>")
 
 });
 </script>
