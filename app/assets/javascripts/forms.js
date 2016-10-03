@@ -1,7 +1,6 @@
 // $(".date-picker").datepicker();
 
 $(".date-picker").on("change", function () {
-  console.log('picket loaded');
     var id = $(this).attr("id");
     var val = $("label[for='" + id + "']").text();
     $("#msg").text(val + " changed");
