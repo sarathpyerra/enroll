@@ -231,6 +231,10 @@ class Exchanges::HbxProfilesController < ApplicationController
     getActionParams
   end
 
+  def hide_form
+    getActionParams
+  end
+
   def show_sep_history
     getActionParams
   end
