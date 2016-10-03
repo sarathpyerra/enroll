@@ -14,7 +14,7 @@ RSpec.describe TimeHelper, :type => :helper do
     let(:enrollment) {FactoryGirl.create(:hbx_enrollment, household: family.active_household)}
     it "counts -7 days from enrollment effective date" do
       enrollment.effective_on = (TimeKeeper.date_of_record - 7.days)
-      expect(helper.set_date_min_to_effective_on(enrollment, TimeKeeper.date_of_record)).to eq("-7D")
+      expect(helper.set_date_min_to_effective_on(enrollment, TimeKeeper.date_of_record)).to eq("-6D")
     end
   end
 end
