@@ -1205,6 +1205,61 @@ RSpec.describe CensusEmployee, type: :model, dbclean: :after_each do
     end
   end
 
+  context "can_elect_cobra?" do
+    let(:census_employee) { FactoryGirl.build(:census_employee) }
+
+    it "should return false when aasm_state is eligible" do
+      expect(census_employee.can_elect_cobra?).to be_falsey
+    end
+
+    it "should return true when aasm_state is employment_terminated" do
+      census_employee.aasm_state = 'employment_terminated'
+      expect(census_employee.can_elect_cobra?).to be_truthy
+    end
+
+    it "should return true when aasm_state is cobra_terminated" do
+      census_employee.aasm_state = 'cobra_terminated'
+      expect(census_employee.can_elect_cobra?).to be_falsey
+    end
+  end
+
+  context "has_hbx_enrollments?" do
+    let(:census_employee) { FactoryGirl.build(:census_employee) }
+    let(:employee_role) { FactoryGirl.build(:employee_role) }
+    let(:hbx_enrollment) { HbxEnrollment.new }
+    let(:benefit_group_assignment) { FactoryGirl.build(:benefit_group_assignment) }
+
+    it "should return flase without employee_role" do
+      allow(census_employee).to receive(:employee_role).and_return nil
+      expect(census_employee.has_hbx_enrollments?).to be_falsey
+    end
+
+    it "should return true" do
+      allow(census_employee).to receive(:employee_role).and_return employee_role
+      allow(census_employee).to receive(:benefit_group_assignments).and_return [benefit_group_assignment]
+      allow(benefit_group_assignment).to receive(:hbx_enrollment).and_return hbx_enrollment
+      expect(census_employee.has_hbx_enrollments?).to be_truthy
+    end
+  end
+
+  context "linked?" do
+    let(:census_employee) { FactoryGirl.build(:census_employee) }
+
+    it "should return true when aasm_state is employee_role_linked" do
+      census_employee.aasm_state = 'employee_role_linked'
+      expect(census_employee.linked?).to be_truthy
+    end
+
+    it "should return true when aasm_state is cobra_linked" do
+      census_employee.aasm_state = 'cobra_linked'
+      expect(census_employee.linked?).to be_truthy
+    end
+
+    it "should return false" do
+      expect(census_employee.linked?).to be_falsey
+    end
+  end
+
   context '.enrollments_for_display' do
 
     let!(:employer_profile)          { FactoryGirl.create(:employer_profile) }
@@ -1341,61 +1396,6 @@ RSpec.describe CensusEmployee, type: :model, dbclean: :after_each do
       expect(census_employee.dob).not_to eq person.dob
     end
 
-  end
-
-  context "can_elect_cobra?" do
-    let(:census_employee) { FactoryGirl.build(:census_employee) }
-
-    it "should return false when aasm_state is eligible" do
-      expect(census_employee.can_elect_cobra?).to be_falsey
-    end
-
-    it "should return true when aasm_state is employment_terminated" do
-      census_employee.aasm_state = 'employment_terminated'
-      expect(census_employee.can_elect_cobra?).to be_truthy
-    end
-
-    it "should return true when aasm_state is cobra_terminated" do
-      census_employee.aasm_state = 'cobra_terminated'
-      expect(census_employee.can_elect_cobra?).to be_falsey
-    end
-  end
-
-  context "has_hbx_enrollments?" do
-    let(:census_employee) { FactoryGirl.build(:census_employee) }
-    let(:employee_role) { FactoryGirl.build(:employee_role) }
-    let(:hbx_enrollment) { HbxEnrollment.new }
-    let(:benefit_group_assignment) { FactoryGirl.build(:benefit_group_assignment) }
-
-    it "should return flase without employee_role" do
-      allow(census_employee).to receive(:employee_role).and_return nil
-      expect(census_employee.has_hbx_enrollments?).to be_falsey
-    end
-
-    it "should return true" do
-      allow(census_employee).to receive(:employee_role).and_return employee_role
-      allow(census_employee).to receive(:benefit_group_assignments).and_return [benefit_group_assignment]
-      allow(benefit_group_assignment).to receive(:hbx_enrollment).and_return hbx_enrollment
-      expect(census_employee.has_hbx_enrollments?).to be_truthy
-    end
-  end
-
-  context "linked?" do
-    let(:census_employee) { FactoryGirl.build(:census_employee) }
-
-    it "should return true when aasm_state is employee_role_linked" do
-      census_employee.aasm_state = 'employee_role_linked'
-      expect(census_employee.linked?).to be_truthy
-    end
-
-    it "should return true when aasm_state is cobra_linked" do
-      census_employee.aasm_state = 'cobra_linked'
-      expect(census_employee.linked?).to be_truthy
-    end
-
-    it "should return false" do
-      expect(census_employee.linked?).to be_falsey
-    end
   end
 
   context "check_hired_on_before_dob" do
