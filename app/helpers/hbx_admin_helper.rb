@@ -32,7 +32,7 @@ module HbxAdminHelper
     this_month_date = Date.parse("#{TimeKeeper.date_of_record.year}-#{month_num}-01")
     todays_date = TimeKeeper.date_of_record
     if this_month_date < todays_date
-      td_style = 'historic-aptc-csr-data'
+      td_style = 'past-aptc-csr-data'
     else
       td_style="current-aptc-csr-data"
     end
@@ -43,8 +43,9 @@ module HbxAdminHelper
     ((aptc_applied/max_aptc)*100).round
   end
 
-  def all_canceled_and_terminated_enrollments_with_aptc(family)
-    family.active_household.hbx_enrollments.canceled_and_terminated.with_aptc.by_year(TimeKeeper.date_of_record.year)
+  def inactive_and_without_aptc_enrollments(family, year)
+    family.active_household.hbx_enrollments.canceled_and_terminated.with_plan.with_aptc.by_year(TimeKeeper.date_of_record.year) +
+    family.active_household.hbx_enrollments.with_plan.without_aptc.by_year(TimeKeeper.date_of_record.year)
   end
 
 end
