@@ -233,7 +233,6 @@ $(document).ready(function () {
   $(document).on("focus", "[class~='date-picker']", function(e){
     dateMin = $(this).attr("data-date-min");
     dateMax = $(this).attr("data-date-max");
-		console.log("blahhhhhh");
 
     if ($(this).hasClass('dob-picker') || $(this).hasClass('hire-picker')){
       $(this).datepicker({

@@ -10,7 +10,7 @@ module TimeHelper
   # jquery datepicker.
 
   def set_date_min_to_effective_on (enrollment, current_date)
-    delta = (enrollment.effective_on - current_date).to_i 
+    delta = (enrollment.effective_on - current_date).to_i + 1
     delta.to_s + 'D'
   end
 end
