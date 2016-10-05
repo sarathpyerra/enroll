@@ -20,10 +20,6 @@ def format_date(date)
   date = Date.strptime(date,'%m/%d/%Y')
 end
 
-def find_coverage_household_member(family_member)
-
-end
-
 filename = '8905_dependents_not_migrated.csv'
 
 complete_rows = []
@@ -76,6 +72,7 @@ CSV.foreach(filename, headers: :true) do |row|
 
           family_member = Factories::EnrollmentFactory.initialize_dependent(family,subscriber,dependent)
           subscriber.save!
+          family_member.save!
 
 
         rescue Exception=>e
@@ -89,10 +86,10 @@ CSV.foreach(filename, headers: :true) do |row|
           family_member = family.add_family_member(dependent)
         end
       end
-      family_member.save!
-      family_member.person.gender = row["Gender (Dep #{i+1})"]
-      family_member.person.hbx_id =  row["HBX ID (Dep #{i+1})"]
-      family_member.person.save
+
+      # family_member.person.gender = row["Gender (Dep #{i+1})"]
+      # family_member.person.hbx_id =  row["HBX ID (Dep #{i+1})"]
+      # family_member.person.save
 
       family.active_household.add_household_coverage_member(family_member)
       family.save(:validate => false)
