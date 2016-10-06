@@ -6,6 +6,7 @@ $(".date-picker").on("change", function () {
     $("#msg").text(val + " changed");
 });
 
+
 $(document).ready(function() {
   $("input.capital").keyup(function() {
     var val = $(this).val();
