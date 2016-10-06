@@ -1,7 +1,6 @@
 <% row_data = capture do %>
-
 	<%
-	active_health_enrollment = family.enrollments.detect{|enrollment| enrollment.coverage_kind == "health" && enrollment.aasm_state != "coverage_canceled" && enrollment.aasm_state != "coverage_terminated"}
+	active_health_enrollment = family.enrollments.select{|enrollment| enrollment.coverage_kind == "health" && enrollment.aasm_state != "coverage_canceled" && enrollment.aasm_state != "coverage_terminated"}.last
 	if family.enrollments.present? && active_health_enrollment
 
 	%>
