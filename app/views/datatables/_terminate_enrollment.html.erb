@@ -20,13 +20,13 @@
   <!-- EDI Transmission to Carrier -->
   <!-- EDI Transmisison checkbox -->
 
-  <%= form_for @hbx_enrollment, :url => { :action => "update_terminate_enrollment"}, :method => :post, :html => { :class => 'vertically-aligned-row' } do |f| %>
+  <%= form_for @hbx_enrollment, :url => { :action => "update_terminate_enrollment"}, :method => :post,:html => { :class => 'vertically-aligned-row' } do |f| %>
   <div>
     <label>
       <strong> Termination Date </strong>
     </label>
     <br/>
-    <%= text_field_tag "termination_date", nil, placeholder: TimeKeeper.date_of_record, class: "form-control date-field date-picker", "data-date-min" =>  set_date_min_to_effective_on(@hbx_enrollment, TimeKeeper.date_of_record) %>
+    <%= text_field_tag "termination_date", nil, readonly: true, placeholder:  TimeKeeper.date_of_record, id: "termination-date-picker", class: "form-control date-field date-picker", "data-date-min" =>  set_date_min_to_effective_on(@hbx_enrollment, TimeKeeper.date_of_record) %>
   </div>
   <div class="enroll-checkbox">
     <div class="checkbox disabled">
@@ -55,4 +55,17 @@
 
   <!-- Submit button -->
 </div>
+<script>
+$( "[id^=edit_hbx_enrollment]" ).submit(function( event ) {
+  if($('#termination-date-picker').val().length !=0)
+        this.submit();
+  else {
+    event.preventDefault();
+    alert("Please select a valid date.");
+  }
+
+});
+
+
+</script>
 <% @hbx_enrollment.inspect %>
