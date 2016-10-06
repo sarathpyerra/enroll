@@ -4,13 +4,13 @@ class Exchanges::HbxProfilesController < ApplicationController
   include DataTablesFilters
   include SepAll
 
-  before_action :check_hbx_staff_role, except: [:request_help, :show, :assister_index, :family_index, :update_cancel_enrollment, :update_terminate_enrollment]
+  before_action :check_hbx_staff_role, except: [:request_help, :show, :assister_index, :family_index, :family_index_datatables, :update_cancel_enrollment, :update_terminate_enrollment]
   before_action :modify_admin_tabs?, only: [:binder_paid, :transmit_group_xml]
   before_action :set_hbx_profile, only: [:edit, :update, :destroy]
   before_action :find_hbx_profile, only: [:employer_index, :broker_agency_index, :inbox, :configuration, :show, :binder_index]
   #before_action :authorize_for, except: [:edit, :update, :destroy, :request_help, :staff_index, :assister_index]
   #before_action :authorize_for_instance, only: [:edit, :update, :destroy]
-  before_action :check_csr_or_hbx_staff, only: [:family_index]
+  before_action :check_csr_or_hbx_staff, only: [:family_index, :family_index_datatables]
   # GET /exchanges/hbx_profiles
   # GET /exchanges/hbx_profiles.json
   layout 'single_column'
