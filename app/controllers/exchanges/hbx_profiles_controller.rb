@@ -348,8 +348,7 @@ class Exchanges::HbxProfilesController < ApplicationController
     termination_date = Date.strptime(params[:termination_date], "%m/%d/%Y")
 
     if @hbx_enrollment.kind == "individual"
-      @hbx_enrollment.aasm_state = "coverage_terminated"
-      @hbx_enrollment.save
+      @hbx_enrollment.terminate_coverage!
       redirect_to exchanges_hbx_profiles_path, :flash => { :success => "Termination Successful" }
     elsif @hbx_enrollment.schedule_coverage_termination!(termination_date)
       redirect_to exchanges_hbx_profiles_path, :flash => { :success => "Termination Successful" }
