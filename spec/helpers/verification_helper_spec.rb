@@ -264,11 +264,11 @@ RSpec.describe VerificationHelper, :type => :helper do
         allow(person).to receive_message_chain("primary_family.ivl_unverified_enrollments.first").and_return(hbx_enrollment)
       end
       it "returns true if enrollment has complete review status" do
-        allow(person).to receive_message_chain("primary_family.active_household.hbx_enrollments.verification_needed.first").and_return(hbx_enrollment_incomplete)
+        allow(person).to receive_message_chain("primary_family.ivl_unverified_enrollments.first").and_return(hbx_enrollment_incomplete)
         expect(helper.hbx_enrollment_incomplete).to be_truthy
       end
       it "returns false for not incomplete status" do
-        allow(person).to receive_message_chain("primary_family.active_household.hbx_enrollments.verification_needed.first").and_return(hbx_enrollment)
+        allow(person).to receive_message_chain("primary_family.ivl_unverified_enrollments.first").and_return(hbx_enrollment)
         expect(helper.hbx_enrollment_incomplete).to be_falsey
       end
     end
