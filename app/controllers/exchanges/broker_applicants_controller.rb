@@ -23,7 +23,7 @@ class Exchanges::BrokerApplicantsController < ApplicationController
       #       visible first to a user who would approve them.
       #       I'm fixing the performance for now, and leaving the behaviour
       #       as is, but it's confusing and we should clean it up.
-      @broker_applicants = sort_by_latest_transition_time(@people, 20)
+      @broker_applicants = sort_by_latest_transition_time(@people, 20).to_a # CRITERIA WHYYYYYYYYYYYYY
     end
 
     respond_to do |format|
