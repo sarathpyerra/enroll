@@ -28,6 +28,9 @@ coverage_not_found = []
 pending_ssa_validation = []
 others = []
 
+ignore_hbx_ids = ["19762581","19763295","19791597","19805612","19819265","19747690", "19752643", "19754689","19758689",
+  "19763682","19766030","19766561", "19766905","19782203","19792733","19805795","19766441"]
+
 create_directory "#{Rails.root.to_s}/public/paper_notices/"
 
 
@@ -58,6 +61,8 @@ CSV.open("families_processed_#{TimeKeeper.date_of_record.strftime('%m_%d_%Y')}.c
     #   puts "already notified!!"
     #   next
     # end
+
+    next if ignore_hbx_ids.include?(person.hbx_id)
 
     if person.consumer_role.blank?
       count += 1
