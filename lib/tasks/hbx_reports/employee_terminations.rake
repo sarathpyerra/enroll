@@ -6,12 +6,15 @@ namespace :reports do
     desc "Employee terminations by employer profile and date range"
     task :employee_terminations => :environment do
 
-      date_range = Date.new(2015,10,1)..TimeKeeper.date_of_record
+      today = Date.today
+      yesterday = today - 1.day
 
-      census_employees = CensusEmployee.find_all_terminated(date_range: date_range)
+      census_employees = CensusEmployee.unscoped.terminated.
+                          where(:employment_terminated_on.gte => yesterday).
+                          where(:employment_terminated_on.lt => today)
 
       field_names  = %w(
-          employer_name last_name first_name ssn dob aasm_state hired_on employment_terminated_on updated_at 
+          employer_name last_name first_name ssn dob aasm_state hired_on employment_terminated_on updated_at
         )
 
       processed_count = 0
@@ -36,11 +39,11 @@ namespace :reports do
           active_states = %w(registered eligible binder_paid enrolled suspended)
 
           if active_states.include? census_employee.employer_profile.aasm_state
-            csv << field_names.map do |field_name| 
-              if field_name == "ssn"
-                '="' + eval(field_name) + '"'
-              else
+            csv << field_names.map do |field_name|
+              if eval(field_name).to_s.blank? || field_name != "ssn"
                 eval("#{field_name}")
+              elsif field_name == "ssn"
+                '="' + eval(field_name) + '"'
               end
             end
             processed_count += 1
@@ -48,7 +51,7 @@ namespace :reports do
         end
       end
 
-      puts "For period #{date_range.first} - #{date_range.last}, #{processed_count} employee terminations output to file: #{file_name}"
+      puts "For period #{yesterday} - #{today}, #{processed_count} employee terminations output to file: #{file_name}"
     end
   end
 end
