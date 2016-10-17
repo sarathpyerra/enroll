@@ -94,11 +94,27 @@ class Notice
     end
   end
 
-  def store_paper_notice
-    paper_notices_folder = "#{Rails.root.to_s}/public/paper_notices/"
-    FileUtils.cp(@notice_path, "#{Rails.root.to_s}/public/paper_notices/")
-    File.rename(paper_notices_folder + "#{@notice_filename}.pdf", paper_notices_folder + "#{@secure_message_recipient.hbx_id}_" + @notice_filename + File.extname(@notice_path))
+   def store_paper_notice
+    notice_filename_for_paper_notice = "#{@secure_message_recipient.hbx_id}_#{@subject.titleize.gsub(/\s*/, '')}"
+    notice_path_for_paper_notice = Rails.root.join("tmp", "#{notice_filename_for_paper_notice}.pdf")
+
+    begin
+      FileUtils.cp(@notice_path, notice_path_for_paper_notice)
+      doc_uri = Aws::S3Storage.save(notice_path_for_paper_notice, 'paper-notices', "#{notice_filename_for_paper_notice}.pdf")
+      File.delete(notice_path_for_paper_notice)
+    rescue Exception => e
+      puts "Unable to upload paper notices to Amazon"
+    end
+    # paper_notices_folder = "#{Rails.root.to_s}/public/paper_notices/"
+    # FileUtils.cp(notice_path, "#{Rails.root.to_s}/public/paper_notices/")
+    # File.rename(paper_notices_folder + , paper_notices_folder + "#{recipient.hbx_id}_" + notice_filename + File.extname(notice_path))
   end
+
+  # def store_paper_notice
+  #   paper_notices_folder = "#{Rails.root.to_s}/public/paper_notices/"
+  #   FileUtils.cp(@notice_path, "#{Rails.root.to_s}/public/paper_notices/")
+  #   File.rename(paper_notices_folder + "#{@notice_filename}.pdf", paper_notices_folder + "#{@secure_message_recipient.hbx_id}_" + @notice_filename + File.extname(@notice_path))
+  # end
 
   def create_recipient_document(doc_uri)
     notice = @family.documents.build({

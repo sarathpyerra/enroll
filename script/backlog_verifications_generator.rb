@@ -30,13 +30,6 @@ others = []
 
 create_directory "#{Rails.root.to_s}/public/paper_notices/"
 
-hbx_ids = []
-CSV.foreach("#{Rails.root.to_s}/valid_gluedb_fourth_verification_reminder_data_export.csv") do |row|
-  next if row[0].strip == 'Primary HbxId'
-
-  hbx_ids << row[0].strip.to_i
-end
-
 
 CSV.open("families_processed_#{TimeKeeper.date_of_record.strftime('%m_%d_%Y')}.csv", "w") do |csv|
 
@@ -72,8 +65,10 @@ CSV.open("families_processed_#{TimeKeeper.date_of_record.strftime('%m_%d_%Y')}.c
     end
 
     next if person.inbox.blank?
-    next if person.inbox.messages.where(:"subject" => "Request for Additional Information - Third Reminder").blank?
-    next if !hbx_ids.include?(person.hbx_id.to_i)
+    next if person.inbox.messages.where(:"subject" => "Request for Additional Information - Second Reminder").blank?
+    if secure_message = person.inbox.messages.where(:"subject" => "Request for Additional Information - Second Reminder").first
+      next unless secure_message.created_at > 45.days.ago
+    end
 
     puts "----#{person.full_name}"
 
@@ -83,7 +78,7 @@ CSV.open("families_processed_#{TimeKeeper.date_of_record.strftime('%m_%d_%Y')}.c
     #   next if secure_message.created_at > 35.days.ago
     # end
 
-      event_kind = ApplicationEventKind.where(:event_name => 'fourth_verifications_reminder').first
+      event_kind = ApplicationEventKind.where(:event_name => 'third_verifications_reminder').first
       # event_kind = ApplicationEventKind.where(:event_name => 'verifications_backlog').first
 
       notice_trigger = event_kind.notice_triggers.first

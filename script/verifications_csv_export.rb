@@ -57,9 +57,9 @@ CSV.open("verifications_backlog_notice_data_export_1.csv", "w") do |csv|
     # end
 
     next if person.inbox.blank?
-    next if person.inbox.messages.where(:"subject" => "Documents needed to confirm eligibility for your plan").blank?
-    if secure_message = person.inbox.messages.where(:"subject" => "Documents needed to confirm eligibility for your plan").first
-      next if secure_message.created_at > 35.days.ago
+    next if person.inbox.messages.where(:"subject" => "Request for Additional Information - Second Reminder").blank?
+    if secure_message = person.inbox.messages.where(:"subject" => "Request for Additional Information - Second Reminder").first
+      next unless secure_message.created_at > 45.days.ago
     end
 
     if person.consumer_role.blank?
