@@ -910,6 +910,10 @@ describe HbxEnrollment, dbclean: :after_each do
     allow(shop_enrollment).to receive(:employee_role).and_return(employee_role)
   end
 
+  after :all do
+    TimeKeeper.set_date_of_record_unprotected!(Date.today)
+  end
+
   context ".effective_date_for_enrollment" do
     context 'when new hire' do
 
