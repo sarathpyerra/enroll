@@ -11,6 +11,7 @@ class Insured::FamiliesController < FamiliesController
   def home
     set_flash_by_announcement
     set_bookmark_url
+    @active_admin_sep = @family.active_admin_seps.last
 
     log("#3717 person_id: #{@person.id}, params: #{params.to_s}, request: #{request.env.inspect}", {:severity => "error"}) if @family.blank?
 
@@ -41,6 +42,7 @@ class Insured::FamiliesController < FamiliesController
       memo
     end
 
+    #@last_active_sep_by_admin = @family.active_admin_seps.last
 
     @waived_hbx_enrollments = @waived_hbx_enrollments.select {|h| !hbx_enrollment_kind_and_years[h.coverage_kind].include?(h.effective_on.year) }
     @waived = @family.coverage_waived? && @waived_hbx_enrollments.present?
@@ -48,6 +50,23 @@ class Insured::FamiliesController < FamiliesController
     @employee_role = @person.active_employee_roles.first
     @tab = params['tab']
     @family_members = @family.active_family_members
+
+    if @employee_role.present?
+      @ce = CensusEmployee.find(@employee_role.census_employee_id)  
+    end
+    #if @employee_role.present?
+     # ce = CensusEmployee.find(@employee_role.census_employee_id)
+      # checking for future hire
+      #if ce.hired_on > ce.created_at
+       # @future_hire = true
+     
+     # else
+      
+      #  @future_hire = false  
+      
+      #end  
+    #end 
+    #binding.pry
     respond_to do |format|
       format.html
     end
@@ -83,6 +102,7 @@ class Insured::FamiliesController < FamiliesController
     @next_ivl_open_enrollment_date = HbxProfile.current_hbx.try(:benefit_sponsorship).try(:renewal_benefit_coverage_period).try(:open_enrollment_start_on)
 
     @market_kind = (params[:employee_role_id].present? && params[:employee_role_id] != 'None') ? 'shop' : 'individual'
+    @existing_sep = @family.special_enrollment_periods.where(:end_on.gte => Date.today).first unless params.key?(:shop_for_plan)
     if (params[:resident_role_id].present? && params[:resident_role_id])
       @market_kind = "coverall"
     end
@@ -126,6 +146,10 @@ class Insured::FamiliesController < FamiliesController
   end
 
   def verification
+    @family_members = @person.primary_family.family_members.active
+  end
+
+  def upload_application
     @family_members = @person.primary_family.family_members.active
   end
 
@@ -205,34 +229,35 @@ class Insured::FamiliesController < FamiliesController
   # admin manually uploads a notice for person
   def upload_notice
 
-    if params.permit![:file]
-      doc_uri = Aws::S3Storage.save(file_path, 'notices')
+    if (!params.permit![:file]) || (!params.permit![:subject])
+      flash[:error] = "File or Subject not provided"
+      redirect_to(:back)
+      return
+    elsif file_content_type != 'application/pdf'
+      flash[:error] = "Please upload a PDF file. Other file formats are not supported."
+      redirect_to(:back)
+      return
+    end
 
-      if doc_uri.present?
-        notice_document = Document.new({ title: file_name, creator: "hbx_staff", subject: "notice", identifier: doc_uri,
-                                         format: file_content_type })
-        begin
-          @person.documents << notice_document
-          @person.save!
-
-          send_notice_upload_notifications(notice_document)
-
-          flash[:notice] = "File Saved"
-          redirect_to(:back)
-          return
-        rescue => e
-          flash[:error] = "Could not save file. "
-          redirect_to(:back)
-          return
-        end
-      else
-        flash[:error] = "Could not save file"
-        redirect_to(:back)
+    doc_uri = Aws::S3Storage.save(file_path, 'notices')
+    
+    if doc_uri.present?
+      notice_document = Document.new({title: file_name, creator: "hbx_staff", subject: "notice", identifier: doc_uri,
+                                      format: file_content_type})
+      begin
+        @person.documents << notice_document
+        @person.save!
+        send_notice_upload_notifications(notice_document, params.permit![:subject])
+        flash[:notice] = "File Saved"
+      rescue => e
+        flash[:error] = "Could not save file."
       end
     else
-      flash[:error] = "File not uploaded"
-      redirect_to(:back)
+      flash[:error] = "Could not save file."
     end
+
+    redirect_to(:back)
+    return
   end
 
   # displays the form to upload a notice for a person
@@ -331,19 +356,21 @@ class Insured::FamiliesController < FamiliesController
     params.permit![:file].content_type
   end
 
-  def send_notice_upload_notifications(notice)
+  def send_notice_upload_notifications(notice, subject)
     notice_upload_email
-    notice_upload_secure_message(notice)
+    notice_upload_secure_message(notice, subject)
   end
 
   def notice_upload_email
-    UserMailer.notice_uploaded_notification(@person).deliver_now
+    if (@person.consumer_role.present? && @person.consumer_role.can_receive_electronic_communication?) ||
+      (@person.employee_roles.present? && (@person.employee_roles.map(&:contact_method) & ["Only Electronic communications", "Paper and Electronic communications"]).any?)
+      UserMailer.generic_notice_alert(@person.first_name, "You have a new message from DC Health Link", @person.work_email_or_best).deliver_now
+    end
   end
 
-  def notice_upload_secure_message(notice)
-    subject = "New Notice Available"
+  def notice_upload_secure_message(notice, subject)
     body = "<br>You can download the notice by clicking this link " +
-            "<a href=" + "#{authorized_document_download_path('Person', @person.id, 'documents', notice.id )}?content_type=#{notice.format}&filename=#{notice.title.gsub(/[^0-9a-z]/i,'')}.pdf&disposition=inline" + " target='_blank'>" + notice.title + "</a>"
+            "<a href=" + "#{authorized_document_download_path('Person', @person.id, 'documents', notice.id )}?content_type=#{notice.format}&filename=#{notice.title.gsub(/[^0-9a-z]/i,'')}.pdf&disposition=inline" + " target='_blank'>" + subject + "</a>"
 
     @person.inbox.messages << Message.new(subject: subject, body: body, from: 'DC Health Link')
     @person.save!
@@ -357,4 +384,5 @@ class Insured::FamiliesController < FamiliesController
     @qualified_date = (start_date <= @qle_date && @qle_date <= end_date) ? true : false
     @qle_date_calc = @qle_date - Settings.aca.qle.with_in_sixty_days.days
   end
+
 end

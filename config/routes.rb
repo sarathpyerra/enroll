@@ -4,6 +4,10 @@ Rails.application.routes.draw do
 
   get 'check_time_until_logout' => 'session_timeout#check_time_until_logout', :constraints => { :only_ajax => true }
   get 'reset_user_clock' => 'session_timeout#reset_user_clock', :constraints => { :only_ajax => true }
+
+  match "hbx_admin/update_aptc_csr" => "hbx_admin#update_aptc_csr", as: :update_aptc_csr, via: [:get, :post]
+  match "hbx_admin/edit_aptc_csr" => "hbx_admin#edit_aptc_csr", as: :edit_aptc_csr, via: [:get, :post], defaults: { format: 'js' }
+  match "hbx_admin/calculate_aptc_csr" => "hbx_admin#calculate_aptc_csr", as: :calculate_aptc_csr, via: :get
   post 'show_hints' => 'welcome#show_hints', :constraints => { :only_ajax => true }
 
   namespace :users do
@@ -19,6 +23,7 @@ Rails.application.routes.draw do
   end
 
   namespace :exchanges do
+
     resources :inboxes, only: [:show, :destroy]
     resources :announcements, only: [:index, :create, :destroy] do
       get :dismiss, on: :collection
@@ -38,7 +43,11 @@ Rails.application.routes.draw do
 
       collection do
         get :family_index
+        get :family_index_dt
+        post :families_index_datatable
         get :employer_index
+        get :employer_poc
+        post :employer_poc_datatable
         get :employer_invoice
         post :employer_invoice_datatable
         post :generate_invoice
@@ -52,15 +61,27 @@ Rails.application.routes.draw do
         get :staff_index
         get :assister_index
         get :request_help
+        get :aptc_csr_family_index
         get :binder_index
         get :binder_index_datatable
         post :binder_paid
         get :verification_index
         get :verifications_index_datatable
+        get :cancel_enrollment
+        post :update_cancel_enrollment
+        get :terminate_enrollment
+        post :update_terminate_enrollment
+        post :add_new_sep
+        get :update_effective_date
+        get :calculate_sep_dates
+        get :add_sep_form
+        get :hide_form
+        get :show_sep_history
       end
 
       member do
         post :transmit_group_xml
+        get :transmit_group_xml
         get :home
         get :inbox
       end
@@ -99,6 +120,9 @@ Rails.application.routes.draw do
     get 'verification_documents/upload', to: 'verification_documents#upload'
     post 'verification_documents/upload', to: 'verification_documents#upload'
     get 'verification_documents/download/:key', to: 'verification_documents#download'
+    get 'paper_applications/upload', to: 'paper_applications#upload'
+    post 'paper_applications/upload', to: 'paper_applications#upload'
+    get 'paper_applications/download/:key', to: 'paper_applications#download'
 
     resources :plan_shoppings, :only => [:show] do
       member do
@@ -130,6 +154,7 @@ Rails.application.routes.draw do
         get 'inbox'
         get 'brokers'
         get 'verification'
+        get 'upload_application'
         get 'document_upload'
         get 'find_sep'
         post 'record_sep'

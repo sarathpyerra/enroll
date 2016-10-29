@@ -74,7 +74,8 @@ class Person
   embeds_one :resident_role, cascade_callbacks: true, validate: true
   embeds_one :broker_role, cascade_callbacks: true, validate: true
   embeds_one :hbx_staff_role, cascade_callbacks: true, validate: true
-  embeds_one :responsible_party, cascade_callbacks: true, validate: true
+  #embeds_one :responsible_party, cascade_callbacks: true, validate: true # This model does not exist.
+
   embeds_one :csr_role, cascade_callbacks: true, validate: true
   embeds_one :assister_role, cascade_callbacks: true, validate: true
   embeds_one :inbox, as: :recipient
@@ -90,7 +91,7 @@ class Person
   embeds_many :emails, cascade_callbacks: true, validate: true
   embeds_many :documents, as: :documentable
 
-  accepts_nested_attributes_for :consumer_role, :resident_role, :responsible_party, :broker_role, :hbx_staff_role,
+  accepts_nested_attributes_for :consumer_role, :resident_role, :broker_role, :hbx_staff_role,
     :person_relationships, :employee_roles, :phones, :employer_staff_roles
 
   accepts_nested_attributes_for :phones, :reject_if => Proc.new { |addy| Phone.new(addy).blank? }
@@ -163,7 +164,9 @@ class Person
   index({"person_relationship.relative_id" =>  1})
 
   index({"hbx_employer_staff_role._id" => 1})
-  index({"hbx_responsible_party_role._id" => 1})
+
+  #index({"hbx_responsible_party_role._id" => 1})
+
   index({"hbx_csr_role._id" => 1})
   index({"hbx_assister._id" => 1})
 
@@ -171,7 +174,8 @@ class Person
   scope :all_resident_roles,          -> { exists(resident_role: true) }
   scope :all_employee_roles,          -> { exists(employee_roles: true) }
   scope :all_employer_staff_roles,    -> { exists(employer_staff_role: true) }
-  scope :all_responsible_party_roles, -> { exists(responsible_party_role: true) }
+
+  #scope :all_responsible_party_roles, -> { exists(responsible_party_role: true) }
   scope :all_broker_roles,            -> { exists(broker_role: true) }
   scope :all_hbx_staff_roles,         -> { exists(hbx_staff_role: true) }
   scope :all_csr_roles,               -> { exists(csr_role: true) }
@@ -808,6 +812,14 @@ class Person
 
   def generate_family_search
     ::MapReduce::FamilySearchForPerson.populate_for(self)
+  end
+
+  def set_consumer_role_url
+    if consumer_role.present? && user.present?
+      if primary_family.present? && primary_family.active_household.present? && primary_family.active_household.hbx_enrollments.where(kind: "individual", is_active: true).present?
+        consumer_role.update_attribute(:bookmark_url, "/families/home") if user.identity_verified? && user.idp_verified && (addresses.present? || no_dc_address.present? || no_dc_address_reason.present?)
+      end
+    end
   end
 
   private
