@@ -1,5 +1,5 @@
 <br/>
-<div class="">
+<div class="col-md-10 col-md-10 col-md-10 ">
   <div class = "table-responsive"> 
         <h3 class='title'></h3>
           <% if  @health_enrollments.present? %>
@@ -10,7 +10,7 @@
                   <th>Coverage <br/> Year</th> 
                   <th>Effective <br/> Date</th>
                   <th>Termination <br/> Date</th>
-                  <th>Reinstate Date</th>
+                  <th>Reinstate<br/> Date</th>
                   <th>Transmit <br /> Carrier EDI?</th>
                   <th>DC Health<br/> Link ID</th>
                 </tr>
@@ -18,12 +18,14 @@
               <%@health_enrollments.each do |enrollment| %>
                 <tr>
                 <td><%= enrollment.benefit_group.reference_plan.name%> </td>
+                <td><%= enrollment.effective_on.year%></td>
                 <td><%= enrollment.effective_on%></td>
                 <td><%= enrollment.terminated_on%></td>
-               <!--  <td><%= enrollment.hbx_id%></td> -->
-                <td><%= enrollment.coverage_kind%> </td>
-                <td></td>
-                <td></td>
+                <td><%= Date.today%></td>
+                <td>
+                <input type="checkbox" name="myTextEditBox" value="checked" />
+                </td>
+                <td><%= enrollment.hbx_id%></td>
                 </tr>
               <%end%>
               </div>
@@ -37,26 +39,30 @@
                   <th>Coverage<br/>Year</th> 
                   <th>Effective<br/>Date</th>
                   <th>Termination<br/>Date</th>
-                  <th>Reinstate Date</th>
+                  <th>Reinstate<br/> Date</th>
                   <th>Transmit <br /> Carrier EDI?</th>
-                  <!-- <th>DC Health Link ID</th> -->
+                  <th>DC Health Link ID</th>
                 </tr>
               </thead>
               
               <%@dental_enrollments.each do |enrollment| %>
                 <tr>
                 <td><%= enrollment.benefit_group.reference_plan.name%> </td>
+                <td><%= enrollment.effective_on.year%></td>
                 <td><%= enrollment.effective_on%></td>
-                <td><%= enrollment.terminated_on%></td>
-                <!-- <td><%= enrollment.hbx_id%></td> -->
-                <td><%= enrollment.coverage_kind%> </td>
-                <td></td>
-                <td></td>
+                <td><%= enrollment.terminated_on%></td>               
+                <td><%= Date.today%></td>
+                <td>
+                <input type="checkbox" name="myTextEditBox" value="checked" />
+                </td>
+                <td><%= enrollment.hbx_id%></td>
                 </tr>
               <%end%>
           <%end%>
-      <%= link_to "Submit", "", data: {toggle: "modal", target: "#reinstate_confirm"} %>
   </div>
+</div>
+<div class="col-md-offset-8 col-md-offset-8 col-md-offset-8">
+  <%= link_to "Submit", "", data: {toggle: "modal", target: "#reinstate_confirm"} %>
 </div>
 <!-- modal --> 
 <div class="modal fade" id="reinstate_confirm" tabindex="-1" role="dialog" aria-labelledby="brokerConfirm" role="document">
@@ -66,11 +72,13 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">You are about to reinstate the following enrollment</h4>
       </div>
-
-
+      <div style="margin-left:10px;">
+      <div>comments:</div>
+      <textarea rows="4" cols="75"> </textarea>
+      </div>
         <div class="modal-footer">
-          <%= submit_tag "Confirm", class: 'btn btn-primary  mtz' %>
           <button type="button" class="btn btn-default btn-default" data-dismiss="modal">Close</button>
+          <%= submit_tag "Confirm", class: 'btn btn-primary  mtz' %>
         </div>
       
     </div>
